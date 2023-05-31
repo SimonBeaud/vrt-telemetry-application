@@ -13,15 +13,28 @@
   }
 }
 
+
+html {
+  position: relative;
+  min-height: 100%;
+
+}
+
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 60px;
+  background-color: #030826;
+  background-size: cover;
+  font-family: Barlow;
+}
+
+
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
   color: white;
+  display: flow-root;
+  margin-bottom: 0px;
 }
 
 .App-link {
@@ -35,4 +48,46 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+
+/*NAVBAR*/
+
+.menu {
+  float: right;
+}
+
+.menu-list {
+  overflow: hidden;
+  padding-left: 0;
+  margin: 0;
+  list-style: none;
+  z-index: 999;
+}
+
+.header {
+  height: 80px;
+  position: relative;
+  background: white;
+  z-index: 999;
+}
+
+.menuButton {
+
+  right: 50px;
+  top: 20px;
+}
+
+.menuItem {
+  float: left;
+  text-align: center;
+  text-align: center;
+}
+
+
+/*CONTENT*/
+
+.PageContainer{
+  margin: 80px;
+  display: flex;
 }
