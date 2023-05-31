@@ -2,13 +2,12 @@ import logo from './logo.svg';
 import './App.css';
 //import {BrowserRouter, Route, Routes} from "react-router-dom";
 import Navbar from "./Components/Navbar";
-import GeneralDataPage from "./GeneralDataPage";
-import ExternalDataPage from "./ExternalDataPage";
-import HistoricDataPage from "./HistoricDataPage";
-import ExportDataPage from "./ExportDataPage";
+import GeneralDataPage from "./Pages/GeneralDataPage";
+import ExternalDataPage from "./Pages/ExternalDataPage";
+import HistoricDataPage from "./Pages/HistoricDataPage";
+import ExportDataPage from "./Pages/ExportDataPage";
 import { BrowserRouter,Routes, Route } from "react-router-dom";
 import {useState} from "react";
-import * as Console from "console";
 
 
 function App() {

@@ -33,7 +33,7 @@ body {
   align-items: center;
   justify-content: center;
   color: white;
-  display: flow-root;
+  display: inline-block;
   margin-bottom: 0px;
 }
 
@@ -66,28 +66,50 @@ body {
 }
 
 .header {
-  height: 80px;
-  position: relative;
-  background: white;
   z-index: 999;
+  height: 100vh;
+  position: fixed;
+  background: #FF6144;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 60px;
 }
 
 .menuButton {
-
-  right: 50px;
-  top: 20px;
+  margin-bottom: 10px;
+  font-family: "Barlow SemiBold";
+  background-color: transparent;
+  border: none;
+  color: white;
+  font-size: 20px;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+.menuButton:focus{
+  color: #F1B054;
 }
 
 .menuItem {
-  float: left;
-  text-align: center;
   text-align: center;
 }
+
+.logoIcon{
+  height: 22px;
+}
+
+.logoNavBar{
+
+}
+
+
+
+
+
 
 
 /*CONTENT*/
 
 .PageContainer{
-  margin: 80px;
-  display: flex;
+
 }

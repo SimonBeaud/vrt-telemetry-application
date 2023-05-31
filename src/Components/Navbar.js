@@ -2,11 +2,12 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 
-
-
 export default function Navbar({navigateTo}){
     return(
         <header className="header">
+            <div className="logoNavBar">
+                <h1>VRT</h1>
+            </div>
             <div>
                 <nav className="menu">
                     <ul className="menu-list">
