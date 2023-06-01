@@ -24,26 +24,27 @@ function createWindow() {
 
 
     //######################################################################################
-    //Managing server launch
+    //Live Data connexion at the lauching time
+
+
+    //CODE GENERE; A MODIFIER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
 
     mainWindow.webContents.on('did-finish-load', () => {
         server.start();
 
-
         let pressure = server.getPressureData();
         console.log("Pressure data: " + pressure);
 
-        // Fonction pour mettre à jour la valeur de pression
         const updatePressure = () => {
             pressure = server.getPressureData();
             mainWindow.webContents.send('update-pressure', pressure);
         };
 
-        // Appel initial de la fonction updatePressure
         updatePressure();
 
-        // Appel périodique de la fonction updatePressure toutes les 500 millisecondes
-        setInterval(updatePressure, 500);
+        setInterval(updatePressure, 100);
 
 
     });

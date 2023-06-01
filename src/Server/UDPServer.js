@@ -6,6 +6,8 @@ const { Buffer } = require('buffer');
 const fs = require('fs');
 
 
+
+
 //Data variables
 let pressure
 
@@ -52,7 +54,6 @@ class UDPServer{
 
     //Handle data methode:
     handleData(data){
-        console.log('Receive Data: ')
         console.log('Pressure: '+data.pression);
         pressure = data.pression;
     }
