@@ -4,6 +4,8 @@ const screen = electron.screen;
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const server = require("../src/Server/UDPServer");
+const {DatabaseInitialization} = require('../src/DataBase/Database');
+
 
 let mainWindow;
 
@@ -20,6 +22,10 @@ function createWindow() {
     // and load the index.html of the app.
     console.log(__dirname);
     mainWindow.loadFile(path.join(__dirname, "../build/index.html"));
+
+    //init database
+    const database = DatabaseInitialization();
+
 
 
 
@@ -45,6 +51,10 @@ function createWindow() {
         updatePressure();
 
         setInterval(updatePressure, 100);
+
+
+        //send the DB to the views
+        mainWindow.webContents.send('database', database);
 
 
     });

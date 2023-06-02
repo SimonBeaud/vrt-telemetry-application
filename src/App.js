@@ -7,13 +7,36 @@ import ExternalDataPage from "./Pages/ExternalDataPage";
 import HistoricDataPage from "./Pages/HistoricDataPage";
 import ExportDataPage from "./Pages/ExportDataPage";
 import { BrowserRouter,Routes, Route } from "react-router-dom";
-import {useState} from "react";
+import {useEffect, useState} from "react";
+import {ipcRenderer} from "electron";
 
 
 function App() {
 
     const [currentPage, setCurrentPage] = useState('GeneralData')
     console.log("current page: "+currentPage);
+
+
+    //database reception
+    useEffect(() => {
+        // Écoutez l'événement pour recevoir l'objet de base de données
+        ipcRenderer.on('database', (event, database) => {
+            // Utilisez l'objet de base de données ici
+            console.log(database);
+        });
+
+        // Nettoyez l'écouteur d'événement lorsque le composant est démonté
+        return () => {
+            ipcRenderer.removeAllListeners('database');
+        };
+    }, []);
+
+
+
+
+
+
+
 
     const renderPage = () => {
         switch (currentPage) {
