@@ -1,14 +1,18 @@
 import logo from './logo.svg';
 import './App.css';
 //import {BrowserRouter, Route, Routes} from "react-router-dom";
-import Navbar from "./Components/Navbar";
+//import Navbar from "./Components/Navbar";
 import GeneralDataPage from "./Pages/GeneralDataPage";
 import ExternalDataPage from "./Pages/ExternalDataPage";
 import HistoricDataPage from "./Pages/HistoricDataPage";
 import ExportDataPage from "./Pages/ExportDataPage";
 import { BrowserRouter,Routes, Route } from "react-router-dom";
-import {useEffect, useState} from "react";
+import {createContext, useEffect, useState} from "react";
 import {ipcRenderer} from "electron";
+import ProjectNavigationPage from "./Pages/ProjectNavigationPage";
+import Navbar from "./Components/Navbar";
+
+export const AppContext = createContext();
 
 
 function App() {
@@ -32,6 +36,9 @@ function App() {
     }, []);
 
 
+    const navigateTo = (path) => {
+        setCurrentPage(path);
+    };
 
 
 
@@ -48,20 +55,22 @@ function App() {
                 return <HistoricDataPage/>;
             case 'ExportData':
                 return <ExportDataPage/>;
+            case 'ProjectNavigation':
+                return <ProjectNavigationPage/>;
             default:
-                return <GeneralDataPage/>;
+                return <ProjectNavigationPage/>;
         }
     };
 
-    const navigateTo = (path) => {
-        setCurrentPage(path);
-    };
+
 
 
   return (
     <div className="App">
-          <Navbar navigateTo={navigateTo}/>
-         <div>{renderPage()}</div>
+        <AppContext.Provider value={{currentPage, navigateTo}}>
+            {currentPage!== 'ProjectNavigation' && <Navbar navigateTo={navigateTo}/>}
+            <div>{renderPage()}</div>
+        </AppContext.Provider>
     </div>
   )
 }

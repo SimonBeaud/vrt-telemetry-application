@@ -21,12 +21,12 @@ html {
 }
 
 body {
-  /* Margin bottom by footer height */
   margin-bottom: 60px;
-  background-color: #030826;
+  background: linear-gradient(90deg, #3A4456 0.73%, #181B27 100%);
   background-size: cover;
   font-family: Barlow;
 }
+
 
 
 .App-header {

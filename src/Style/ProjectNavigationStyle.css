@@ -1,0 +1,132 @@
+.ProjectNavigationContainer{
+    display: flex;
+    scrollbar-width: none;
+}
+
+.linksContainer{
+    width: 45vw;
+    height: 85vh;
+    border-radius: 40px;
+    background: linear-gradient(90deg, #282D41 0%, #3A4355 100%);
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);
+    margin: 40px;
+    overflow-y: auto;
+    padding: 10px;
+    scrollbar-width: none;
+}
+
+.linksContainer::-webkit-scrollbar{
+    display: none;
+}
+
+
+/*
+.sessionList{
+    max-height: calc(100% - 61px);
+    overflow-y: auto;
+
+
+}
+*/
+.sessionList {
+    position: relative;
+    max-height: calc(100% - 61px);
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+
+.sessionList::-webkit-scrollbar {
+    display: none;
+}
+
+
+
+
+
+.sessionList ul{
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sessionList ul li{
+    align-items: center;
+    background: rgba(0,0,0,.07);
+    border-radius: 15px;
+    color: #fff;
+    display: flex;
+    font-family: Raleway;
+    font-size: 16px;
+    height: 40px;
+    margin-bottom: 20px;
+    text-align: left;
+    padding: 20px;
+    cursor: pointer;
+}
+
+
+
+
+.rightContainer{
+    height: auto;
+    width: 100vh;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.buttonCreateProject{
+    background: linear-gradient(90deg, #FF6D4F 0%, #FF6043 100%);
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);
+    font-family: 'Raleway';
+    width: 450px;
+    height: 60px;
+    color: white;
+    font-size: 19px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+}
+
+
+
+
+
+.logoHomeVRT{
+    width: 407px;
+    height: 250px;
+}
+
+.titleSystem{
+    width: 461px;
+    font-family: 'Raleway';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 32px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #FFFFFF;
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.4);
+}
+
+.titleSession{
+    width: 254px;
+    height: 61px;
+    font-family: 'Raleway';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 30px;
+    line-height: 61px;
+    color: #FFFFFF;
+    margin: 0;
+}
+
+
+
+
+
+
+

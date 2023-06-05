@@ -4,15 +4,17 @@ const screen = electron.screen;
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const server = require("../src/Server/UDPServer");
-const {DatabaseInitialization} = require('../src/DataBase/Database');
-
+const {getDatabase} = require('../src/DataBase/Database');
+const { getSessions } = require('../src/DataBase/Database');
+const { ipcMain } = require('electron');
 
 let mainWindow;
 
+
 function createWindow() {
+
     // Create the browser window.
     const { Width, Height } = screen.getPrimaryDisplay().workAreaSize;
-
 
     mainWindow = new BrowserWindow({
         width: 1920,
@@ -24,7 +26,7 @@ function createWindow() {
     mainWindow.loadFile(path.join(__dirname, "../build/index.html"));
 
     //init database
-    const database = DatabaseInitialization();
+    const database = getDatabase();
 
 
 
@@ -34,8 +36,6 @@ function createWindow() {
 
 
     //CODE GENERE; A MODIFIER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
 
     mainWindow.webContents.on('did-finish-load', () => {
         server.start();
@@ -55,8 +55,6 @@ function createWindow() {
 
         //send the DB to the views
         mainWindow.webContents.send('database', database);
-
-
     });
 
 
@@ -69,4 +67,10 @@ app.on("ready", createWindow);
 
 app.on('window-all-closed', function () {
     if (process.platform !== 'darwin') app.quit();
+});
+
+
+//generate code
+ipcMain.handle('get-sessions', async () => {
+    return getSessions();
 });

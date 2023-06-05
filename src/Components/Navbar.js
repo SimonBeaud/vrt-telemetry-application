@@ -31,6 +31,11 @@ export default function Navbar({navigateTo}){
                                 Export Data
                             </button>
                         </li>
+                        <li className="menuItem">
+                            <button onClick={()=> navigateTo('ProjectNavigation')} className="menuButton">
+                                Project Navigation
+                            </button>
+                        </li>
                     </ul>
                 </nav>
             </div>
