@@ -3,8 +3,10 @@ import {AppContext} from '../App';
 import '../Style/ProjectNavigationStyle.css';
 import {getDatabase} from "../DataBase/Database";
 import NewSessionForm from "../Components/NewSessionForm";
+import {BrowserRouter} from "react-router-dom";
 const electron = window.require('electron');
 const { ipcRenderer } = window.require('electron');
+const { BrowserWindow } = require('electron');
 
 
 
@@ -38,10 +40,6 @@ function ProjectNavigationPage(){
 
 
 
-
-
-
-
     useEffect(()=>{
         ipcRenderer.invoke('get-sessions').then(sessionAll=>{
             setSessions(sessionAll);
@@ -51,13 +49,27 @@ function ProjectNavigationPage(){
     }, []);
 
 
+    const deleteAllSession=()=>{
+        ipcRenderer.invoke('delete-sessions').then();
+    }
+
+
+    //Update session list
+    const handleSessionAdd=()=>{
+        ipcRenderer.invoke('get-sessions').then(sessionAll=>{
+          setSessions(sessionAll);
+        }).catch(err=>{
+            console.error(err);
+        })
+    }
+
+
 
 
 
     return(
-
             <div className="ProjectNavigationContainer">
-                <div className="linksContainer">
+                <div className="leftContainer">
                     <h3 className="titleSession">Last Sessions</h3>
                     <div className="sessionList">
                         <ul>
@@ -70,22 +82,27 @@ function ProjectNavigationPage(){
 
 
                 <div className="rightContainer">
-                    <img className="logoHomeVRT" src={require('../Ressources/LogoVRT.png')}/>
-                    <h3 className="titleSystem">TELEMETRY SYSTEM</h3>
-                    <button onClick={openModal} className="buttonCreateProject">
-                        Create a new session
-                    </button>
-                </div>
 
-                {isModalOpen && (
-                    <div className="creationModal">
-                        <div className="modalContent">
-                            <NewSessionForm handleSubmit={() => navigateTo('/GeneralData')} />
-                            <button onClick={closeModal}>Close</button>
+                    {!isModalOpen && (
+                        <div>
+                            <img className="logoHomeVRT" src={require('../Ressources/LogoVRT.png')} alt="VRT Logo" />
+                            <h3 className="titleSystem">TELEMETRY SYSTEM</h3>
+                            <button onClick={openModal} className="buttonCreateProject">
+                                Create a new session
+                            </button>
                         </div>
-                    </div>
-                )}
+                    )}
 
+                    {isModalOpen && (
+                        <div className="creationForm">
+                            <div className="modalContent">
+                                <h3 className="titleForm">Create a new session</h3>
+                                <NewSessionForm handleSubmit={() => navigateTo('/GeneralData')} handleSessionAdd={handleSessionAdd} />
+                                <button className="buttonFormClose" onClick={closeModal}>Close</button>
+                            </div>
+                        </div>
+                    )}
+                </div>
             </div>
     );
 }

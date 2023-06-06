@@ -3,7 +3,7 @@
     scrollbar-width: none;
 }
 
-.linksContainer{
+.leftContainer{
     width: 45vw;
     height: 85vh;
     border-radius: 40px;
@@ -125,8 +125,90 @@
 }
 
 
+/*Forms*/
+
+
+.modalContent{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.modalContent * {
+    width: 100%;
+}
+
+
+.inputSession{
+    border: none;
+    border-radius: 20px;
+    height: 30px;
+    margin-bottom: 10px;
+    padding: 4px 10px;
+    width: 250px;
+}
+
+.titleForm{
+    color: #fff;
+    font-family: Raleway;
+    font-size: 30px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 61px;
+    margin: 0;
+}
+
+
+.buttonForm{
+    background: linear-gradient(90deg,#ff6d4f,#ff6043);
+    border: none;
+    border-radius: 30px;
+    box-shadow: 0 4px 20px rgba(0,0,0,.25);
+    cursor: pointer;
+    font-family: Raleway;
+    font-size: 19px;
+    height: 50px;
+    margin-top: 30px;
+    color: white;
+}
+
+.buttonFormClose{
+    background: none;
+    border-color: #F1B054;
+    border-width: 2px;
+    border-radius: 30px;
+    box-shadow: 0 4px 20px rgba(0,0,0,.25);
+    cursor: pointer;
+    font-family: Raleway;
+    font-size: 19px;
+    height: 50px;
+    margin-top: 30px;
+    color: #F1B054;
+
+}
 
 
 
 
+.inputContainer{
+display: block;
+}
 
+
+.labelInput {
+color: #fff;
+font-family: Raleway;
+text-align: left;
+font-weight: 800;
+}
+
+
+.creationForm{
+background: linear-gradient(90deg,#282d41,#3a4355);
+border-radius: 40px;
+box-shadow: 0 4px 20px rgba(0,0,0,.25);
+margin: 40px;
+padding: 40px 80px 70px 80px;
+
+}

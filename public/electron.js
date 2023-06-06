@@ -4,7 +4,7 @@ const screen = electron.screen;
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const server = require("../src/Server/UDPServer");
-const {getDatabase} = require('../src/DataBase/Database');
+const {getDatabase, addSession, deleteAllSessions} = require('../src/DataBase/Database');
 const { getSessions } = require('../src/DataBase/Database');
 const { ipcMain } = require('electron');
 
@@ -27,6 +27,7 @@ function createWindow() {
 
     //init database
     const database = getDatabase();
+
 
 
 
@@ -70,7 +71,29 @@ app.on('window-all-closed', function () {
 });
 
 
+
+//######################################################################################################################
+//Communication between electron process and front process
+
+
 //generate code
 ipcMain.handle('get-sessions', async () => {
     return getSessions();
 });
+
+//Send the add session
+ipcMain.handle('add-session', async(event, args)=>{
+    const{name, pilot, date}=args;
+    try{
+        const sessionId = await addSession(name, pilot, date);
+        return{success: true, sessionId};
+    }catch (err){
+        return{success: false, error: err.message};
+    }
+});
+
+
+ipcMain.handle('delete-sessions', async ()=>{
+    return deleteAllSessions();
+})
+

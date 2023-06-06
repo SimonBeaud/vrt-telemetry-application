@@ -22,6 +22,8 @@ const getDatabase = ()=>{
             database.run('CREATE TABLE IF NOT EXISTS session (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, pilot TEXT, date TEXT)');
 
 
+
+            /*
             const session={
                 name: 'My First VRT Session',
                 pilot: 'Simon',
@@ -39,7 +41,11 @@ const getDatabase = ()=>{
                     console.log('Session inserted successfully');
                 }
             });
+
+
             stmt.finalize();
+
+             */
         });
     }
     return database;
@@ -62,7 +68,31 @@ const getSessions = () => {
 };
 
 
+//add a session in the DB
+const addSession = (name, pilot, date)=>{
+    return new Promise((resolve, reject)=>{
+        database.run("INSERT INTO session (name, pilot, date) VALUES (?,?,?)", [name, pilot, date], function (err){
+            if(err){
+                reject(err);
+            }else{
+                resolve(this.lastID);
+            }
+        });
+    });
+};
 
+const deleteAllSessions = () => {
+    return new Promise((resolve, reject) => {
+        console.log("everything deleted")
+        database.run("DELETE FROM session", function(err) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(this.changes);
+            }
+        });
+    });
+};
 
 
 
@@ -70,5 +100,7 @@ const getSessions = () => {
 
 module.exports = {
     getDatabase,
-    getSessions
+    getSessions,
+    addSession,
+    deleteAllSessions
 };
