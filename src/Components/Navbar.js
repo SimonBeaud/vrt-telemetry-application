@@ -1,12 +1,19 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { Link } from 'react-router-dom';
+import { SessionContext } from '../SessionContext';
 
 
 export default function Navbar({navigateTo}){
+
+    const {session, updateSession} = useContext(SessionContext);
+
+
     return(
         <header className="header">
             <div className="logoNavBar">
-                <h1>VRT</h1>
+                <img className="logoNavVRT" src={require('../Ressources/LogoVRTNavBar.png')} alt="VRT Logo" />
+                <p className="SessionInfo">Session: {session.name}</p>
+                <p className="SessionInfo">ID: {session.id}</p>
             </div>
             <div>
                 <nav className="menu">

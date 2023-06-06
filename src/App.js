@@ -11,13 +11,14 @@ import {createContext, useEffect, useState} from "react";
 import {ipcRenderer} from "electron";
 import ProjectNavigationPage from "./Pages/ProjectNavigationPage";
 import Navbar from "./Components/Navbar";
+import {SessionProvider} from "./SessionContext";
 
 export const AppContext = createContext();
 
 
 function App() {
 
-    const [currentPage, setCurrentPage] = useState('GeneralData')
+    const [currentPage, setCurrentPage] = useState('ProjectNavigation')
     console.log("current page: "+currentPage);
 
 
@@ -57,8 +58,7 @@ function App() {
                 return <ExportDataPage/>;
             case 'ProjectNavigation':
                 return <ProjectNavigationPage/>;
-            default:
-                return <ProjectNavigationPage/>;
+
         }
     };
 
@@ -67,10 +67,12 @@ function App() {
 
   return (
     <div className="App">
-        <AppContext.Provider value={{currentPage, navigateTo}}>
-            {currentPage!== 'ProjectNavigation' && <Navbar navigateTo={navigateTo}/>}
-            <div>{renderPage()}</div>
-        </AppContext.Provider>
+        <SessionProvider>
+            <AppContext.Provider value={{currentPage, navigateTo}}>
+                {currentPage!== 'ProjectNavigation' && <Navbar navigateTo={navigateTo}/>}
+                <div>{renderPage()}</div>
+            </AppContext.Provider>
+        </SessionProvider>
     </div>
   )
 }

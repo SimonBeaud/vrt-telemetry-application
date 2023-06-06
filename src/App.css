@@ -78,10 +78,11 @@ body {
 
 .menuButton {
   margin-bottom: 10px;
-  font-family: "Barlow SemiBold";
+  font-family: 'Raleway';
   background-color: transparent;
   border: none;
   color: white;
+  font-weight: bold;
   font-size: 20px;
   margin-bottom: 20px;
   cursor: pointer;
@@ -98,15 +99,19 @@ body {
   height: 22px;
 }
 
-.logoNavBar{
-
+.logoNavVRT{
+  height: 96px;
+  width: 179px;
 }
 
-
-
-
-
-
+.SessionInfo{
+  margin-bottom: 10px;
+  font-family: 'Raleway';
+  border: none;
+  color: #030826;
+  font-size: 20px;
+  margin-bottom: 20px;
+}
 
 /*CONTENT*/
 

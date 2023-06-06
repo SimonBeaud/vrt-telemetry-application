@@ -4,17 +4,18 @@ import '../Style/ProjectNavigationStyle.css';
 import {getDatabase} from "../DataBase/Database";
 import NewSessionForm from "../Components/NewSessionForm";
 import {BrowserRouter} from "react-router-dom";
+import { SessionContext } from '../SessionContext';
+
+
+
 const electron = window.require('electron');
 const { ipcRenderer } = window.require('electron');
 const { BrowserWindow } = require('electron');
 
 
 
-/*
-const navigationClick = ()=>{
-    navigateTo('/GeneralData')
-}
-*/
+
+
 
 
 
@@ -24,6 +25,23 @@ function ProjectNavigationPage(){
     const {navigateTo} = useContext(AppContext);
     const [sessions, setSessions] = useState([])
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const {session, updateSession} = useContext(SessionContext);
+
+
+    useEffect(() => {
+        console.log("session: " + session.id + " " + session.name);
+    }, [session]);
+
+
+
+    //Session click handle
+    const handleSessionClick = (id, name) =>{
+        console.log('Session clicked:', id, name);
+        navigateTo("/GeneralData");
+        updateSession(id, name);
+
+    }
+
 
 
     //Modal Logic
@@ -37,6 +55,11 @@ function ProjectNavigationPage(){
     const navigationClick = () =>{
         openModal();
     };
+
+
+
+
+
 
 
 
@@ -74,7 +97,7 @@ function ProjectNavigationPage(){
                     <div className="sessionList">
                         <ul>
                             {sessions.map((sessionAll, index)=>(
-                                <li key={index}>{sessionAll.name} - {sessionAll.pilot} - {sessionAll.date}</li>
+                                <li key={index} onClick={()=>handleSessionClick(sessionAll.id, sessionAll.name)}>{sessionAll.name} - {sessionAll.pilot} - {sessionAll.date}</li>
                             ))}
                         </ul>
                     </div>
