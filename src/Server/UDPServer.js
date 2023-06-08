@@ -1,9 +1,12 @@
+
 const express = require('express');
 const app = express();
 const { ipcMain } = require('electron');
 const dgram = require('dgram');
 const { Buffer } = require('buffer');
 const fs = require('fs');
+const {addDataValue} = require("../DataBase/Database");
+
 
 
 
@@ -11,8 +14,11 @@ const fs = require('fs');
 //Data variables
 let pressure
 
-
 class UDPServer{
+
+
+
+
 
     constructor(port1) {
         const IPAddress = "192.168.1.106";
@@ -24,6 +30,8 @@ class UDPServer{
         console.log(`Server listening on: ${IPAddress} port1: ${port1}`);
 
         this.udpServer.on('message', this.receiveData.bind(this));
+
+
     }
 
 
@@ -56,6 +64,25 @@ class UDPServer{
     handleData(data){
         console.log('Pressure: '+data.pression);
         pressure = data.pression;
+
+        //add the data recorded in the database with the methode AddDataValue
+
+        const timeRecord = Date.now();
+
+
+        for(const dataTypeName in data){
+            const dataRecord = data[dataTypeName];
+            console.log("dataType: "+dataTypeName)
+            const sessionID=null;
+
+            addDataValue(sessionID, dataTypeName, dataRecord, timeRecord)
+                .then((lastID)=>{
+                    console.log('DataValue added with the id: ${lastID}');
+                })
+                .catch((err)=>{
+                    console.log("Error when adding the dataValue: "+err);
+                });
+        }
     }
 }
 

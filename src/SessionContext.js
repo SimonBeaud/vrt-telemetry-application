@@ -1,4 +1,4 @@
-import React, { createContext, useState } from 'react';
+import React, {createContext, useContext, useState} from 'react';
 
 export const SessionContext = createContext();
 
@@ -21,4 +21,12 @@ export const SessionProvider =({children})=>{
             {children}
         </SessionContext.Provider>
     );
+
 };
+
+
+
+export const sessionContextInstance = {
+    session: {id: 0, name: 'Default Session'},
+};
+

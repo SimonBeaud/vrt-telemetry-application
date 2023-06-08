@@ -1,17 +1,19 @@
+
+
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const electron = require('electron');
-//const databasePath = path.resolve(electron.app.getPath('userData'), 'VRT-database.db');
+
+
 let databasePath=null;
-console.log('Path de la DB: '+databasePath);
-const {ipcMain} = electron;
+let database;
+let currentSessionID;
 
-
-let database
 
 
 //Database Creation
 const getDatabase = ()=>{
+
     if(!database){
 
         if(!databasePath){
@@ -65,40 +67,71 @@ const addDataType = (DataTypesTable)=>{
 
 //Add DataValue in the Database:
 
-const addDataValue = (sessionID, dataTypeID, dataRecord, timeRecord) =>{
-    return new Promise((resolve, reject) =>{
+//generated code
+const addDataValue = (sessionID, dataTypeName, dataRecord, timeRecord) => {
 
-        //get the id of the DataType
-        database.get("SELECT id FROM DataType WHERE type = ?", dataTypeID, (err, row)=>{
-            if(err){
-                reject(err);
-            }else if(!row){
-                reject(new Error("DataType not found"))
-            }else{
+    sessionID=currentSessionID;
 
+    return getDataTypeID(dataTypeName)
+        .then(dataTypeID => {
+            console.log("DATATYPE IN THE DB: " + dataTypeID);
+
+            if (dataTypeID === null) {
+                throw new Error("DataType not found");
             }
 
-
+            return new Promise((resolve, reject) => {
+                database.run(
+                    "INSERT INTO DataValue(session_id, DataType_id, DataRecord, timeRecord) VALUES(?,?,?,?)",
+                    [sessionID, dataTypeID, dataRecord, timeRecord],
+                    function(err) {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(this.lastID);
+                        }
+                    }
+                );
+            });
         })
+        .then(result => {
+            console.log("datavalue added with success !");
+            return result;
+        })
+        .catch(err => {
+            console.log("Error when adding the datavalue");
+            throw err;
+        });
+};
 
-
-    })
-}
-
-
-
-
-
-
-
-
-
+const getDataTypeID = dataTypeName => {
+    return new Promise((resolve, reject) => {
+        database.get("SELECT id FROM DataType WHERE type = ?", dataTypeName, (err, row) => {
+            if (err) {
+                reject(err);
+            } else if (!row) {
+                reject(new Error("DataType not found"));
+            } else {
+                resolve(row.id);
+            }
+        });
+    });
+};
 
 
 
 
 //######################################################################################################################
 //Session operations
+
+const setCurrentSession = (SessionID)=>{
+    currentSessionID = SessionID;
+    console.log("session in the db: "+currentSessionID);
+
+    return currentSessionID;
+}
+
+
 
 //generate code
 const getSessions = () => {
@@ -140,15 +173,13 @@ const deleteAllSessions = () => {
     });
 };
 
-
-
-
-
-
 module.exports = {
-    getDatabase,
-    getSessions,
-    addSession,
-    deleteAllSessions,
-    addDataType
+    getDatabase: getDatabase,
+    getSessions: getSessions,
+    addSession: addSession,
+    deleteAllSessions: deleteAllSessions,
+    addDataType: addDataType,
+    addDataValue: addDataValue,
+    getDataTypeID: getDataTypeID,
+    setCurrentSession: setCurrentSession
 };

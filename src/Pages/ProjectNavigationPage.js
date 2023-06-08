@@ -6,8 +6,6 @@ import NewSessionForm from "../Components/NewSessionForm";
 import {BrowserRouter} from "react-router-dom";
 import { SessionContext } from '../SessionContext';
 
-
-
 const electron = window.require('electron');
 const { ipcRenderer } = window.require('electron');
 const { BrowserWindow } = require('electron');
@@ -39,6 +37,7 @@ function ProjectNavigationPage(){
         console.log('Session clicked:', id, name);
         navigateTo("/GeneralData");
         updateSession(id, name);
+        ipcRenderer.invoke('add-current-session', id);
 
     }
 
