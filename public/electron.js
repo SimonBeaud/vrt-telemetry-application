@@ -45,17 +45,30 @@ function createWindow() {
     mainWindow.webContents.on('did-finish-load', () => {
         server.start();
 
-        let pressure = server.getPressureData();
-        console.log("Pressure data: " + pressure);
+        let LiveData = server.getLiveData();
+       // let TensionBatteryHV = server.getTensionBatteryHV();
 
-        const updatePressure = () => {
-            pressure = server.getPressureData();
-            mainWindow.webContents.send('update-pressure', pressure);
-        };
 
-        updatePressure();
+        const updateLiveData = () =>{
+            LiveData = server.getLiveData();
+            mainWindow.webContents.send('get-live-data', LiveData);
+        }
 
-        setInterval(updatePressure, 100);
+
+        /*
+        const updateTensionBatteryHV = () =>{
+            TensionBatteryHV = server.getTensionBatteryHV();
+            mainWindow.webContents.send('get-tension', TensionBatteryHV);
+        }
+
+       updateTensionBatteryHV();
+       */
+
+        updateLiveData();
+
+        setInterval(updateLiveData, 100);
+        //setInterval(updateTensionBatteryHV, 100);
+
 
 
         //send the DB to the views

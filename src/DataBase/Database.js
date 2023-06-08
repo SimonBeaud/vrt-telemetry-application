@@ -10,8 +10,10 @@ let database;
 let currentSessionID;
 
 
-
+//######################################################################################################################
 //Database Creation
+
+
 const getDatabase = ()=>{
 
     if(!database){
@@ -32,6 +34,10 @@ const getDatabase = ()=>{
     }
     return database;
 }
+
+
+
+
 
 
 
@@ -172,6 +178,9 @@ const deleteAllSessions = () => {
         });
     });
 };
+
+
+//######################################################################################################################
 
 module.exports = {
     getDatabase: getDatabase,

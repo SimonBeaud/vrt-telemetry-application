@@ -57,11 +57,6 @@ function ProjectNavigationPage(){
 
 
 
-
-
-
-
-
     useEffect(()=>{
         ipcRenderer.invoke('get-sessions').then(sessionAll=>{
             setSessions(sessionAll);
