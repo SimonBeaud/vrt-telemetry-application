@@ -1,0 +1,36 @@
+[
+
+
+  {"type":  "TensionBatteryHV", "live":  true},
+  {"type":  "AmperageBatteryHV", "live":  true},
+  {"type":  "TemperatureBatteryHV", "live":  true},
+  {"type":  "EnginePower", "live":  true},
+  {"type":  "EngineTemperature", "live":  true},
+  {"type":  "EngineAngularSpeed", "live":  true},
+  {"type":  "CarSpeed", "live":  true},
+  {"type":  "PressureTireFL", "live":  true},
+  {"type":  "PressureTireFR", "live":  true},
+  {"type":  "PressureTireBL", "live":  true},
+  {"type":  "PressureTireBR", "live":  true},
+  {"type":  "InverterTemperature", "live":  true},
+  {"type":  "TemperatureBatteryLV", "live":  true},
+
+  {"type":  "SteeringWheelAngle", "live":  false},
+  {"type":  "2AxisInertialSensor", "live":  false},
+  {"type":  "BreakPedalPosition", "live":  false},
+  {"type":  "AcceleratorPedalPosition", "live":  false},
+
+  {"type":  "SuspensionFL", "live":  false},
+  {"type":  "SuspensionFR", "live":  false},
+  {"type":  "SuspensionBL", "live":  false},
+  {"type":  "SuspensionBR", "live":  false},
+  {"type":  "TemperatureTireFL", "live":  false},
+  {"type":  "TemperatureTireFR", "live":  false},
+  {"type":  "TemperatureTireBL", "live":  false},
+  {"type":  "TemperatureTireBR", "live":  false},
+  {"type":  "CoupleEngine", "live":  false},
+  {"type":  "CoupleWheelBL", "live":  false},
+  {"type":  "CoupleWheelBR", "live":  false},
+  {"type":  "TemperatureCoolingSystem", "live":  false},
+  {"type":  "TestSensor", "live":  false}
+]

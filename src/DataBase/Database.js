@@ -9,6 +9,8 @@ const {ipcMain} = electron;
 
 let database
 
+
+//Database Creation
 const getDatabase = ()=>{
     if(!database){
 
@@ -18,34 +20,12 @@ const getDatabase = ()=>{
 
         database = new sqlite3.Database(databasePath);
 
+        //Create database tables
         database.serialize(()=>{
             database.run('CREATE TABLE IF NOT EXISTS session (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, pilot TEXT, date TEXT)');
+            database.run('CREATE TABLE IF NOT EXISTS DataType (id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT, live BOOLEAN)');
+            database.run('CREATE TABLE IF NOT EXISTS DataValue (id INTEGER PRIMARY KEY AUTOINCREMENT, session_id INTEGER, DataType_id INTEGER,/* FOREIGN KEY (session_id) REFERENCES session (id), FOREIGN KEY (DataType_id) REFERENCES DataType (id),*/  DataRecord REAL, timeRecord DATETIME)');
 
-
-
-            /*
-            const session={
-                name: 'My First VRT Session',
-                pilot: 'Simon',
-                date: '2 juin 2023'
-            };
-
-            const {name, pilot, date} = session;
-
-
-            const stmt = database.prepare('INSERT INTO session (name, pilot, date) VALUES(?,?,?)');
-            stmt.run(name, pilot, date, (err)=>{
-                if(err){
-                    console.error(err.message);
-                }else{
-                    console.log('Session inserted successfully');
-                }
-            });
-
-
-            stmt.finalize();
-
-             */
         });
     }
     return database;
@@ -53,6 +33,72 @@ const getDatabase = ()=>{
 
 
 
+//######################################################################################################################
+//Data Type operation
+
+
+//Add the DataTYpe in the Database from the DataTypesTables.json:
+const addDataType = (DataTypesTable)=>{
+    return new Promise((resolve, reject)=>{
+
+        const RequestStatement = database.prepare("INSERT INTO DataType (type, live) VALUES (?,?)");
+        DataTypesTable.forEach((item)=>{
+            RequestStatement.run(item.type, item.live);
+        });
+
+        RequestStatement.finalize((err)=>{
+            if(err){
+                reject(err);
+            }else{
+                resolve();
+            }
+        })
+    });
+};
+
+
+
+
+
+//######################################################################################################################
+//DataValue Operation
+
+//Add DataValue in the Database:
+
+const addDataValue = (sessionID, dataTypeID, dataRecord, timeRecord) =>{
+    return new Promise((resolve, reject) =>{
+
+        //get the id of the DataType
+        database.get("SELECT id FROM DataType WHERE type = ?", dataTypeID, (err, row)=>{
+            if(err){
+                reject(err);
+            }else if(!row){
+                reject(new Error("DataType not found"))
+            }else{
+
+            }
+
+
+        })
+
+
+    })
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+//######################################################################################################################
+//Session operations
 
 //generate code
 const getSessions = () => {
@@ -98,9 +144,11 @@ const deleteAllSessions = () => {
 
 
 
+
 module.exports = {
     getDatabase,
     getSessions,
     addSession,
-    deleteAllSessions
+    deleteAllSessions,
+    addDataType
 };

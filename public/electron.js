@@ -4,9 +4,10 @@ const screen = electron.screen;
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const server = require("../src/Server/UDPServer");
-const {getDatabase, addSession, deleteAllSessions} = require('../src/DataBase/Database');
+const {getDatabase, addSession, deleteAllSessions, addDataType} = require('../src/DataBase/Database');
 const { getSessions } = require('../src/DataBase/Database');
 const { ipcMain } = require('electron');
+const DataTypeJson = require('../src/DataBase/Data/DataTypesTables.json');
 
 let mainWindow;
 
@@ -27,6 +28,7 @@ function createWindow() {
 
     //init database
     const database = getDatabase();
+    addDataType(DataTypeJson);
 
 
 
