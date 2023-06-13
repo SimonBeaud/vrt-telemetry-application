@@ -1,0 +1,304 @@
+
+.leftLiveContainer{
+    height: 95vh;
+    width: 30%;
+    display: block;
+}
+
+
+.rightLiveContainer{
+    height: 95vh;
+    width: 70%;
+    margin-left: 15px;
+}
+
+.SpeedContainer{
+    width: 100%;
+    height: 140px;
+    background: linear-gradient(90deg, #282D41 0%, #3A4355 100%);
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);
+    margin-bottom: 15px;
+    border-radius: 20px;
+
+}
+
+.TyresContainer{
+    width: 100%;
+    height: 320px;
+    background: linear-gradient(90deg, #282D41 0%, #3A4355 100%);
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);
+    margin-bottom: 15px;
+    border-radius: 20px;
+}
+
+.EngineContainer{
+    width: 100%;
+    height: 240px;
+    background: linear-gradient(90deg, #282D41 0%, #3A4355 100%);
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);
+    border-radius: 20px;
+
+}
+
+.TemperatureContainer{
+    width: 100%;
+    height: 470px;
+    background: linear-gradient(90deg, #282D41 0%, #3A4355 100%);
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);
+    border-radius: 20px;
+    margin-bottom: 15px;
+}
+
+.BatteryContainer{
+    width: 100%;
+    height: 245px;
+    background: linear-gradient(90deg, #282D41 0%, #3A4355 100%);
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);
+    border-radius: 20px;
+}
+
+.TitleDataContainer{
+    width: 100%;
+    height: 20px;
+    display: flex;
+
+}
+
+
+.TitleData{
+    margin-bottom: 10px;
+    font-family: 'Raleway';
+    background-color: transparent;
+    border: none;
+    color: white;
+    font-weight: bold;
+    font-size: 15px;
+    margin-left: 15px;
+    text-decoration: underline;
+}
+
+.DataContainer{
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    align-items: center;
+}
+
+.IconContainer{
+
+}
+
+
+.DataValue{
+    font-family: 'Raleway';
+    background-color: transparent;
+    border: none;
+    color: white;
+    font-weight: bold;
+    margin: 0;
+}
+
+#big{
+    font-size: 55px;
+}
+
+#medium{
+    font-size: 40px;
+}
+
+#small{
+    font-size: 12px;
+}
+
+
+
+
+
+
+
+
+
+
+
+/*Pressure display*/
+
+.IconCar{
+    height: 275px;
+    width: 172px;
+    margin-left: -40px;
+    margin-right: -40px;
+}
+
+
+.PressureLeft{
+
+}
+
+.PressureMiddle{
+
+}
+
+.PressureRight{
+
+
+}
+
+.PressureContent{
+    display: flex;
+    justify-content: center;
+    align-content: center;
+
+}
+
+.PressureLabelContainer{
+    margin-bottom: 2px;
+    margin-top: 2px;
+    display: inline-block;
+
+}
+
+.PressureLabelContainer::after {
+    content: "";
+    width: 80px;
+    height: 3px;
+    background: white;
+    display: block;
+}
+
+.PressureLabel{
+    margin-top: 70px;
+    margin-bottom: 1px;
+    font-family: 'Raleway';
+    background-color: transparent;
+    border: none;
+    color: #61FF00;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+#left{
+    text-align: left;
+}
+
+#right{
+    text-align: right;
+}
+
+
+
+
+
+
+
+
+.PressureDataContainer{
+    align-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+
+}
+
+
+#topLeft{
+    margin-bottom: 0px;
+    margin-top: -10px;
+    justify-content: flex-start;
+}
+
+#topRight{
+    margin-bottom: 0px;
+    margin-top: -10px;
+    justify-content: flex-end;
+}
+
+#backLeft{
+    margin-bottom: 0px;
+    margin-top: -10px;
+    justify-content: flex-start;
+}
+
+#backRight{
+    margin-bottom: 0px;
+    margin-top: -10px;
+    justify-content: flex-end;
+}
+
+
+.DataUnit{
+    font-family: 'Raleway';
+    background-color: transparent;
+    border: none;
+    color: #F1B054;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+
+/* Temperature Graph Container*/
+
+.GraphContainer{
+    display: inline-block;
+    width: inherit;
+    margin-top: 30px;
+}
+
+.TopGraphContainer{
+    height: 200px;
+    display: flex;
+}
+
+.DownGraphContainer{
+    height: 200px;
+    display: flex;
+}
+
+.GraphContainer2{
+    width: -webkit-fill-available;
+    height: 200px;
+}
+
+.GraphContainer3{
+    width: -webkit-fill-available;
+    height: 200px;
+}
+
+.titleGraphContainer{
+    display: flex;
+    justify-content: space-between;
+}
+
+.ValueTemperatureContainer{
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 30px;
+    margin-top: 10px;
+}
+
+.graphTemperatureTitle{
+    background-color: initial;
+    border: none;
+    color: #61ff00;
+    font-family: Raleway;
+    font-size: 15px;
+    font-weight: 700;
+    margin-left: 20px;
+}
+
+
+.chartContainer{
+    display: inline-block;
+    position: relative;
+    width: 100%;
+}
+
+.LineChart{
+    margin-top: -50px;
+    height: 150px;
+
+}
+
+

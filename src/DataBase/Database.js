@@ -38,9 +38,6 @@ const getDatabase = ()=>{
 
 
 
-
-
-
 //######################################################################################################################
 //Data Type operation
 
@@ -73,7 +70,7 @@ const addDataType = (DataTypesTable)=>{
 
 //Add DataValue in the Database:
 
-//generated code
+//GC
 const addDataValue = (sessionID, dataTypeName, dataRecord, timeRecord) => {
 
     sessionID=currentSessionID;
@@ -139,7 +136,7 @@ const setCurrentSession = (SessionID)=>{
 
 
 
-//generate code
+//GC
 const getSessions = () => {
     return new Promise((resolve, reject) => {
         database.all("SELECT * FROM session", [], (err, rows) => {

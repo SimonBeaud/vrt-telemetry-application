@@ -33,7 +33,7 @@ body {
   align-items: center;
   justify-content: center;
   color: white;
-  display: inline-block;
+  display: flex;
   margin-bottom: 0px;
 }
 
@@ -53,8 +53,9 @@ body {
 
 /*NAVBAR*/
 
+
 .menu {
-  float: right;
+
 }
 
 .menu-list {
@@ -73,7 +74,9 @@ body {
   flex-direction: row;
   justify-content: flex-start;
   align-items: flex-start;
-  padding: 60px;
+  padding: 30px;
+  top: 0;
+  left: 0;
 }
 
 .menuButton {
@@ -116,5 +119,10 @@ body {
 /*CONTENT*/
 
 .PageContainer{
-
+  /*background: #fff;*/
+  display: flex;
+  margin-left: 240px;
+  padding: 20px;
+  width: calc(100% - 60px);
+  height: 95vh;
 }

@@ -64,12 +64,13 @@ function App() {
 
 
 
-
   return (
     <div className="App">
         <SessionProvider>
             <AppContext.Provider value={{currentPage, navigateTo}}>
-                {currentPage!== 'ProjectNavigation' && <Navbar navigateTo={navigateTo}/>}
+                <div className="container">
+                    {currentPage!== 'ProjectNavigation' && <Navbar navigateTo={navigateTo}/>}
+                </div>
                 <div>{renderPage()}</div>
             </AppContext.Provider>
         </SessionProvider>

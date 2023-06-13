@@ -11,12 +11,6 @@ const { ipcRenderer } = window.require('electron');
 const { BrowserWindow } = require('electron');
 
 
-
-
-
-
-
-
 //Page logic
 function ProjectNavigationPage(){
 

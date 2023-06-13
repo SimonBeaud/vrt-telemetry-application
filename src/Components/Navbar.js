@@ -12,7 +12,7 @@ export default function Navbar({navigateTo}){
         <header className="header">
             <div className="logoNavBar">
                 <img className="logoNavVRT" src={require('../Ressources/LogoVRTNavBar.png')} alt="VRT Logo" />
-                <p className="SessionInfo">Session: {session.name}</p>
+                <p className="SessionInfo">{session.name}</p>
                 <p className="SessionInfo">ID: {session.id}</p>
             </div>
             <div>
@@ -40,7 +40,7 @@ export default function Navbar({navigateTo}){
                         </li>
                         <li className="menuItem">
                             <button onClick={()=> navigateTo('ProjectNavigation')} className="menuButton">
-                                Project Navigation
+                                Sessions
                             </button>
                         </li>
                     </ul>

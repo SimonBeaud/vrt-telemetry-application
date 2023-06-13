@@ -4,19 +4,33 @@ import 'chartjs-plugin-streaming';
 import 'moment';
 import 'chartjs-adapter-moment';
 
-function LineChart({ data }) {
+function LineChart({ data, width, height, marginTop, marginBottom, marginLeft, marginRight , fixedSize }) {
+
+    let state;
+
+    state = {
+        canvasWidth: 400,
+        canvasHeight: 150
+    }
+
+
+
+
     const chartRef = useRef(null);
     const chartInstance = useRef(null);
+
+    console.log("Margin: "+marginTop);
 
     useEffect(() => {
         if (!chartInstance.current) {
             const ctx = chartRef.current.getContext('2d');
             chartInstance.current = new Chart(ctx, {
                 type: 'line',
+
                 data: {
                     datasets: [
                         {
-                            label: 'Data',
+                            label: 'Temperature',
                             data: [],
                             backgroundColor: 'rgba(75, 192, 192, 0.2)',
                             borderColor: 'rgba(75, 192, 192, 1)',
@@ -27,6 +41,7 @@ function LineChart({ data }) {
                     ],
                 },
                 options: {
+                    responsive: false,
                     scales: {
                         x: {
                             type: 'realtime',
@@ -52,7 +67,7 @@ function LineChart({ data }) {
                         },
                         y: {
                             min: 0,
-                            max: 100,
+                            max: 50,
                             ticks: {
                                 stepSize: 10,
                                 fontColor: 'white',
@@ -69,25 +84,28 @@ function LineChart({ data }) {
                     },
                     plugins: {
                         title: {
-                            display: true,
+                            display: false,
                             text: 'Data Evolution',
                             color: 'white',
                         },
                     },
                     layout: {
                         padding: {
-                            top: 20,
-                            bottom: 20,
-                            left: 40,
-                            right: 20,
+                            top: -60,
+                            bottom: marginBottom,
+                            left: marginLeft,
+                            right: marginRight,
                         },
+
                     },
                 },
             });
+
         }
     }, [data]);
 
-    return <canvas ref={chartRef} style={{ height: '400px' }}></canvas>;
+    //return <canvas ref={chartRef} width="200px" ></canvas>;
+    return <canvas ref={chartRef} width={state.canvasWidth} height={state.canvasHeight}/>
 }
 
 export default LineChart;
