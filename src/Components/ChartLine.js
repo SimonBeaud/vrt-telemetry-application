@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
 import moment from "moment";
+import 'chartjs-plugin-zoom';
 
 const ChartLine = ({ data }) => {
     const chartRef2 = useRef(null);
@@ -22,8 +23,9 @@ const ChartLine = ({ data }) => {
 
             // Définir la plage visible initiale (30 secondes)
             const startIndex = Math.max(0, labels.length - 30);
-            const visibleLabels = labels.slice(startIndex);
-            const visibleValues = values.slice(startIndex);
+
+            const visibleLabels = labels;
+            const visibleValues = values;
 
             // Créer le chart si le canvas n'a pas encore de chart associé
             if (!chart2) {
@@ -41,73 +43,28 @@ const ChartLine = ({ data }) => {
                         ],
                     },
                     options: {
-                        animation: false, // Désactiver l'animation pour améliorer les performances
-                        scales: {
-                            x: {
-                                display: true,
-                                title: {
-                                    display: true,
-                                    text: 'Temps',
+                        // ...
+
+                        plugins: {
+                            zoom: {
+                                pan: {
+                                    enabled: true,
+                                    mode: 'x',
                                 },
                                 zoom: {
-                                    enabled: true, // Activer le zoom sur l'axe x
-                                    mode: 'x', // Mode de zoom horizontal
-                                    sensitivity: 3,
+                                    wheel: {
+                                        enabled: true,
+                                    },
+                                    pinch: {
+                                        enabled: true,
+                                    },
+                                    mode: 'x',
                                 },
                             },
-                            y: {
-                                display: true,
-                                title: {
-                                    display: true,
-                                    text: 'Valeurs',
-                                },
-                            },
-                        },
-                        plugins: {
-                            annotation: {
-                                annotations: [],
-                            },
-                        },
-                        pan: {
-                            enabled: true,
-                            mode: 'x',
                         },
                     },
                 });
 
-                // Écouter les événements de la souris pour la navigation et le zoom
-                handleMouseMove = (e) => {
-                    if (
-                        chart2.chartArea &&
-                        chart2.chartArea.left <= e.offsetX &&
-                        e.offsetX <= chart2.chartArea.right
-                    ) {
-                        chart2.pan({ enabled: true, mode: 'x' });
-                    } else {
-                        chart2.pan({ enabled: false });
-                    }
-                };
-
-                handleMouseWheel = (e) => {
-                    const zoomOptions = {
-                        animation: {
-                            duration: 3,
-                        },
-                    };
-
-                    if (e.deltaY < 0) {
-                        chart2.options.scales.x.zoom.sensitivity = 0.5;
-                        chart2.options.scales.y.zoom.sensitivity = 0.5;
-                        chart2.update();
-                    } else {
-                        chart2.options.scales.x.zoom.sensitivity = 3;
-                        chart2.options.scales.y.zoom.sensitivity = 3;
-                        chart2.update();
-                    }
-                };
-
-                chartRef2.current.addEventListener('mousemove', handleMouseMove);
-                chartRef2.current.addEventListener('wheel', handleMouseWheel);
             } else {
                 // Mettre à jour le chart existant avec les nouvelles données
                 chart2.data.labels = visibleLabels;
