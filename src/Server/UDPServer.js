@@ -34,7 +34,8 @@ class UDPServer{
 
 
     constructor(port1) {
-        const IPAddress = "192.168.1.106";
+        //const IPAddress = "192.168.1.106";
+        const IPAddress = "192.168.1.127";
 
         this.listeningPoint = {address: IPAddress, port: port1};
         this.udpServer = dgram.createSocket("udp4", this.listeningPoint);

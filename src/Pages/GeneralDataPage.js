@@ -9,9 +9,9 @@ import LineChart from "../Components/LineChart";
 function GeneralDataPage(){
 
     const [liveData, setLiveData] = useState(null);
-    const [tensionBatteryHV, setTensionBatteryHV] = useState(null);
-    const [amperageBatteryHV, setAmperageBatteryHV] = useState(null);
-    const [temperatureBatteryHV, setTemperatureBatteryHV] = useState(null);
+    const [tensionBatteryHV, setTensionBatteryHV] = useState(1);
+    const [amperageBatteryHV, setAmperageBatteryHV] = useState(1);
+    const [temperatureBatteryHV, setTemperatureBatteryHV] = useState(1);
     const [enginePower, setEnginePower] = useState(null);
     const [engineTemperature, setEngineTemperature] = useState(1);
     const [engineAngularSpeed, setEngineAngularSpeed] = useState(null);
@@ -20,8 +20,8 @@ function GeneralDataPage(){
     const [pressureTireFR, setPressureTireFR] = useState(null);
     const [pressureTireBL, setPressureTireBL] = useState(null);
     const [pressureTireBR, setPressureTireBR] = useState(null);
-    const [inverterTemperature, setInverterTemperature] = useState(null);
-    const [temperatureBatteryLV, setTemperatureBatteryLV] = useState(null);
+    const [inverterTemperature, setInverterTemperature] = useState(1);
+    const [temperatureBatteryLV, setTemperatureBatteryLV] = useState(1);
 
 
     const updateLiveData = (event, ReceiveLiveData) =>{
@@ -36,6 +36,25 @@ function GeneralDataPage(){
         };
     }, []);
 
+
+
+
+
+
+    //send the data to the graphs
+    const ChartInstance = (variable, index) =>{
+        useEffect(()=>{
+            const chartInstance = Chart.instances[index];
+            if(chartInstance && chartInstance && chartInstance.data){
+                const timePoint = Date.now();
+                const dataPoint = {x: timePoint, y: variable};
+                chartInstance.data.datasets[0].data.push(dataPoint);
+                chartInstance.update({
+                    preservation: true
+                })
+            }
+        }, [variable, index])
+    }
 
 
     useEffect(() => {
@@ -57,14 +76,22 @@ function GeneralDataPage(){
         }
     }, [liveData]);
 
+    ChartInstance(engineTemperature, 0);
+    ChartInstance(inverterTemperature, 1);
+    ChartInstance(temperatureBatteryHV, 2);
+    ChartInstance(temperatureBatteryLV, 3);
+    ChartInstance(tensionBatteryHV, 4);
+    ChartInstance(amperageBatteryHV, 5);
 
 
 
 
 
 
-    //CODE GENERé
-    //##############################################################################
+
+
+
+/*
     useEffect(() => {
         const chartInstance = Chart.instances[0];
         if (chartInstance && chartInstance && chartInstance.data) {
@@ -77,7 +104,7 @@ function GeneralDataPage(){
         }
     }, [engineTemperature]);
 
-
+*/
 
     //##############################################################################
 
@@ -91,17 +118,16 @@ function GeneralDataPage(){
                         <div className="TitleDataContainer">
                             <p className="TitleData">Speed</p>
                         </div>
-                        <div className="IconContainer">
-
-                        </div>
-                        <div className="DataContainer">
-                            <p className="DataValue" id="big">{carSpeed ?? 0}</p>
-                            <p className="DataUnit">kmh/h</p>
+                        <div className="SpeedDataContainer">
+                            <div className="IconContainer">
+                                <img className="IconSpeed" src={require('../Ressources/speedIcon.png')} alt="VRT Logo" />
+                            </div>
+                            <div className="DataContainer">
+                                <p className="DataValue" id="big">{carSpeed ?? 0}</p>
+                                <p className="DataUnit">kmh/h</p>
+                            </div>
                         </div>
                     </div>
-
-
-
 
 
 
@@ -110,8 +136,6 @@ function GeneralDataPage(){
                             <p className="TitleData">Tyres</p>
                         </div>
                         <div className="PressureContent">
-
-
                             <div className="PressureLeft">
                                 <div className="PressureLabelContainer">
                                     <p className="PressureLabel"  id="left">pressure</p>
@@ -128,17 +152,11 @@ function GeneralDataPage(){
                                     <p className="DataUnit">bar</p>
                                 </div>
                             </div>
-
-
-
                             <div className="PressureMiddle">
                                 <div>
                                     <img className="IconCar" src={require('../Ressources/car.png')} alt="VRT Logo" />
                                 </div>
                             </div>
-
-
-
                             <div className="PressureRight">
                                 <div className="PressureLabelContainer">
                                     <p className="PressureLabel"  id="right">pressure</p>
@@ -164,36 +182,39 @@ function GeneralDataPage(){
 
 
 
-
-
-
-
                     <div className="EngineContainer">
                         <div className="TitleDataContainer">
                             <p className="TitleData">Engine</p>
                         </div>
-                        <div className="DataContainer">
-                            <p className="DataValue" id="big">{engineAngularSpeed ?? 0}</p>
-                            <p className="DataUnit">rad/s</p>
-                        </div>
-                        <div className="DataContainer">
-                            <p className="DataValue" id="big">{enginePower ?? 0}</p>
-                            <p className="DataUnit">W</p>
+                        <div>
+                            <p className="EnginDataTitle">Speed</p>
+                            <div className="EnginDataContainer">
+                                <p className="DataValue" id="big">{engineAngularSpeed ?? 0}</p>
+                                <p className="DataUnit">rad/s</p>
+                            </div>
                         </div>
 
+                        <div>
+                            <p className="EnginDataTitle">Electric power</p>
+                            <div className="EnginDataContainer">
+                                <p className="DataValue" id="big">{enginePower ?? 0}</p>
+                                <p className="DataUnit">W</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
 
-                <div className="rightLiveContainer">
 
+
+
+
+
+                <div className="rightLiveContainer">
                     <div className="TemperatureContainer">
                         <div className="TitleDataContainer">
                             <p className="TitleData">Temperatures</p>
                         </div>
-
-
-
                         <div className="GraphContainer">
                            <div className="TopGraphContainer">
                                <div className="GraphContainer2">
@@ -263,17 +284,37 @@ function GeneralDataPage(){
                         <div className="TitleDataContainer">
                             <p className="TitleData">High Voltage Battery</p>
                         </div>
-                        <div className="DataContainer">
 
-                        </div>
                         <div className="GraphContainer">
-
+                            <div className="TopGraphContainer">
+                                <div className="GraphContainer2">
+                                    <div className="titleGraphContainer">
+                                        <p className="graphTemperatureTitle">Tension battery</p>
+                                        <div className="ValueTemperatureContainer">
+                                            <p className="DataValue" id="medium">{tensionBatteryHV ?? 0}</p>
+                                            <p className="DataUnit">°C</p>
+                                        </div>
+                                    </div>
+                                    <div className="chartContainer">
+                                        <LineChart data={tensionBatteryHV} width={200} height={100} marginTop={-20} fixedSize={true}/>
+                                    </div>
+                                </div>
+                                <div className="GraphContainer2">
+                                    <div className="titleGraphContainer">
+                                        <p className="graphTemperatureTitle">Amperage battery</p>
+                                        <div className="ValueTemperatureContainer">
+                                            <p className="DataValue" id="medium">{amperageBatteryHV ?? 0}</p>
+                                            <p className="DataUnit">°C</p>
+                                        </div>
+                                    </div>
+                                    <div className="chartContainer">
+                                        <LineChart data={amperageBatteryHV} width={200} height={100} marginTop={-20} fixedSize={true}/>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-
-
-
             </div>
         </header>
     )
