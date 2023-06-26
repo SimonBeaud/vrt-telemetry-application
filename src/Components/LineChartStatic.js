@@ -1,37 +1,38 @@
 import React, { useEffect, useRef } from 'react';
-import Chart from 'chart.js/auto';
-import 'chartjs-plugin-streaming';
-import 'moment';
+import Chart from 'chart.js';
 import 'chartjs-adapter-moment';
-
-function LineChart({ data, width, height, marginTop, marginBottom, marginLeft, marginRight , fixedSize }) {
-
-    let state;
-
-    state = {
-        canvasWidth: 400,
-        canvasHeight: 150
-    }
+import 'moment/locale/fr';
+import {months} from "moment";
+import {min} from "moment";
+import moment from "moment";
 
 
 
+function LineChartStatic({ data }) {
+    const state = {
+        canvasWidth: 800,
+        canvasHeight: 300,
+    };
 
     const chartRef = useRef(null);
     const chartInstance = useRef(null);
 
-    console.log("Margin: "+marginTop);
+    const labels = data.map((dataItem) => moment(dataItem.timeRecord).toDate());
 
     useEffect(() => {
         if (!chartInstance.current) {
             const ctx = chartRef.current.getContext('2d');
+
+            const minTime = moment(labels[0]);
+            const maxTime = moment(labels[data.length - 1]);
+
             chartInstance.current = new Chart(ctx, {
                 type: 'line',
-
                 data: {
+                    labels: labels,
                     datasets: [
                         {
-                            label: 'Temperature',
-                            data: [],
+                            data: data.map((dataItem) => dataItem.value),
                             backgroundColor: 'rgba(75, 192, 192, 0.2)',
                             borderColor: 'rgba(75, 192, 192, 1)',
                             borderWidth: 3,
@@ -44,24 +45,21 @@ function LineChart({ data, width, height, marginTop, marginBottom, marginLeft, m
                     responsive: false,
                     scales: {
                         x: {
-                            type: 'realtime',
-                            realtime: {
-                                refresh: 1000,
-                                delay: 2000,
-                                pause: false,
-                                ttl: undefined,
-                                frameRate: 30,
-                                onRefresh: (chart) => {
-                                    if (data !== null) {
-                                        const timestamp = Date.now();
-                                        const lastDataPoint = chart.data.datasets[0].data[chart.data.datasets[0].data.length - 1];
-                                        if (lastDataPoint && lastDataPoint.x < timestamp) {
-                                            chart.data.datasets[0].data.push({ x: timestamp, y: lastDataPoint.y });
-                                        }
-                                        chart.update({
-                                            preservation: true,
-                                        });
-                                    }
+                            type: 'time',
+                            time: {
+                                unit: 'day',
+                                displayFormats: {
+                                    day: 'MMM DD',
+                                },
+                            },
+                            min: minTime,
+                            max: maxTime,
+                            ticks: {
+                                source: 'auto',
+                            },
+                            adapters: {
+                                date: {
+                                    minUnit: 'day',
                                 },
                             },
                         },
@@ -92,22 +90,18 @@ function LineChart({ data, width, height, marginTop, marginBottom, marginLeft, m
                     layout: {
                         padding: {
                             top: -60,
-                            bottom: marginBottom,
-                            left: marginLeft,
-                            right: marginRight,
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
                         },
-
                     },
                 },
             });
-
         }
     }, [data]);
 
-    //return <canvas ref={chartRef} width="200px" ></canvas>;
-    return <canvas ref={chartRef} width={state.canvasWidth} height={state.canvasHeight}/>
+    return <canvas ref={chartRef} width={state.canvasWidth} height={state.canvasHeight} />;
 }
 
-export default LineChart;
 
-
+export default LineChartStatic;

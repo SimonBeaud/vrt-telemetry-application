@@ -28,7 +28,7 @@ const getDatabase = ()=>{
         database.serialize(()=>{
             database.run('CREATE TABLE IF NOT EXISTS session (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, pilot TEXT, date TEXT)');
             database.run('CREATE TABLE IF NOT EXISTS DataType (id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT, live BOOLEAN)');
-            database.run('CREATE TABLE IF NOT EXISTS DataValue (id INTEGER PRIMARY KEY AUTOINCREMENT, session_id INTEGER, DataType_id INTEGER,/* FOREIGN KEY (session_id) REFERENCES session (id), FOREIGN KEY (DataType_id) REFERENCES DataType (id),*/  DataRecord REAL, timeRecord DATETIME)');
+            database.run('CREATE TABLE IF NOT EXISTS DataValue (id INTEGER PRIMARY KEY AUTOINCREMENT, session_id INTEGER, DataType_id INTEGER, DataRecord REAL, timeRecord DATETIME)');
 
         });
     }
@@ -122,6 +122,45 @@ const getDataTypeID = dataTypeName => {
 };
 
 
+//Get DataValue By Data Type
+const getDataValuesBySessionAndDataType = (dataTypeName, sessionId) => {
+    return new Promise((resolve, reject) =>{
+        getDataTypeID(dataTypeName).then((dataTypeID) =>{
+            database.all("SELECT DataValue.DataRecord, DataValue.timeRecord FROM DataValue INNER JOIN DataType ON DataValue.DataType_id = DataType.id WHERE DataType.type = ? AND DataValue.session_id = ?",
+               [dataTypeName, sessionId],
+                (err, rows) => {
+                    if(err) {
+                        reject(err);
+                    }else {
+                        resolve(rows);
+                    }
+                }
+                );
+        })
+            .catch((err) => {
+                reject(err);
+            });
+    });
+}
+
+const deleteAllDataValue = () => {
+    return new Promise((resolve, reject) => {
+        console.log("everything deleted")
+        database.run("DELETE FROM DataValue", function(err) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(this.changes);
+            }
+        });
+    });
+};
+
+
+
+
+
+
 
 
 //######################################################################################################################
@@ -186,6 +225,8 @@ module.exports = {
     deleteAllSessions: deleteAllSessions,
     addDataType: addDataType,
     addDataValue: addDataValue,
+    getDataValuesBySessionAndDataType: getDataValuesBySessionAndDataType,
     getDataTypeID: getDataTypeID,
-    setCurrentSession: setCurrentSession
+    setCurrentSession: setCurrentSession,
+    deleteAllDataValue: deleteAllDataValue
 };

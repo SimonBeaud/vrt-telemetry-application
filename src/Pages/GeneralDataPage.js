@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from 'react'
 import {ipcRenderer} from 'electron'
 import '../Style/LiveDataStyle.css';
-
 import Chart from 'chart.js/auto';
-import LineChart from "../Components/LineChart";
+import LineChartLive from "../Components/LineChartLive";
 
 
 function GeneralDataPage(){
@@ -226,7 +225,7 @@ function GeneralDataPage(){
                                        </div>
                                    </div>
                                    <div className="chartContainer">
-                                       <LineChart  data={engineTemperature}  width={200} height={100} marginTop={-20}/>
+                                       <LineChartLive data={engineTemperature} width={200} height={100} marginTop={-20}/>
                                    </div>
 
                                </div>
@@ -239,7 +238,7 @@ function GeneralDataPage(){
                                        </div>
                                    </div>
                                    <div className="chartContainer">
-                                       <LineChart data={inverterTemperature}  width={200} height={100} marginTop={-20} fixedSize={true}/>
+                                       <LineChartLive data={inverterTemperature} width={200} height={100} marginTop={-20} fixedSize={true}/>
                                    </div>
 
                                </div>
@@ -255,7 +254,7 @@ function GeneralDataPage(){
                                         </div>
                                     </div>
                                     <div className="chartContainer">
-                                        <LineChart data={temperatureBatteryHV} width={200} height={100} marginTop={-20} fixedSize={true}/>
+                                        <LineChartLive data={temperatureBatteryHV} width={200} height={100} marginTop={-20} fixedSize={true}/>
                                     </div>
 
 
@@ -269,7 +268,7 @@ function GeneralDataPage(){
                                         </div>
                                     </div>
                                     <div className="chartContainer">
-                                        <LineChart data={temperatureBatteryLV} width={200} height={100} marginTop={-20} fixedSize={true}/>
+                                        <LineChartLive data={temperatureBatteryLV} width={200} height={100} marginTop={-20} fixedSize={true}/>
                                     </div>
                                 </div>
                             </div>
@@ -296,7 +295,7 @@ function GeneralDataPage(){
                                         </div>
                                     </div>
                                     <div className="chartContainer">
-                                        <LineChart data={tensionBatteryHV} width={200} height={100} marginTop={-20} fixedSize={true}/>
+                                        <LineChartLive data={tensionBatteryHV} width={200} height={100} marginTop={-20} fixedSize={true}/>
                                     </div>
                                 </div>
                                 <div className="GraphContainer2">
@@ -308,7 +307,7 @@ function GeneralDataPage(){
                                         </div>
                                     </div>
                                     <div className="chartContainer">
-                                        <LineChart data={amperageBatteryHV} width={200} height={100} marginTop={-20} fixedSize={true}/>
+                                        <LineChartLive data={amperageBatteryHV} width={200} height={100} marginTop={-20} fixedSize={true}/>
                                     </div>
                                 </div>
                             </div>

@@ -4,10 +4,13 @@ const screen = electron.screen;
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const server = require("../src/Server/UDPServer");
-const {getDatabase, addSession, deleteAllSessions, addDataType, setCurrentSession} = require('../src/DataBase/Database');
+const {getDatabase, addSession, deleteAllSessions, addDataType, setCurrentSession, getDataValuesBySessionAndDataType,
+    deleteAllDataValue
+} = require('../src/DataBase/Database');
 const { getSessions } = require('../src/DataBase/Database');
 const { ipcMain } = require('electron');
 const DataTypeJson = require('../src/DataBase/Data/DataTypesTables.json');
+const async = require("async");
 
 
 
@@ -125,5 +128,21 @@ ipcMain.handle('add-session', async(event, args)=>{
 
 ipcMain.handle('delete-sessions', async ()=>{
     return deleteAllSessions();
+})
+
+ipcMain.handle('deleteDataValues', async ()=> {
+    return deleteAllDataValue();
+})
+
+//hangle get all value data
+ipcMain.handle("get-values-bySession-byType", async (event, args)=>{
+    const{dataTypeName, sessionId}=args;
+    try{
+        const dataValues = await getDataValuesBySessionAndDataType(dataTypeName, sessionId);
+        return{success: true, dataValues};
+
+    }catch (err){
+        console.log(err);
+    }
 })
 

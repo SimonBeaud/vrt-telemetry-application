@@ -112,13 +112,21 @@ class UDPServer{
         }
 
 
-
-
-
-
         //add the data recorded in the database with the methode AddDataValue
-        const timeRecord = Date.now();
+        //DateTime adding
+        const currentTime = new Date();
+        const day = currentTime.getDate().toString().padStart(2, '0');
+        const month = (currentTime.getMonth() + 1).toString().padStart(2, '0');
+        const year = currentTime.getFullYear();
+        const hours = currentTime.getHours().toString().padStart(2, '0');
+        const minutes = currentTime.getMinutes().toString().padStart(2, '0');
+        const secondes = currentTime.getSeconds().toString().padStart(2, '0');
 
+        //const timeRecord = `${day}.${month}.${year} ${hours}:${minutes}:${secondes}`;
+        const timeRecord = currentTime;
+
+
+        //Add the values in the Database
         for(const dataTypeName in data){
             const dataRecord = data[dataTypeName];
             console.log("dataType: "+dataTypeName)
