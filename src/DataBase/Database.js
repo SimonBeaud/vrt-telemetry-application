@@ -147,7 +147,7 @@ const getDataValuesBySessionAndDataType = (dataTypeName, sessionId) => {
 const getDataValuesBySession = (sessionId) => {
     return new Promise((resolve, reject) => {
         database.all(
-            "SELECT DataValue.DataRecord, DataValue.timeRecord, DataType.DataType_id FROM DataValue INNER JOIN DataType ON DataValue.DataType_id = DataType.id WHERE DataValue.session_id = ?",
+            "SELECT DataValue.DataRecord, DataValue.timeRecord, DataValue.DataType_id FROM DataValue WHERE DataValue.session_id = ?",
             [sessionId],
             (err, rows) => {
                 if (err) {

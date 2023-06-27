@@ -16,35 +16,105 @@ function HistoricDataPage(){
 
 
     const dataTypesNames = {
-        TensionBatteryHV: 'TensionBatteryHV',
-        AmperageBatteryHV: 'AmperageBatteryHV',
-        TemperatureBatteryHV: 'TemperatureBatteryHV',
-        EnginePower: 'EnginePower',
-        EngineTemperature: 'EngineTemperature',
-        EngineAngularSpeed: 'EngineAngularSpeed',
+        TensionBatteryHV: 1,
+        AmperageBatteryHV: 2,
+        TemperatureBatteryHV: 3,
+        EnginePower: 4,
+        EngineTemperature: 5,
+        EngineAngularSpeed: 6,
         CarSpeed: 7,
-        PressureTireFL: 'PressureTireFL',
-        PressureTireFR: 'PressureTireFR',
-        PressureTireBL: 'PressureTireBL',
-        PressureTireBR: 'PressureTireBR',
-        InverterTemperature: 'InverterTemperature',
-        TemperatureBatteryLV: 'TemperatureBatteryLV',
+        PressureTireFL: 8,
+        PressureTireFR: 9,
+        PressureTireBL: 10,
+        PressureTireBR: 11,
+        InverterTemperature: 12,
+        TemperatureBatteryLV: 13,
     };
 
 
     const [dataValues, setDataValues] = useState([]);
 
-    console.log(dataValues);
+    const [tensionBatteryHV, setTensionBatteryHV] = useState([]);
+    const [amperageBatteryHV, setAmperageBatteryHV] = useState([]);
+    const [temperatureBatteryHV, setTemperatureBatteryHV] = useState([]);
+    const [enginePower, setEnginePower] = useState([]);
+    const [engineTemperature, setEngineTemperature] = useState([]);
+    const [engineAngularSpeed, setEngineAngularSpeed] = useState([]);
+    const [carSpeed, setCarSpeed] = useState([]);
+    const [pressureTireFL, setPressureTireFL] = useState([]);
+    const [pressureTireFR, setPressureTireFR] = useState([]);
+    const [pressureTireBL, setPressureTireBL] = useState([]);
+    const [pressureTireBR, setPressureTireBR] = useState([]);
+    const [inverterTemperature, setInverterTemperature] = useState([]);
+    const [temperatureBatteryLV, setTemperatureBatteryLV] = useState([]);
+
+
+
+
+
+
+    const [selectedDataValues, setSelectedDataValues] = useState([]);
+
+
+
 
 
 
     const fetchData = async () => {
         try {
-           // const response = await ipcRenderer.invoke('get-values-bySession-byType', { dataTypeName, sessionId });
-            const response = await ipcRenderer.invoke('get-values-bySession', {sessionId });
+            // const response = await ipcRenderer.invoke('get-values-bySession-byType', { dataTypeName, sessionId });
+            const response = await ipcRenderer.invoke('get-values-bySession', {sessionId});
 
             if (response.success) {
-                setDataValues(response.dataValues);
+                // Créer un objet pour stocker les sous-matrices
+                const subMatrices = {};
+
+                // Regrouper les valeurs par DataType_id dans les sous-matrices correspondantes
+                response.dataValues.forEach(item => {
+                    const dataTypeId = item.DataType_id;
+                    if (!subMatrices[dataTypeId]) {
+                        subMatrices[dataTypeId] = [item];
+                    } else {
+                        subMatrices[dataTypeId].push(item);
+                    }
+                });
+
+                // Convertir l'objet en tableau de sous-matrices
+                const newDataValues = Object.values(subMatrices);
+                setDataValues(newDataValues);
+
+
+
+                if (subMatrices[dataTypesNames.CarSpeed]) {
+                    setSelectedDataValues(subMatrices[dataTypesNames.CarSpeed]);
+                }
+
+
+
+                setTensionBatteryHV(subMatrices[dataTypesNames.TensionBatteryHV] || []);
+                setAmperageBatteryHV(subMatrices[dataTypesNames.AmperageBatteryHV] || []);
+                setTemperatureBatteryHV(subMatrices[dataTypesNames.TemperatureBatteryHV] || []);
+                setEnginePower(subMatrices[dataTypesNames.EnginePower] || []);
+                setEngineTemperature(subMatrices[dataTypesNames.EngineTemperature] || []);
+                setEngineAngularSpeed(subMatrices[dataTypesNames.EngineAngularSpeed] || []);
+                setCarSpeed(subMatrices[dataTypesNames.CarSpeed] || []);
+                setPressureTireFL(subMatrices[dataTypesNames.PressureTireFL] || []);
+                setPressureTireFR(subMatrices[dataTypesNames.PressureTireFR] || []);
+                setPressureTireBL(subMatrices[dataTypesNames.PressureTireBL] || []);
+                setPressureTireBR(subMatrices[dataTypesNames.PressureTireBR] || []);
+                setInverterTemperature(subMatrices[dataTypesNames.InverterTemperature] || []);
+                setTemperatureBatteryLV(subMatrices[dataTypesNames.TemperatureBatteryLV] || []);
+
+
+
+
+
+
+
+
+
+
+
             } else {
                 console.error(response.error);
             }
@@ -75,57 +145,57 @@ function HistoricDataPage(){
                         <div className="LeftContainerHistoric">
                             <div className="ChartHistoricContainer">
                                 <p className="ChartLabel"  id="left">Car speed</p>
-                                <ChartLine data={dataValues}/>
+                                <ChartLine data={carSpeed}/>
                             </div>
                             <div className="ChartHistoricContainer">
                                 <p className="ChartLabel"  id="left">Pressure tire front left</p>
-                                <ChartLine data={dataValues}/>
+                                <ChartLine data={pressureTireFL}/>
                             </div>
                             <div className="ChartHistoricContainer">
                                 <p className="ChartLabel"  id="left">Pressure tire front right</p>
-                                <ChartLine data={dataValues}/>
+                                <ChartLine data={pressureTireFR}/>
                             </div>
                             <div className="ChartHistoricContainer">
                                 <p className="ChartLabel"  id="left">Pressure tire back left</p>
-                                <ChartLine data={dataValues}/>
+                                <ChartLine data={pressureTireBL}/>
                             </div>
                             <div className="ChartHistoricContainer">
                                 <p className="ChartLabel"  id="left">Pressure tire back right</p>
-                                <ChartLine data={dataValues}/>
+                                <ChartLine data={pressureTireBR}/>
                             </div>
                             <div className="ChartHistoricContainer">
                                 <p className="ChartLabel"  id="left">Engine speed</p>
-                                <ChartLine data={dataValues}/>
+                                <ChartLine data={engineAngularSpeed}/>
                             </div>
                             <div className="ChartHistoricContainer">
                                 <p className="ChartLabel"  id="left">Engine power</p>
-                                <ChartLine data={dataValues}/>
+                                <ChartLine data={enginePower}/>
                             </div>
                         </div>
                         <div className="RightContainerHistoric">
                             <div className="ChartHistoricContainer">
                                 <p className="ChartLabel"  id="left">Temperature Engine</p>
-                                <ChartLine data={dataValues}/>
+                                <ChartLine data={engineTemperature}/>
                             </div>
                             <div className="ChartHistoricContainer">
                                 <p className="ChartLabel"  id="left">Temperature Inverter</p>
-                                <ChartLine data={dataValues}/>
+                                <ChartLine data={inverterTemperature}/>
                             </div>
                             <div className="ChartHistoricContainer">
                                 <p className="ChartLabel"  id="left">Temperature high voltage battery</p>
-                                <ChartLine data={dataValues}/>
+                                <ChartLine data={temperatureBatteryHV}/>
                             </div>
                             <div className="ChartHistoricContainer">
                                 <p className="ChartLabel"  id="left">Temperature low voltage battery</p>
-                                <ChartLine data={dataValues}/>
+                                <ChartLine data={temperatureBatteryLV}/>
                             </div>
                             <div className="ChartHistoricContainer">
                                 <p className="ChartLabel"  id="left">Tension high voltage battery</p>
-                                <ChartLine data={dataValues}/>
+                                <ChartLine data={tensionBatteryHV}/>
                             </div>
                             <div className="ChartHistoricContainer">
                                 <p className="ChartLabel"  id="left">Amperage high voltage battery</p>
-                                <ChartLine data={dataValues}/>
+                                <ChartLine data={amperageBatteryHV}/>
                             </div>
                         </div>
                     </div>
