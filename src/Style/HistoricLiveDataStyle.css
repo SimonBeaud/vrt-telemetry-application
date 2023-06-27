@@ -1,0 +1,67 @@
+
+/* Container*/
+
+.PageHistoricContainer{
+    display: inline-block;
+}
+
+.TitleContainerHistoric{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+
+
+
+.HistoricContainer{
+    display: flex;
+}
+
+.LeftContainerHistoric{
+    height: 95vh;
+    width: 50%;
+    display: block;
+}
+
+.RightContainerHistoric{
+    height: 95vh;
+    width: 50%;
+    margin-left: 15px;
+}
+
+.ChartHistoricContainer{
+    width: 100%;
+    height: 400px;
+    background: linear-gradient(90deg, #282D41 0%, #3A4355 100%);
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);
+    border-radius: 20px;
+    margin-bottom: 15px;
+}
+
+/*Buttons*/
+.ReloadButton{
+    background-color: #f1b054;
+    border-radius: 37px;
+    color: #fff;
+    font-family: Raleway;
+    height: 54px;
+    width: 200px;
+    font-weight: 700;
+    border: none;
+    box-shadow: 0 4px 20px rgba(0,0,0,.25);
+    cursor: pointer;
+}
+
+
+/*Labels*/
+
+.ChartLabel{
+    background-color: initial;
+    color: #61ff00;
+    margin-bottom: -6px;
+    margin-left: 15px;
+    padding-top: 15px;
+}

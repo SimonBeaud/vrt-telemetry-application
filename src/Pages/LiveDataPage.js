@@ -5,7 +5,7 @@ import Chart from 'chart.js/auto';
 import LineChartLive from "../Components/LineChartLive";
 
 
-function GeneralDataPage(){
+function LiveDataPage(){
 
     const [liveData, setLiveData] = useState(null);
     const [tensionBatteryHV, setTensionBatteryHV] = useState(1);
@@ -319,4 +319,4 @@ function GeneralDataPage(){
     )
 }
 
-export default GeneralDataPage;
+export default LiveDataPage;

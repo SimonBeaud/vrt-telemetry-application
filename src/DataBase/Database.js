@@ -126,7 +126,7 @@ const getDataTypeID = dataTypeName => {
 const getDataValuesBySessionAndDataType = (dataTypeName, sessionId) => {
     return new Promise((resolve, reject) =>{
         getDataTypeID(dataTypeName).then((dataTypeID) =>{
-            database.all("SELECT DataValue.DataRecord, DataValue.timeRecord FROM DataValue INNER JOIN DataType ON DataValue.DataType_id = DataType.id WHERE DataType.type = ? AND DataValue.session_id = ?",
+            database.all("SELECT DataValue.DataRecord, DataValue.timeRecord, DataValue.DataType_id FROM DataValue INNER JOIN DataType ON DataValue.DataType_id = DataType.id WHERE DataType.type = ? AND DataValue.session_id = ?",
                [dataTypeName, sessionId],
                 (err, rows) => {
                     if(err) {
@@ -142,6 +142,29 @@ const getDataValuesBySessionAndDataType = (dataTypeName, sessionId) => {
             });
     });
 }
+
+//GC
+const getDataValuesBySession = (sessionId) => {
+    return new Promise((resolve, reject) => {
+        database.all(
+            "SELECT DataValue.DataRecord, DataValue.timeRecord, DataType.DataType_id FROM DataValue INNER JOIN DataType ON DataValue.DataType_id = DataType.id WHERE DataValue.session_id = ?",
+            [sessionId],
+            (err, rows) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(rows);
+                }
+            }
+        );
+    });
+};
+
+
+
+
+
+
 
 const deleteAllDataValue = () => {
     return new Promise((resolve, reject) => {
@@ -228,5 +251,6 @@ module.exports = {
     getDataValuesBySessionAndDataType: getDataValuesBySessionAndDataType,
     getDataTypeID: getDataTypeID,
     setCurrentSession: setCurrentSession,
-    deleteAllDataValue: deleteAllDataValue
+    deleteAllDataValue: deleteAllDataValue,
+    getDataValuesBySession: getDataValuesBySession
 };

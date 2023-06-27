@@ -2,7 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 //import {BrowserRouter, Route, Routes} from "react-router-dom";
 //import Navbar from "./Components/Navbar";
-import GeneralDataPage from "./Pages/GeneralDataPage";
+import LiveDataPage from "./Pages/LiveDataPage";
 import ExternalDataPage from "./Pages/ExternalDataPage";
 import HistoricDataPage from "./Pages/HistoricDataPage";
 import ExportDataPage from "./Pages/ExportDataPage";
@@ -49,7 +49,7 @@ function App() {
     const renderPage = () => {
         switch (currentPage) {
             case 'GeneralData':
-                return <GeneralDataPage/>;
+                return <LiveDataPage/>;
             case 'ExternalData':
                 return <ExternalDataPage/>;
             case 'HistoricData':

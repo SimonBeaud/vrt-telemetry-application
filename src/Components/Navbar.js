@@ -20,7 +20,7 @@ export default function Navbar({navigateTo}){
                     <ul className="menu-list">
                         <li className="menuItem">
                            <button onClick={()=> navigateTo('GeneralData')} className="menuButton">
-                               General Data
+                               Live Data
                            </button>
                         </li>
                         <li className="menuItem">
@@ -30,7 +30,7 @@ export default function Navbar({navigateTo}){
                         </li>
                         <li className="menuItem">
                             <button onClick={()=> navigateTo('HistoricData')} className="menuButton">
-                                Historic Data
+                                Live History
                             </button>
                         </li>
                         <li className="menuItem">

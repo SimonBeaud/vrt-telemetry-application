@@ -4,12 +4,24 @@ import moment from "moment";
 import 'chartjs-plugin-zoom';
 
 const ChartLine = ({ data }) => {
+
+    let state;
+
+    state = {
+        canvasWidth: 600,
+        canvasHeight: 350
+    }
+
+
+
+
+
     const chartRef2 = useRef(null);
 
     useEffect(() => {
         let chart2;
-        let handleMouseMove;
-        let handleMouseWheel;
+        //let handleMouseMove;
+        //let handleMouseWheel;
 
         const createChart = () => {
             // Récupérer le contexte du canvas
@@ -17,12 +29,13 @@ const ChartLine = ({ data }) => {
 
             // Récupérer les données et les labels pour le chart
             const labels = data.map((dataValue) =>
-                moment(dataValue.timeRecord).format('DD.MM.YYYY HH:mm:ss')
+                //moment(dataValue.timeRecord).format('DD.MM.YYYY HH:mm:ss')
+                moment(dataValue.timeRecord).format('HH:mm:ss')
             );
             const values = data.map((dataValue) => dataValue.DataRecord);
 
             // Définir la plage visible initiale (30 secondes)
-            const startIndex = Math.max(0, labels.length - 30);
+            //const startIndex = Math.max(0, labels.length - 30);
 
             const visibleLabels = labels;
             const visibleValues = values;
@@ -37,13 +50,19 @@ const ChartLine = ({ data }) => {
                             {
                                 label: 'Valeurs',
                                 data: visibleValues,
-                                borderColor: 'blue',
-                                backgroundColor: 'transparent',
+                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 3,
                             },
                         ],
                     },
                     options: {
-                        // ...
+                        scales: {
+                            y: {
+                                min: 0,
+                                max: 100,
+                            },
+                        },
 
                         plugins: {
                             zoom: {
@@ -85,8 +104,8 @@ const ChartLine = ({ data }) => {
     }, [data]);
 
     return (
-        <div style={{ width: '100%', height: '500px' }}>
-            <canvas ref={chartRef2} />
+        <div >
+            <canvas ref={chartRef2} width={state.canvasWidth} height={state.canvasHeight} />
         </div>
     );
 };
