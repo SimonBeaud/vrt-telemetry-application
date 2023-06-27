@@ -16,15 +16,23 @@ function LineChartLive({ data, width, height, marginTop, marginBottom, marginLef
 
 
 
-    const chartRef = useRef(null);
-    const chartInstance = useRef(null);
+    const chartContainerRef = useRef(null);
+    const chartInstanceRef = useRef(null);
 
     console.log("Margin: "+marginTop);
 
     useEffect(() => {
-        if (!chartInstance.current) {
-            const ctx = chartRef.current.getContext('2d');
-            chartInstance.current = new Chart(ctx, {
+        if (chartContainerRef.current) {
+            if (chartInstanceRef.current) {
+                // Chart instance already exists, update the data
+                const timePoint = Date.now();
+                const dataPoint = { x: timePoint, y: data };
+                chartInstanceRef.current.data.datasets[0].data.push(dataPoint);
+                chartInstanceRef.current.update();
+            } else {
+                // Chart instance doesn't exist, create a new one
+                const ctx = chartContainerRef.current.getContext('2d');
+                const newChartInstance = new Chart(ctx, {
                 type: 'line',
 
                 data: {
@@ -101,11 +109,13 @@ function LineChartLive({ data, width, height, marginTop, marginBottom, marginLef
                 },
             });
 
+                chartInstanceRef.current = newChartInstance;
+            }
         }
     }, [data]);
 
     //return <canvas ref={chartRef} width="200px" ></canvas>;
-    return <canvas ref={chartRef} width={state.canvasWidth} height={state.canvasHeight}/>
+    return <canvas ref={chartContainerRef} width={state.canvasWidth} height={state.canvasHeight}/>
 }
 
 export default LineChartLive;

@@ -1,3 +1,4 @@
+
 import React, {useEffect, useState} from 'react'
 import {ipcRenderer} from 'electron'
 import '../Style/LiveDataStyle.css';
@@ -23,6 +24,7 @@ function LiveDataPage(){
     const [temperatureBatteryLV, setTemperatureBatteryLV] = useState(1);
 
 
+
     const updateLiveData = (event, ReceiveLiveData) =>{
         setLiveData(ReceiveLiveData);
     }
@@ -34,26 +36,6 @@ function LiveDataPage(){
             ipcRenderer.off("get-live-data", updateLiveData);
         };
     }, []);
-
-
-
-
-
-
-    //send the data to the graphs
-    const ChartInstance = (variable, index) =>{
-        useEffect(()=>{
-            const chartInstance = Chart.instances[index];
-            if(chartInstance && chartInstance && chartInstance.data){
-                const timePoint = Date.now();
-                const dataPoint = {x: timePoint, y: variable};
-                chartInstance.data.datasets[0].data.push(dataPoint);
-                chartInstance.update({
-                    preservation: true
-                })
-            }
-        }, [variable, index])
-    }
 
 
     useEffect(() => {
@@ -75,35 +57,38 @@ function LiveDataPage(){
         }
     }, [liveData]);
 
+
+
+/*
+    //send the data to the graphs
+    const ChartInstance = (variable, index) =>{
+        useEffect(()=>{
+            const chartInstance = Chart.instances[index];
+            if(chartInstance && chartInstance && chartInstance.data){
+                const timePoint = Date.now();
+                const dataPoint = {x: timePoint, y: variable};
+                chartInstance.data.datasets[0].data.push(dataPoint);
+                chartInstance.update({
+                    preservation: true
+                })
+            }
+        }, [variable, index])
+    }
+
     ChartInstance(engineTemperature, 0);
     ChartInstance(inverterTemperature, 1);
     ChartInstance(temperatureBatteryHV, 2);
     ChartInstance(temperatureBatteryLV, 3);
     ChartInstance(tensionBatteryHV, 4);
     ChartInstance(amperageBatteryHV, 5);
-
-
-
-
-
-
-
-
-
-/*
-    useEffect(() => {
-        const chartInstance = Chart.instances[0];
-        if (chartInstance && chartInstance && chartInstance.data) {
-            const timestamp = Date.now();
-            const dataPoint = { x: timestamp, y: engineTemperature };
-            chartInstance.data.datasets[0].data.push(dataPoint);
-            chartInstance.update({
-                preservation: true,
-            });
-        }
-    }, [engineTemperature]);
-
 */
+
+
+
+
+
+
+
 
     //##############################################################################
 
@@ -215,35 +200,35 @@ function LiveDataPage(){
                             <p className="TitleData">Temperatures</p>
                         </div>
                         <div className="GraphContainer">
-                           <div className="TopGraphContainer">
-                               <div className="GraphContainer2">
-                                   <div className="titleGraphContainer">
-                                       <p className="graphTemperatureTitle">Engine</p>
-                                       <div className="ValueTemperatureContainer">
-                                           <p className="DataValue" id="medium">{engineTemperature ?? 0}</p>
-                                           <p className="DataUnit">°C</p>
-                                       </div>
-                                   </div>
-                                   <div className="chartContainer">
-                                       <LineChartLive data={engineTemperature} width={200} height={100} marginTop={-20}/>
-                                   </div>
+                            <div className="TopGraphContainer">
+                                <div className="GraphContainer2">
+                                    <div className="titleGraphContainer">
+                                        <p className="graphTemperatureTitle">Engine</p>
+                                        <div className="ValueTemperatureContainer">
+                                            <p className="DataValue" id="medium">{engineTemperature ?? 0}</p>
+                                            <p className="DataUnit">°C</p>
+                                        </div>
+                                    </div>
+                                    <div className="chartContainer">
+                                        <LineChartLive data={engineTemperature} width={200} height={100} marginTop={-20}/>
+                                    </div>
 
-                               </div>
-                               <div className="GraphContainer2">
-                                   <div className="titleGraphContainer">
-                                       <p className="graphTemperatureTitle">Inverter</p>
-                                       <div className="ValueTemperatureContainer">
-                                           <p className="DataValue" id="medium">{inverterTemperature ?? 0}</p>
-                                           <p className="DataUnit">°C</p>
-                                       </div>
-                                   </div>
-                                   <div className="chartContainer">
-                                       <LineChartLive data={inverterTemperature} width={200} height={100} marginTop={-20} fixedSize={true}/>
-                                   </div>
+                                </div>
+                                <div className="GraphContainer2">
+                                    <div className="titleGraphContainer">
+                                        <p className="graphTemperatureTitle">Inverter</p>
+                                        <div className="ValueTemperatureContainer">
+                                            <p className="DataValue" id="medium">{inverterTemperature ?? 0}</p>
+                                            <p className="DataUnit">°C</p>
+                                        </div>
+                                    </div>
+                                    <div className="chartContainer">
+                                        <LineChartLive data={inverterTemperature} width={200} height={100} marginTop={-20} fixedSize={true}/>
+                                    </div>
 
-                               </div>
+                                </div>
 
-                           </div>
+                            </div>
                             <div className="DownGraphContainer">
                                 <div className="GraphContainer2">
                                     <div className="titleGraphContainer">

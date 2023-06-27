@@ -32,8 +32,6 @@ function HistoricDataPage(){
     };
 
 
-    const [dataValues, setDataValues] = useState([]);
-
     const [tensionBatteryHV, setTensionBatteryHV] = useState([]);
     const [amperageBatteryHV, setAmperageBatteryHV] = useState([]);
     const [temperatureBatteryHV, setTemperatureBatteryHV] = useState([]);
@@ -47,14 +45,6 @@ function HistoricDataPage(){
     const [pressureTireBR, setPressureTireBR] = useState([]);
     const [inverterTemperature, setInverterTemperature] = useState([]);
     const [temperatureBatteryLV, setTemperatureBatteryLV] = useState([]);
-
-
-
-
-
-
-    const [selectedDataValues, setSelectedDataValues] = useState([]);
-
 
 
 
@@ -81,13 +71,8 @@ function HistoricDataPage(){
 
                 // Convertir l'objet en tableau de sous-matrices
                 const newDataValues = Object.values(subMatrices);
-                setDataValues(newDataValues);
 
 
-
-                if (subMatrices[dataTypesNames.CarSpeed]) {
-                    setSelectedDataValues(subMatrices[dataTypesNames.CarSpeed]);
-                }
 
 
 
@@ -104,17 +89,6 @@ function HistoricDataPage(){
                 setPressureTireBR(subMatrices[dataTypesNames.PressureTireBR] || []);
                 setInverterTemperature(subMatrices[dataTypesNames.InverterTemperature] || []);
                 setTemperatureBatteryLV(subMatrices[dataTypesNames.TemperatureBatteryLV] || []);
-
-
-
-
-
-
-
-
-
-
-
             } else {
                 console.error(response.error);
             }

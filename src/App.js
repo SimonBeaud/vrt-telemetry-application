@@ -12,6 +12,7 @@ import {ipcRenderer} from "electron";
 import ProjectNavigationPage from "./Pages/ProjectNavigationPage";
 import Navbar from "./Components/Navbar";
 import {SessionProvider} from "./SessionContext";
+import {ChartProvider} from "./ChartContext";
 
 export const AppContext = createContext();
 
@@ -49,7 +50,9 @@ function App() {
     const renderPage = () => {
         switch (currentPage) {
             case 'GeneralData':
-                return <LiveDataPage/>;
+                return <ChartProvider>  <LiveDataPage/> </ChartProvider>;
+
+
             case 'ExternalData':
                 return <ExternalDataPage/>;
             case 'HistoricData':
