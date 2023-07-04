@@ -1,0 +1,61 @@
+
+/*TabBar Style*/
+
+.tab {
+
+}
+
+.tab-list {
+    overflow: hidden;
+    padding-left: 0;
+    margin: 0;
+    list-style: none;
+    z-index: 999;
+    display: flex;
+}
+
+.tab-header {
+    background: gray;
+    left: 0;
+    padding: 30px;
+    position: relative;
+    top: 0;
+    width: calc(100% - 60px);
+    z-index: 999;
+    height: 10px;
+}
+
+.tabButton {
+    background-color: initial;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-family: Raleway;
+    font-size: 18px;
+    font-weight: 200;
+    margin-bottom: 20px;
+}
+.tabButton:focus{
+    color: #F1B054;
+}
+
+.tabItem {
+    text-align: center;
+    flex: 1;
+}
+
+/*Tab page container*/
+.ExternalPageContainer{
+    display: block;
+    margin-left: 240px;
+    padding: 20px;
+    width: calc(100% - 60px);
+    height: 95vh;
+}
+
+.TabContainer{
+    display: flex;
+    padding: 20px;
+    height: 95vh;
+}
+

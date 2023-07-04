@@ -51,8 +51,6 @@ function App() {
         switch (currentPage) {
             case 'GeneralData':
                 return <ChartProvider>  <LiveDataPage/> </ChartProvider>;
-
-
             case 'ExternalData':
                 return <ExternalDataPage/>;
             case 'HistoricData':
