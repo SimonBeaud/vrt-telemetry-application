@@ -47,6 +47,11 @@ function HistoricDataPage(){
     const [temperatureBatteryLV, setTemperatureBatteryLV] = useState([]);
 
 
+    const deleteAllDataValue = () => {
+        ipcRenderer.invoke('deleteDataValues').then();
+    };
+
+
 
 
 
@@ -112,6 +117,7 @@ function HistoricDataPage(){
                     <div className="TitleContainerHistoric">
                         <h1>Live data history</h1>
                         <button className="ReloadButton" onClick={fetchData}>Reload Data</button>
+                        <button className="ReloadButton" onClick={deleteAllDataValue}>Delete Data</button>
                     </div>
 
 

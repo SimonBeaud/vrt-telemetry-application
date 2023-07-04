@@ -5,12 +5,15 @@ const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const server = require("../src/Server/UDPServer");
 const {getDatabase, addSession, deleteAllSessions, addDataType, setCurrentSession, getDataValuesBySessionAndDataType,
-    deleteAllDataValue, getDataValuesBySession
+    deleteAllDataValue, getDataValuesBySession, addDataValue
 } = require('../src/DataBase/Database');
 const { getSessions } = require('../src/DataBase/Database');
-const { ipcMain } = require('electron');
+const { ipcMain, dialog } = require('electron');
 const DataTypeJson = require('../src/DataBase/Data/DataTypesTables.json');
 const async = require("async");
+const csv = require('csv-parser');
+const fs = require("fs");
+
 
 
 
@@ -49,7 +52,7 @@ function createWindow() {
         server.start();
 
         let LiveData = server.getLiveData();
-       // let TensionBatteryHV = server.getTensionBatteryHV();
+
 
 
         const updateLiveData = () =>{
@@ -57,15 +60,6 @@ function createWindow() {
             mainWindow.webContents.send('get-live-data', LiveData);
         }
 
-
-        /*
-        const updateTensionBatteryHV = () =>{
-            TensionBatteryHV = server.getTensionBatteryHV();
-            mainWindow.webContents.send('get-tension', TensionBatteryHV);
-        }
-
-       updateTensionBatteryHV();
-       */
 
         updateLiveData();
 
@@ -158,4 +152,50 @@ ipcMain.handle("get-values-bySession-byType", async (event, args)=>{
         console.log(err);
     }
 })
+
+
+
+//GC To modify
+ipcMain.on('openFileSelection', (event, arg) => {
+    const window = BrowserWindow.getFocusedWindow();
+
+    dialog.showOpenDialog(window, {
+        properties: ['openFile'],
+        filters: [{ name: 'CSV Files', extensions: ['csv'] }],
+    }).then((result) => {
+        if (!result.canceled && result.filePaths.length > 0) {
+            const filePath = result.filePaths[0];
+
+            // Lire les valeurs du fichier CSV
+            fs.createReadStream(filePath)
+                .pipe(csv({ separator: ';' })) // Spécifier le séparateur comme point-virgule
+                .on('data', (data) => {
+                    // Générer le sessionID et le timeRecord
+                    const sessionID = 1;
+                    const timeRecord = null;
+
+                    // Itérer sur toutes les colonnes du CSV à partir de l'index 1
+                    Object.entries(data).forEach(([columnName, value], index) => {
+                        if (index > 0 && value !== null && value !== "") {
+                            // Insérer chaque valeur individuellement dans la base de données avec le nom de colonne correspondant comme dataTypeName
+                            addDataValue(sessionID, columnName, value, timeRecord)
+                                .then((lastID) => {
+                                    console.log(`DataValue added with the id: ${lastID}`);
+                                })
+                                .catch((err) => {
+                                    console.log('Error when adding the dataValue: ' + err);
+                                });
+                        }
+                    });
+                })
+                .on('end', () => {
+                    console.log('CSV file processing complete.');
+                });
+        }
+    });
+});
+
+
+
+
 

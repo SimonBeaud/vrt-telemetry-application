@@ -27,7 +27,7 @@ const getDatabase = ()=>{
         //Create database tables
         database.serialize(()=>{
             database.run('CREATE TABLE IF NOT EXISTS session (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, pilot TEXT, date TEXT)');
-            database.run('CREATE TABLE IF NOT EXISTS DataType (id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT, live BOOLEAN)');
+            database.run('CREATE TABLE IF NOT EXISTS DataType (id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT, live BOOLEAN, unity TEXT)');
             database.run('CREATE TABLE IF NOT EXISTS DataValue (id INTEGER PRIMARY KEY AUTOINCREMENT, session_id INTEGER, DataType_id INTEGER, DataRecord REAL, timeRecord DATETIME)');
 
         });
@@ -46,9 +46,9 @@ const getDatabase = ()=>{
 const addDataType = (DataTypesTable)=>{
     return new Promise((resolve, reject)=>{
 
-        const RequestStatement = database.prepare("INSERT INTO DataType (type, live) VALUES (?,?)");
+        const RequestStatement = database.prepare("INSERT INTO DataType (type, live, unity) SELECT ?, ?, ? WHERE NOT EXISTS (SELECT 1 FROM DataType WHERE type = ?)");
         DataTypesTable.forEach((item)=>{
-            RequestStatement.run(item.type, item.live);
+            RequestStatement.run(item.type, item.live, item.unity);
         });
 
         RequestStatement.finalize((err)=>{

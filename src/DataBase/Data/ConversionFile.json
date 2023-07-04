@@ -1,0 +1,10 @@
+{
+  "TensionBatteryHV": {
+    "ConversionFactor": 2.0,
+    "Offset": 0.5
+  },
+  "AmperageBatteryHV": {
+    "ConversionFactor": 2.0,
+    "Offset": 0.5
+  }
+}

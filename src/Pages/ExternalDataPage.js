@@ -1,24 +1,25 @@
 import React from 'react'
-import {ipcRenderer} from "electron";
-
-
-function ExternalDataPage(){
-
-    const deleteAllDataValue=()=>{
-        ipcRenderer.invoke('deleteDataValues').then();
-    }
+const { ipcRenderer, remote } = window.require('electron');
 
 
 
+//GC
+function ExternalDataPage() {
 
-    return(
+
+    const handleFileSelection = () => {
+        ipcRenderer.send('openFileSelection');
+    };
+
+    return (
         <header className="App-header">
             <div className="PageContainer">
                 <h1>External Data Page</h1>
-                <button onClick={deleteAllDataValue}></button>
+                <button className="ReloadButton" onClick={handleFileSelection}>Sélectionner un fichier CSV</button>
             </div>
         </header>
-    )
+    );
 }
+
 
 export default ExternalDataPage;

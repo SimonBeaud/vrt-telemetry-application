@@ -6,6 +6,7 @@ const dgram = require('dgram');
 const { Buffer } = require('buffer');
 const fs = require('fs');
 const {addDataValue} = require("../DataBase/Database");
+//const conversionFile = require('/src/DataBase/Data/ConversionFile.json');
 
 
 //Live Data Variables
@@ -35,7 +36,9 @@ class UDPServer{
 
     constructor(port1) {
         //const IPAddress = "192.168.1.106";
-        const IPAddress = "192.168.1.127";
+       // const IPAddress = "192.168.1.127";
+       // const IPAddress = "172.20.10.3";
+        const IPAddress = "192.168.43.232";
 
         this.listeningPoint = {address: IPAddress, port: port1};
         this.udpServer = dgram.createSocket("udp4", this.listeningPoint);
@@ -76,8 +79,6 @@ class UDPServer{
 
     //Handle data methode:
     handleData(data){
-
-
 
         //Assign values to each sensor variables
         TensionBatteryHV = data.TensionBatteryHV;
@@ -132,7 +133,10 @@ class UDPServer{
             console.log("dataType: "+dataTypeName)
             const sessionID=null;
 
-            addDataValue(sessionID, dataTypeName, dataRecord, timeRecord)
+
+            const convertDataRecord = dataRecordConversion(dataTypeName, dataRecord);
+
+            addDataValue(sessionID, dataTypeName, convertDataRecord, timeRecord)
                 .then((lastID)=>{
                     console.log('DataValue added with the id: ${lastID}');
                 })
@@ -143,6 +147,27 @@ class UDPServer{
     }
 }
 
+//######################################################################################################################
+//Data Conversion Function
+
+function dataRecordConversion(dataTypeName, dataRecord){
+
+    /*
+    if(conversionFile.hasOwnProperty(dataTypeName)){
+        const { ConversionFactor, Offset} = conversionFile[dataTypeName];
+        const result = dataRecord * ConversionFactor + Offset;
+
+        return result;
+    }*/
+
+    return dataRecord
+}
+
+
+
+
+
+
 
 //######################################################################################################################
 //Get sensor values variables
@@ -152,84 +177,10 @@ function getLiveData(){
 }
 
 
-/*
-function getTensionBatteryHV(){
-    return TensionBatteryHV;
-}
-
-function getAmperageBatteryHV(){
-    return AmperageBatteryHV;
-}
-
-function getTemperatureBatteryHV(){
-    return TemperatureBatteryHV;
-}
-
-function getEnginePower(){
-    return EnginePower;
-}
-
-function getEngineTemperature(){
-    return EngineTemperature;
-}
-
-function getEngineAngularSpeed(){
-    return EngineAngularSpeed;
-}
-
-function getCarSpeed(){
-    return CarSpeed;
-}
-
-function getPressureTireFL(){
-    return PressureTireFL;
-}
-
-function getPressureTireFR(){
-    return PressureTireFR;
-}
-
-function getPressureTireBL(){
-    return PressureTireBL;
-}
-
-function getPressureTireBR(){
-    return PressureTireBR;
-}
-
-function getInverterTemperature(){
-    return InverterTemperature;
-}
-
-function getTemperatureBatteryLV(){
-    return TemperatureBatteryLV;
-}
-*/
-
-
-
-
-
 const server = new UDPServer(7070);
 
 module.exports={
     start: server.start.bind(server),
-    /*
-    getTensionBatteryHV: getTensionBatteryHV,
-    getAmperageBatteryHV: getAmperageBatteryHV,
-    getTemperatureBatteryHV: getTemperatureBatteryHV,
-    getEnginePower: getEnginePower,
-    getEngineTemperature: getEngineTemperature,
-    getEngineAngularSpeed: getEngineAngularSpeed,
-    getCarSpeed: getCarSpeed,
-    getPressureTireFL: getPressureTireFL,
-    getPressureTireFR: getPressureTireFR,
-    getPressureTireBL: getPressureTireBL,
-    getPressureTireBR: getPressureTireBR,
-    getInverterTemperature: getInverterTemperature,
-    getTemperatureBatteryLV: getTemperatureBatteryLV,
-
-     */
     getLiveData: getLiveData
 
 };

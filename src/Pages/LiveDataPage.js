@@ -276,7 +276,7 @@ function LiveDataPage(){
                                         <p className="graphTemperatureTitle">Tension battery</p>
                                         <div className="ValueTemperatureContainer">
                                             <p className="DataValue" id="medium">{tensionBatteryHV ?? 0}</p>
-                                            <p className="DataUnit">°C</p>
+                                            <p className="DataUnit">V</p>
                                         </div>
                                     </div>
                                     <div className="chartContainer">
@@ -288,7 +288,7 @@ function LiveDataPage(){
                                         <p className="graphTemperatureTitle">Amperage battery</p>
                                         <div className="ValueTemperatureContainer">
                                             <p className="DataValue" id="medium">{amperageBatteryHV ?? 0}</p>
-                                            <p className="DataUnit">°C</p>
+                                            <p className="DataUnit">A</p>
                                         </div>
                                     </div>
                                     <div className="chartContainer">
