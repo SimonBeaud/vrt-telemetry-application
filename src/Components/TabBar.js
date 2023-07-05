@@ -11,8 +11,6 @@ export default function TabBar({navigateTo}){
         ipcRenderer.send('openFileSelection');
     };
 
-
-
     return(
         <header className="tab-header">
             <div>
