@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useState} from 'react';
 import { Link } from 'react-router-dom';
 import { SessionContext } from '../SessionContext';
 
@@ -6,6 +6,7 @@ import { SessionContext } from '../SessionContext';
 export default function Navbar({navigateTo}){
 
     const {session, updateSession} = useContext(SessionContext);
+    const [activePage, setActivePage] = useState('');
 
 
     return(
@@ -19,27 +20,33 @@ export default function Navbar({navigateTo}){
                 <nav className="menu">
                     <ul className="menu-list">
                         <li className="menuItem">
-                           <button onClick={()=> navigateTo('GeneralData')} className="menuButton">
-                               Live Data
-                           </button>
-                        </li>
-                        <li className="menuItem">
-                            <button onClick={()=> navigateTo('ExternalData')} className="menuButton">
-                                External Data
+                            <button onClick={()=> {navigateTo('GeneralData'); setActivePage('GeneralData');}}
+                                    className={activePage === 'GeneralData' ? 'menuActive menuButton' : 'menuButton'}>
+                                Live Data
                             </button>
                         </li>
                         <li className="menuItem">
-                            <button onClick={()=> navigateTo('HistoricData')} className="menuButton">
-                                Live History
+                            <button onClick={()=> {navigateTo('ExternalData'); setActivePage('ExternalData');}}
+                                    className={activePage === 'ExternalData' ? 'menuActive menuButton' : 'menuButton'}>
+                                External data
                             </button>
                         </li>
                         <li className="menuItem">
-                            <button onClick={()=> navigateTo('ExportData')} className="menuButton">
-                                Export Data
+                            <button onClick={()=> {navigateTo('HistoricData'); setActivePage('HistoricData');}}
+                                    className={activePage === 'HistoricData' ? 'menuActive menuButton' : 'menuButton'}>
+                                Live history
                             </button>
                         </li>
                         <li className="menuItem">
-                            <button onClick={()=> navigateTo('ProjectNavigation')} className="menuButton">
+                            <button onClick={()=> {navigateTo('ExportData'); setActivePage('ExportData');}}
+                                    className={activePage === 'ExportData' ? 'menuActive menuButton' : 'menuButton'}>
+                                Export data
+                            </button>
+
+                        </li>
+                        <li className="menuItem">
+                            <button onClick={()=> {navigateTo('ProjectNavigation'); setActivePage('ProjectNavigation');}}
+                                    className={activePage === 'ProjectNavigation' ? 'menuActive menuButton' : 'menuButton'}>
                                 Sessions
                             </button>
                         </li>

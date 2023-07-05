@@ -43,10 +43,6 @@ function App() {
     };
 
 
-
-
-
-
     const renderPage = () => {
         switch (currentPage) {
             case 'GeneralData':
@@ -62,7 +58,6 @@ function App() {
 
         }
     };
-
 
 
   return (

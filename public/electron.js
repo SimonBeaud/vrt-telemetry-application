@@ -1,3 +1,5 @@
+
+
 const electron = require("electron");
 const path = require("path");
 const screen = electron.screen;
@@ -13,6 +15,8 @@ const DataTypeJson = require('../src/DataBase/Data/DataTypesTables.json');
 const async = require("async");
 const csv = require('csv-parser');
 const fs = require("fs");
+
+
 
 
 
@@ -156,6 +160,8 @@ ipcMain.handle("get-values-bySession-byType", async (event, args)=>{
 
 
 //GC To modify
+const moment = require('moment');
+
 ipcMain.on('openFileSelection', (event, arg) => {
     const window = BrowserWindow.getFocusedWindow();
 
@@ -171,8 +177,9 @@ ipcMain.on('openFileSelection', (event, arg) => {
                 .pipe(csv({ separator: ';' })) // Spécifier le séparateur comme point-virgule
                 .on('data', (data) => {
                     // Générer le sessionID et le timeRecord
-                    const sessionID = 1;
-                    const timeRecord = null;
+                    const sessionID = null;
+                    const timeRecordMilliseconds = data[Object.keys(data)[0]]; // Valeur de la première colonne en millisecondes
+                    const timeRecord = moment(parseInt(timeRecordMilliseconds)).toISOString(); // Convertir en DateTime
 
                     // Itérer sur toutes les colonnes du CSV à partir de l'index 1
                     Object.entries(data).forEach(([columnName, value], index) => {
@@ -194,8 +201,4 @@ ipcMain.on('openFileSelection', (event, arg) => {
         }
     });
 });
-
-
-
-
 

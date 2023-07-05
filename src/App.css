@@ -94,6 +94,11 @@ body {
   color: #F1B054;
 }
 
+.menuActive{
+  color: #F1B054;
+}
+
+
 .menuItem {
   text-align: center;
 }

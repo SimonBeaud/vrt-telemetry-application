@@ -1,9 +1,15 @@
-import React, {useContext} from "react";
+import React, {useContext, useState} from "react";
 import '../Style/ExternalDataStyle.css';
+import {ipcRenderer} from "electron";
 
 
 export default function TabBar({navigateTo}){
 
+    const [activeTab, setActiveTab] = useState('');
+
+    const handleFileSelection = () => {
+        ipcRenderer.send('openFileSelection');
+    };
 
 
 
@@ -13,24 +19,31 @@ export default function TabBar({navigateTo}){
                 <nav className="tab">
                     <ul className="tab-list">
                         <li className="tabItem">
-                            <button onClick={()=> navigateTo('ElectricDataPage')} className="tabButton">
+                            <button onClick={()=> {navigateTo('ElectricDataPage'); setActiveTab('ElectricDataPage');}}
+                                    className={activeTab === 'ElectricDataPage' ? 'tabActive tabButton' : 'tabButton'}>
                                 Electric
                             </button>
                         </li>
                         <li className="tabItem">
-                            <button onClick={()=> navigateTo('MechanicDataPage')} className="tabButton">
+                            <button onClick={()=> {navigateTo('MechanicDataPage'); setActiveTab('MechanicDataPage');}}
+                                    className={activeTab === 'MechanicDataPage' ? 'tabActive tabButton' : 'tabButton'}>
                                 Mechanic
                             </button>
                         </li>
                         <li className="tabItem">
-                            <button onClick={()=> navigateTo('PilotDataPage')} className="tabButton">
+                            <button onClick={()=> {navigateTo('PilotDataPage'); setActiveTab('PilotDataPage');}}
+                                    className={activeTab === 'PilotDataPage' ? 'tabActive tabButton' : 'tabButton'}>
                                 Pilot
                             </button>
                         </li>
                         <li className="tabItem">
-                            <button onClick={()=> navigateTo('GeneralExternalDataPage')} className="tabButton">
+                            <button onClick={()=> {navigateTo('GeneralExternalDataPage'); setActiveTab('GeneralExternalDataPage');}}
+                                    className={activeTab === 'GeneralExternalDataPage' ? 'tabActive tabButton' : 'tabButton'}>
                                 General
                             </button>
+                        </li>
+                        <li>
+                            <button className="ReloadButton" onClick={handleFileSelection}>Load CSV File</button>
                         </li>
                     </ul>
                 </nav>

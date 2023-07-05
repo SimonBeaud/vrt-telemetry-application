@@ -21,13 +21,7 @@ const { ipcRenderer, remote } = window.require('electron');
 function ExternalDataPage() {
 
 
-    const handleFileSelection = () => {
-        ipcRenderer.send('openFileSelection');
-    };
 
-    /*
-    <button className="ReloadButton" onClick={handleFileSelection}>Sélectionner un fichier CSV</button>
-    */
 
     const [currentTabPage, setCurrentTabPage] = useState('ElectricDataPage')
 
