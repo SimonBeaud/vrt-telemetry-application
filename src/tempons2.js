@@ -83,6 +83,7 @@ function ElectricDataPage(){
     }, []);
 
 
+
     return(
         <header className="App-header">
             <div className="TabContainer">
@@ -90,6 +91,7 @@ function ElectricDataPage(){
                     <p className="ChartLabel"  id="left">Car speed</p>
                     <LineChartStatic datasets={[tensionBatteryHV]} />
                 </div>
+
 
                 <div className="ChartExternalContainer">
                     <p className="ChartLabel"  id="left">Car speed</p>

@@ -10,7 +10,6 @@ import { SessionContext } from '../SessionContext';
 function HistoricDataPage(){
 
     /*Session id management*/
-    const dataTypeName = 'CarSpeed';
     const {session, updateSession} = useContext(SessionContext);
     const sessionId = session.id;
 

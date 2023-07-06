@@ -7,7 +7,7 @@ const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const server = require("../src/Server/UDPServer");
 const {getDatabase, addSession, deleteAllSessions, addDataType, setCurrentSession, getDataValuesBySessionAndDataType,
-    deleteAllDataValue, getDataValuesBySession, addDataValue
+    deleteAllDataValue, getDataValuesBySession, addDataValue, getDataTypeID
 } = require('../src/DataBase/Database');
 const { getSessions } = require('../src/DataBase/Database');
 const { ipcMain, dialog } = require('electron');
@@ -156,6 +156,29 @@ ipcMain.handle("get-values-bySession-byType", async (event, args)=>{
         console.log(err);
     }
 })
+
+
+
+//Get datatypeID
+
+ipcMain.handle("get-datatype-id", async (event, args)=>{
+    const{dataTypeName}=args;
+    try{
+        const dataTypeID = await getDataTypeID(dataTypeName);
+        return{success: true, dataTypeID};
+
+    }catch (err){
+        console.log(err);
+    }
+})
+
+
+
+
+
+
+
+
 
 
 

@@ -6,8 +6,9 @@ import {ipcRenderer} from "electron";
 
 function ElectricDataPage(){
 
-    const {session, updateSession} = useContext(SessionContext);
-    const sessionId = session.id;
+    //Variables declaration
+    const {session, setSession} = useContext(SessionContext);
+    const sessionID = session.id;
 
     const dataTypesNames = {
         TensionBatteryHV: 1,
@@ -38,10 +39,12 @@ function ElectricDataPage(){
     const [temperatureBatteryLV_NL, setTemperatureBatteryLV_NL] = useState([]);
 
 
+    //Get the data values from the electron.js processes
+
     const fetchData = async () => {
 
         try{
-            const response = await ipcRenderer.invoke('get-values-bySession', {sessionId});
+            const response = await ipcRenderer.invoke('get-values-bySession', {sessionID});
 
             if (response.success) {
                 const subMatrices = {};
@@ -54,6 +57,8 @@ function ElectricDataPage(){
                         subMatrices[dataTypeId].push(item);
                     }
                 });
+
+                const newDataValues = Object.values(subMatrices);
 
                 setTensionBatteryHV(subMatrices[dataTypesNames.TensionBatteryHV] || []);
                 setEnginePower_NL(subMatrices[dataTypesNames.EnginePower_NL] || []);
@@ -86,11 +91,11 @@ function ElectricDataPage(){
     return(
         <header className="App-header">
             <div className="TabContainer">
+                <button className="ReloadButton" onClick={fetchData}>Reload Data</button>
                 <div className="ChartExternalContainer">
                     <p className="ChartLabel"  id="left">Car speed</p>
                     <LineChartStatic datasets={[tensionBatteryHV]} />
                 </div>
-
                 <div className="ChartExternalContainer">
                     <p className="ChartLabel"  id="left">Car speed</p>
                     <LineChartStatic datasets={[carSpeed_NL]} />

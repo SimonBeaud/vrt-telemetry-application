@@ -14,8 +14,27 @@
   {"type":  "InverterTemperature", "live":  true, "unity": "°C"},
   {"type":  "TemperatureBatteryLV", "live":  true, "unity": "°C"},
 
+
+
+
+
+
+  {"type":  "TensionBatteryHV_NL", "live":  false, "unity": "V"},
+  {"type":  "AmperageBatteryHV_NL", "live":  false, "unity": "A"},
+  {"type":  "TemperatureBatteryHV_NL", "live":  false, "unity": "°C"},
+  {"type":  "EnginePower_NL", "live":  false, "unity": "W"},
+  {"type":  "EngineTemperature_NL", "live":  false, "unity": "°C"},
+  {"type":  "EngineAngularSpeed_NL", "live":  false, "unity": "Rad/s"},
+  {"type":  "CarSpeed_NL", "live":  false, "unity": "Km/h"},
+  {"type":  "PressureTireFL_NL", "live":  false, "unity": "bar"},
+  {"type":  "PressureTireFR_NL", "live":  false, "unity": "bar"},
+  {"type":  "PressureTireBL_NL", "live":  false, "unity": "bar"},
+  {"type":  "PressureTireBR_NL", "live":  false, "unity": "bar"},
+  {"type":  "InverterTemperature_NL", "live":  false, "unity": "°C"},
+  {"type":  "TemperatureBatteryLV_NL", "live":  false, "unity": "°C"},
+
   {"type":  "SteeringWheelAngle", "live":  false, "unity": "°"},
-  {"type":  "2AxisInertialSensor", "live":  false, "unity": "°"},
+  {"type":  "AxisInertialSensor", "live":  false, "unity": "°"},
   {"type":  "BreakPedalPosition", "live":  false, "unity": "°"},
   {"type":  "AcceleratorPedalPosition", "live":  false, "unity": "°"},
 
