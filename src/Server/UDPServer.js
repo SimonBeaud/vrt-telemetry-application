@@ -1,12 +1,14 @@
 
 const express = require('express');
 const app = express();
-const { ipcMain } = require('electron');
+const { ipcMain, dialog } = require('electron');
 const dgram = require('dgram');
 const { Buffer } = require('buffer');
 const fs = require('fs');
 const {addDataValue} = require("../DataBase/Database");
 //const conversionFile = require('/src/DataBase/Data/ConversionFile.json');
+const { BrowserWindow } = require('electron');
+const prompt = require('electron-prompt');
 
 
 //Live Data Variables
@@ -43,8 +45,9 @@ class UDPServer{
         this.listeningPoint = {address: IPAddress, port: port1};
         this.udpServer = dgram.createSocket("udp4", this.listeningPoint);
         this.isRunning= false;
+        this.promptWindow = null;
 
-        console.log(`Server listening on: ${IPAddress} port1: ${port1}`);
+        console.log(`IP: ${IPAddress} Port: ${port1}`);
 
         this.udpServer.on('message', this.receiveData.bind(this));
 
@@ -53,12 +56,53 @@ class UDPServer{
 
 
     //Start method:
-    start(){
-        if(!this.isRunning){
-            this.isRunning=true;
+    start() {
+        if (!this.isRunning) {
+            this.isRunning = true;
             this.udpServer.bind(this.listeningPoint.port);
+            console.log('The server is now listening');
+
+            const options = {
+                title: 'Car connexion',
+                resizable: false,
+                frame: false,
+                customStylesheet: `
+        body {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin: 0;
+          padding: 16px;
+        }
+      `,
+                height: 120,
+                alwaysOnTop: true,
+                closable: true,
+                skipTaskbar: true,
+                show: false,
+            };
+
+            this.promptWindow = new BrowserWindow(options);
+            this.promptWindow.loadURL(`data:text/html;charset=UTF-8,
+      <html>
+        <body>
+          <!-- Insérez ici le code HTML de la roue de chargement -->
+          <div style="margin-right: 8px;"></div>
+          <div>Waiting for the connexion with the car...</div>
+        </body>
+      </html>
+    `);
+
+            this.promptWindow.once('ready-to-show', () => {
+                this.promptWindow.show();
+            });
+
+            this.promptWindow.once('closed', () => {
+                // Gérer les actions à effectuer après la fermeture de la fenêtre de dialogue
+            });
         }
     }
+
 
 
     //Stop method:
@@ -71,11 +115,19 @@ class UDPServer{
 
 
     //Reception Data methode:
-    receiveData(data){
+    receiveData(data) {
         const jsonString = data.toString();
         const jsonData = JSON.parse(jsonString);
         this.handleData(jsonData);
+
+        if (jsonData !== null) {
+            if (this.promptWindow !== null) {
+                this.promptWindow.close();
+                this.promptWindow = null;
+            }
+        }
     }
+
 
     //Handle data methode:
     handleData(data){

@@ -93,32 +93,35 @@ function MechanicDataPage(){
             <div className="TabContainer">
                 <div className="ChartExternalContainer">
                     <p className="ChartLabel"  id="left">Car speed</p>
-                    <LineChartStatic datasets={[carSpeed_NL]} />
+                    <LineChartStatic datasets={[carSpeed_NL]}  datasetNames={["Car speed"]} width={1100} height={450}/>
                 </div>
 
                 <div className="ChartExternalContainer">
                     <p className="ChartLabel"  id="left">Suspensions</p>
-                    <LineChartStatic datasets={[suspensionFL, suspensionFR, suspensionBL, suspensionBR]} />
+                    <LineChartStatic datasets={[suspensionFL, suspensionFR, suspensionBL, suspensionBR]}
+                                     datasetNames={["front left", "front right", "back left", "back right"]} width={1100} height={450}/>
                 </div>
                 <div className="ChartExternalContainer">
                     <p className="ChartLabel"  id="left">Pressure</p>
-                    <LineChartStatic datasets={[pressureTireFL_NLL, pressureTireFR_NL, pressureTireBL_NL, pressureTireBR_NL]} />
+                    <LineChartStatic datasets={[pressureTireFL_NLL, pressureTireFR_NL, pressureTireBL_NL, pressureTireBR_NL]}
+                                     datasetNames={["front left", "front right", "back left", "back right"]} width={1100} height={450}/>
                 </div>
                 <div className="ChartExternalContainer">
                     <p className="ChartLabel"  id="left">Couple</p>
-                    <LineChartStatic datasets={[coupleWheelBL, coupleWheelBR]} />
+                    <LineChartStatic datasets={[coupleWheelBL, coupleWheelBR]}
+                                     datasetNames={["back left wheel", "back right wheel"]} width={1100} height={450}/>
                 </div>
                 <div className="ChartExternalContainer">
                     <p className="ChartLabel"  id="left">Engine Couple</p>
-                    <LineChartStatic datasets={[coupleEngine]} />
+                    <LineChartStatic datasets={[coupleEngine]} datasetNames={["Couple engine"]} width={1100} height={450} />
                 </div>
                 <div className="ChartExternalContainer">
                     <p className="ChartLabel"  id="left">Wheel angle</p>
-                    <LineChartStatic datasets={[steeringWheelAngle]} />
+                    <LineChartStatic datasets={[steeringWheelAngle]} datasetNames={["Angle"]} width={1100} height={450} />
                 </div>
                 <div className="ChartExternalContainer">
                     <p className="ChartLabel"  id="left">inertial 2 axe</p>
-                    <LineChartStatic datasets={[axisInertialSensor]} />
+                    <LineChartStatic datasets={[axisInertialSensor]} datasetNames={["inertial"]}  width={1100} height={450}/>
                 </div>
 
             </div>

@@ -71,24 +71,24 @@ function PilotDataPage(){
                 <div className="TabContainer">
                     <div className="ChartExternalContainer">
                         <p className="ChartLabel"  id="left">Car speed</p>
-                        <LineChartStatic datasets={[carSpeed_NL]} />
+                        <LineChartStatic datasets={[carSpeed_NL]} datasetNames={["Car speed"]} width={1100} height={450}/>
                     </div>
 
                     <div className="ChartExternalContainer">
                         <p className="ChartLabel"  id="left">Engine angular speed</p>
-                        <LineChartStatic datasets={[engineAngularSpeed_NL]} />
+                        <LineChartStatic datasets={[engineAngularSpeed_NL]}  datasetNames={["Angular speed"]} width={1100} height={450}/>
                     </div>
                     <div className="ChartExternalContainer">
                         <p className="ChartLabel"  id="left">Pedals</p>
-                        <LineChartStatic datasets={[breakPedalPosition, acceleratorPedalPosition]} />
+                        <LineChartStatic datasets={[breakPedalPosition, acceleratorPedalPosition]} datasetNames={["Break", "Accelerator"]} width={1100} height={450}/>
                     </div>
                     <div className="ChartExternalContainer">
                         <p className="ChartLabel"  id="left">2 axes inertial sensor</p>
-                        <LineChartStatic datasets={[axisInertialSensor]} />
+                        <LineChartStatic datasets={[axisInertialSensor]} datasetNames={["Inertial"]} width={1100} height={450}/>
                     </div>
                     <div className="ChartExternalContainer">
                         <p className="ChartLabel"  id="left">steering Wheel Angle</p>
-                        <LineChartStatic datasets={[steeringWheelAngle]} />
+                        <LineChartStatic datasets={[steeringWheelAngle]} datasetNames={["Steering wheel"]} width={1100} height={450}/>
                     </div>
                 </div>
             </header>

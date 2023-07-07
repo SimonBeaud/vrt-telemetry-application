@@ -43,7 +43,9 @@ function createWindow() {
     addDataType(DataTypeJson);
 
 
-
+    ipcMain.on('start-server', () => {
+        server.start();
+    });
 
 
     //######################################################################################
@@ -53,7 +55,7 @@ function createWindow() {
     //CODE GENERE; A MODIFIER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     mainWindow.webContents.on('did-finish-load', () => {
-        server.start();
+        //server.start();
 
         let LiveData = server.getLiveData();
 
@@ -173,15 +175,6 @@ ipcMain.handle("get-datatype-id", async (event, args)=>{
 })
 
 
-
-
-
-
-
-
-
-
-
 //GC To modify
 const moment = require('moment');
 
@@ -220,6 +213,11 @@ ipcMain.on('openFileSelection', (event, arg) => {
                 })
                 .on('end', () => {
                     console.log('CSV file processing complete.');
+                    dialog.showMessageBox(window, {
+                        type: 'info',
+                        message: 'CSV file load successfully, please reload the data to see them !',
+                        buttons: ['OK']
+                    });
                 });
         }
     });

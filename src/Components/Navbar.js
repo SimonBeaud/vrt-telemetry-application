@@ -1,12 +1,20 @@
 import React, {useContext, useState} from 'react';
 import { Link } from 'react-router-dom';
 import { SessionContext } from '../SessionContext';
+import {ipcRenderer} from "electron";
+
 
 
 export default function Navbar({navigateTo}){
 
     const {session, updateSession} = useContext(SessionContext);
     const [activePage, setActivePage] = useState('');
+
+
+
+    const StartServer = async () => {
+        ipcRenderer.send('start-server');
+    }
 
 
     return(
@@ -48,6 +56,12 @@ export default function Navbar({navigateTo}){
                             <button onClick={()=> {navigateTo('ProjectNavigation'); setActivePage('ProjectNavigation');}}
                                     className={activePage === 'ProjectNavigation' ? 'menuActive menuButton' : 'menuButton'}>
                                 Sessions
+                            </button>
+                        </li>
+                        <li className="menuItem">
+                            <button onClick={StartServer}
+                                    className={activePage === 'ProjectNavigation' ? 'menuActive menuButton' : 'menuButton'}>
+                                Connect car
                             </button>
                         </li>
                     </ul>

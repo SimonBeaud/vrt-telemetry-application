@@ -2,8 +2,9 @@ import React, { useEffect, useRef } from 'react';
 import 'chart.js/auto';
 import moment from "moment";
 import Chart from "chart.js/auto";
+import randomColor from "randomcolor";
 
-const LineChartStatic = ({ datasets }) => {
+const LineChartStatic = ({ datasets, datasetNames, yMin, yMax, width, height }) => {
     const chartRef3 = useRef(null);
 
     useEffect(() => {
@@ -16,10 +17,17 @@ const LineChartStatic = ({ datasets }) => {
             );
 
             const chartDatasets = datasets.map((dataset, index) => ({
-                label: `Jeu de données ${index + 1}`,
+                label: datasetNames[index],
                 data: dataset.map((dataValue) => dataValue.DataRecord),
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(255, 255, 255, 1)',
+                borderColor: randomColor({
+                    luminosity: 'light',
+                    hue: 'random',
+                    format: 'rgba',
+                    alpha: 1,
+                    count: datasets.length,
+                    seed: Math.floor(Math.random() * 1000),
+                }),
                 borderWidth: 3,
             }));
 
@@ -32,9 +40,17 @@ const LineChartStatic = ({ datasets }) => {
                     },
                     options: {
                         scales: {
+                            x: {
+                                ticks: {
+                                    color: 'white',
+                                },
+                            },
                             y: {
-                                min: 0,
-                                max: 100,
+                                min: yMin,
+                                max: yMax,
+                                ticks: {
+                                    color: 'white',
+                                },
                             },
                         },
                         plugins: {
@@ -57,7 +73,6 @@ const LineChartStatic = ({ datasets }) => {
                     },
                 });
             } else {
-                // Mettre à jour le chart existant avec les nouvelles données
                 chart3.data.labels = labels;
                 chart3.data.datasets = chartDatasets;
                 chart3.update();
@@ -66,17 +81,16 @@ const LineChartStatic = ({ datasets }) => {
 
         createChart();
 
-        // Détruire le chart lors du démontage du composant
         return () => {
             if (chart3) {
                 chart3.destroy();
             }
         };
-    }, [datasets]);
+    }, [datasets,datasetNames, yMin, yMax]);
 
     return (
         <div>
-            <canvas ref={chartRef3} width={600} height={350} />
+            <canvas ref={chartRef3} width={width} height={height} />
         </div>
     );
 };

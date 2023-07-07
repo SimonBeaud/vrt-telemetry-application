@@ -69,24 +69,24 @@ function GeneralExternalDataPage(){
             <div className="TabContainer">
                 <div className="ChartExternalContainer">
                     <p className="ChartLabel"  id="left">Car speed</p>
-                    <LineChartStatic datasets={[carSpeed_NL]} />
+                    <LineChartStatic datasets={[carSpeed_NL]} datasetNames={["Car speed"]} />
                 </div>
 
                 <div className="ChartExternalContainer">
                     <p className="ChartLabel"  id="left">2 axis inertial sensor</p>
-                    <LineChartStatic datasets={[axisInertialSensor]} />
+                    <LineChartStatic datasets={[axisInertialSensor]} datasetNames={["inertial"]} width={1100} height={450}/>
                 </div>
                 <div className="ChartExternalContainer">
                     <p className="ChartLabel"  id="left">Amperage battery HV</p>
-                    <LineChartStatic datasets={[amperageBatteryHV_NL]} />
+                    <LineChartStatic datasets={[amperageBatteryHV_NL]} datasetNames={["Courant"]} width={1100} height={450}/>
                 </div>
                 <div className="ChartExternalContainer">
                     <p className="ChartLabel"  id="left">Temperature battery HV</p>
-                    <LineChartStatic datasets={[temperatureBatteryHV_NL]} />
+                    <LineChartStatic datasets={[temperatureBatteryHV_NL]} datasetNames={["Temperature"]} width={1100} height={450}/>
                 </div>
                 <div className="ChartExternalContainer">
                     <p className="ChartLabel"  id="left">Steering wheel angle</p>
-                    <LineChartStatic datasets={[steeringWheelAngle]} />
+                    <LineChartStatic datasets={[steeringWheelAngle]} datasetNames={["Steering wheel"]} width={1100} height={450}/>
                 </div>
             </div>
         </header>
