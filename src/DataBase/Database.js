@@ -102,7 +102,7 @@ const addDataValue = (sessionID, dataTypeName, dataRecord, timeRecord) => {
             return result;
         })
         .catch(err => {
-            console.log("Error when adding the datavalue");
+            //console.log("Error when adding the datavalue");
             throw err;
         });
 };

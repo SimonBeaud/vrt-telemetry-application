@@ -1,7 +1,7 @@
 
 const express = require('express');
 const app = express();
-const { ipcMain, dialog } = require('electron');
+const { ipcMain, dialog, ipcRenderer} = require('electron');
 const dgram = require('dgram');
 const { Buffer } = require('buffer');
 const fs = require('fs');
@@ -9,6 +9,8 @@ const {addDataValue} = require("../DataBase/Database");
 //const conversionFile = require('/src/DataBase/Data/ConversionFile.json');
 const { BrowserWindow } = require('electron');
 const prompt = require('electron-prompt');
+let isConnected = false;
+
 
 
 //Live Data Variables
@@ -30,13 +32,14 @@ let LiveData;
 
 
 
-class UDPServer{
 
-
+class UDPServer {
 
 
 
     constructor(port1) {
+
+
         //const IPAddress = "192.168.1.106";
         const IPAddress = "192.168.1.127";
        // const IPAddress = "172.20.10.3";
@@ -46,6 +49,7 @@ class UDPServer{
         this.udpServer = dgram.createSocket("udp4", this.listeningPoint);
         this.isRunning= false;
         this.promptWindow = null;
+
 
         this.lastKeepAliveCounter = 0;
         this.keepAliveTimeout = null;
@@ -68,7 +72,7 @@ class UDPServer{
             const options = {
                 title: 'Car connexion',
                 resizable: false,
-                frame: false,
+                frame: true,
                 customStylesheet: `
         body {
           display: flex;
@@ -111,11 +115,13 @@ class UDPServer{
 
 
     //Stop method:
-    stop(){
+    stop(callback){
         if(this.isRunning){
             this.isRunning = false;
             this.udpServer.close();
             console.log("server is stopped")
+            isConnected = false;
+
         }
     }
 
@@ -126,9 +132,13 @@ class UDPServer{
         const jsonString = data.toString();
         const jsonData = JSON.parse(jsonString);
 
+
+
         if (jsonData.KeepAliveCounter !== undefined) {
             const receivedCounter = jsonData.KeepAliveCounter;
             console.log("ReceivedCounter: " + receivedCounter);
+
+            isConnected = true;
 
             this.resetKeepAliveTimeout();
             this.lastKeepAliveCounter = receivedCounter;
@@ -165,10 +175,14 @@ class UDPServer{
                         buttons: ['OK'],
                         noLink: true
                     });
+
                     clearInterval(interval);
                     if(this.isRunning){
                         this.isRunning = false;
                         this.udpServer.close();
+
+                        isConnected = false;
+
                         console.log("server is stopped")
                         this.udpServer = dgram.createSocket("udp4", this.listeningPoint);
                         this.udpServer.on('message', this.receiveData.bind(this));
@@ -236,7 +250,7 @@ class UDPServer{
         //Add the values in the Database
         for(const dataTypeName in data){
             const dataRecord = data[dataTypeName];
-            console.log("dataType: "+dataTypeName)
+            //console.log("dataType: "+dataTypeName)
             const sessionID=null;
 
 
@@ -282,11 +296,17 @@ function getLiveData(){
     return LiveData;
 }
 
+function getConnectedStatus(){
+    return isConnected;
+}
+
 
 const server = new UDPServer(7070);
 
 module.exports={
     start: server.start.bind(server),
-    getLiveData: getLiveData
+    getLiveData: getLiveData,
+    getConnectedStatus: getConnectedStatus,
+
 
 };

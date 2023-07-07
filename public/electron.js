@@ -15,12 +15,7 @@ const DataTypeJson = require('../src/DataBase/Data/DataTypesTables.json');
 const async = require("async");
 const csv = require('csv-parser');
 const fs = require("fs");
-
-
-
-
-
-
+let isConnected = false;
 let mainWindow;
 
 
@@ -35,17 +30,19 @@ function createWindow() {
         webPreferences: { nodeIntegration: true, contextIsolation: false },
     });
     // and load the index.html of the app.
-    console.log(__dirname);
+    //console.log(__dirname);
     mainWindow.loadFile(path.join(__dirname, "../build/index.html"));
 
     //init database
     const database = getDatabase();
     addDataType(DataTypeJson);
-
+    console.log("isConnected: "+isConnected);
 
     ipcMain.on('start-server', () => {
         server.start();
     });
+
+
 
 
     //######################################################################################
@@ -60,10 +57,11 @@ function createWindow() {
         let LiveData = server.getLiveData();
 
 
-
         const updateLiveData = () =>{
             LiveData = server.getLiveData();
             mainWindow.webContents.send('get-live-data', LiveData);
+            isConnected = server.getConnectedStatus();
+            mainWindow.webContents.send('ConnectedStatus', isConnected);
         }
 
 
@@ -88,6 +86,7 @@ app.on("ready", createWindow);
 
 app.on('window-all-closed', function () {
     if (process.platform !== 'darwin') app.quit();
+
 });
 
 
@@ -222,4 +221,5 @@ ipcMain.on('openFileSelection', (event, arg) => {
         }
     });
 });
+
 
