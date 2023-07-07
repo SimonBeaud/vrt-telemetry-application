@@ -77,7 +77,7 @@ const addDataValue = (sessionID, dataTypeName, dataRecord, timeRecord) => {
 
     return getDataTypeID(dataTypeName)
         .then(dataTypeID => {
-            console.log("DATATYPE IN THE DB: " + dataTypeID);
+         //   console.log("DATATYPE IN THE DB: " + dataTypeID);
 
             if (dataTypeID === null) {
                 throw new Error("DataType not found");
@@ -98,7 +98,7 @@ const addDataValue = (sessionID, dataTypeName, dataRecord, timeRecord) => {
             });
         })
         .then(result => {
-            console.log("datavalue added with success !");
+      //      console.log("datavalue added with success !");
             return result;
         })
         .catch(err => {
@@ -191,7 +191,7 @@ const deleteAllDataValue = () => {
 
 const setCurrentSession = (SessionID)=>{
     currentSessionID = SessionID;
-    console.log("session in the db: "+currentSessionID);
+   // console.log("session in the db: "+currentSessionID);
 
     return currentSessionID;
 }

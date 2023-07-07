@@ -47,6 +47,9 @@ class UDPServer{
         this.isRunning= false;
         this.promptWindow = null;
 
+        this.lastKeepAliveCounter = 0;
+        this.keepAliveTimeout = null;
+
         console.log(`IP: ${IPAddress} Port: ${port1}`);
 
         this.udpServer.on('message', this.receiveData.bind(this));
@@ -101,6 +104,8 @@ class UDPServer{
                 // Gérer les actions à effectuer après la fermeture de la fenêtre de dialogue
             });
         }
+
+
     }
 
 
@@ -110,24 +115,73 @@ class UDPServer{
         if(this.isRunning){
             this.isRunning = false;
             this.udpServer.close();
+            console.log("server is stopped")
         }
     }
 
 
     //Reception Data methode:
+
     receiveData(data) {
         const jsonString = data.toString();
         const jsonData = JSON.parse(jsonString);
+
+        if (jsonData.KeepAliveCounter !== undefined) {
+            const receivedCounter = jsonData.KeepAliveCounter;
+            console.log("ReceivedCounter: " + receivedCounter);
+
+            this.resetKeepAliveTimeout();
+            this.lastKeepAliveCounter = receivedCounter;
+            this.lastKeepAliveTime = new Date().getTime();
+        }
+
+
+
+
         this.handleData(jsonData);
 
         if (jsonData !== null) {
             if (this.promptWindow !== null) {
                 this.promptWindow.close();
                 this.promptWindow = null;
+                this.startKeepAliveCheck();
             }
         }
     }
 
+
+    startKeepAliveCheck() {
+        const interval = setInterval(() => {
+            if (this.lastKeepAliveCounter !== null) {
+                const currentTime = new Date().getTime();
+                const elapsedTime = currentTime - this.lastKeepAliveTime;
+
+                if (elapsedTime > 2000) {
+                    console.log("La fenetre doit ouvrir !!");
+                    dialog.showMessageBoxSync({
+                        type: 'info',
+                        title: 'Car connexion',
+                        message: 'We lost the connexion with the car! Please try to connect again',
+                        buttons: ['OK'],
+                        noLink: true
+                    });
+                    clearInterval(interval);
+                    if(this.isRunning){
+                        this.isRunning = false;
+                        this.udpServer.close();
+                        console.log("server is stopped")
+                        this.udpServer = dgram.createSocket("udp4", this.listeningPoint);
+                        this.udpServer.on('message', this.receiveData.bind(this));
+                    }
+                }
+            }
+        }, 1000);
+    }
+
+
+    resetKeepAliveTimeout() {
+        clearTimeout(this.keepAliveTimeout);
+    }
 
     //Handle data methode:
     handleData(data){
