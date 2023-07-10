@@ -13,9 +13,6 @@ const ChartLine = ({ data }) => {
     }
 
 
-
-
-
     const chartRef2 = useRef(null);
 
     useEffect(() => {
