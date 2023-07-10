@@ -107,6 +107,83 @@ const addDataValue = (sessionID, dataTypeName, dataRecord, timeRecord) => {
         });
 };
 
+
+//add data value from CSV
+//GC
+
+const addDataValueFromCSV = (sessionID, dataTypeName, dataRecord, timeRecord) => {
+    sessionID = currentSessionID;
+
+    return getDataTypeID(dataTypeName)
+        .then((dataTypeID) => {
+            if (dataTypeID === null) {
+                throw new Error('DataType not found');
+            }
+
+            return new Promise((resolve, reject) => {
+                database.serialize(() => {
+
+                    database.run('BEGIN TRANSACTION');
+
+                    const insertStatement = database.prepare(
+                        'INSERT INTO DataValue(session_id, DataType_id, DataRecord, timeRecord) VALUES (?, ?, ?, ?)'
+                    );
+
+                    insertStatement.run(sessionID, dataTypeID, dataRecord, timeRecord, function (err) {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(this.lastID);
+                        }
+                    });
+
+                    insertStatement.finalize((err) => {
+                        if (err) {
+                            reject(err);
+                        }
+                    });
+
+                    database.run('COMMIT');
+
+                });
+            });
+        })
+        .then((result) => {
+            console.log('datavalue added with success !');
+            return result;
+        })
+        .catch((err) => {
+            console.log('Error when adding the datavalue');
+            throw err;
+        });
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 const getDataTypeID = dataTypeName => {
     return new Promise((resolve, reject) => {
         database.get("SELECT id FROM DataType WHERE type = ?", dataTypeName, (err, row) => {
@@ -252,5 +329,6 @@ module.exports = {
     getDataTypeID: getDataTypeID,
     setCurrentSession: setCurrentSession,
     deleteAllDataValue: deleteAllDataValue,
-    getDataValuesBySession: getDataValuesBySession
+    getDataValuesBySession: getDataValuesBySession,
+    addDataValueFromCSV: addDataValueFromCSV
 };

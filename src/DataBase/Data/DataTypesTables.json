@@ -16,9 +16,6 @@
 
 
 
-
-
-
   {"type":  "TensionBatteryHV_NL", "live":  false, "unity": "V"},
   {"type":  "AmperageBatteryHV_NL", "live":  false, "unity": "A"},
   {"type":  "TemperatureBatteryHV_NL", "live":  false, "unity": "°C"},
@@ -32,6 +29,7 @@
   {"type":  "PressureTireBR_NL", "live":  false, "unity": "bar"},
   {"type":  "InverterTemperature_NL", "live":  false, "unity": "°C"},
   {"type":  "TemperatureBatteryLV_NL", "live":  false, "unity": "°C"},
+
 
   {"type":  "SteeringWheelAngle", "live":  false, "unity": "°"},
   {"type":  "AxisInertialSensor", "live":  false, "unity": "°"},
