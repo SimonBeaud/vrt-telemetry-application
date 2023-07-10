@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Progress Bar</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+        }
+
+        h1 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        progress {
+            width: 200px;
+            height: 20px;
+        }
+    </style>
+</head>
+<body>
+<h1>Processing CSV file...</h1>
+<progress id="progressBar" value="0" max="100"></progress>
+
+<script>
+    const progressBar = document.getElementById('progressBar');
+
+    // Recevoir les mises à jour de progression depuis le processus principal
+    const ipcRenderer = window.ipcRenderer;
+    ipcRenderer.on('total-data-count', (event, count) => {
+        const totalDataCount = count;
+        progressBar.max = totalDataCount;
+    });
+
+    // Recevoir les mises à jour de progression depuis le processus principal
+    ipcRenderer.on('update-progress', (event, progress) => {
+        progressBar.value = progress;
+    });
+</script>
+</body>
+</html>

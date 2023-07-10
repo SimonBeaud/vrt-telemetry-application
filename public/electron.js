@@ -16,6 +16,7 @@ const csv = require('csv-parser');
 const fs = require("fs");
 let isConnected = false;
 let mainWindow;
+let progressBarWindow;
 let database = null;
 
 
@@ -453,117 +454,111 @@ ipcMain.on('openFileSelection', (event, arg) => {
 });
 
 */
-
-
+const ProgressBar = require('electron-progressbar');
 ipcMain.on('openFileSelection', (event, arg) => {
     const window = BrowserWindow.getFocusedWindow();
 
-    dialog.showOpenDialog(window, {
-        properties: ['openFile'],
-        filters: [{ name: 'CSV Files', extensions: ['csv'] }],
-    }).then((result) => {
-        if (!result.canceled && result.filePaths.length > 0) {
-            const filePath = result.filePaths[0];
+    dialog
+        .showOpenDialog(window, {
+            properties: ['openFile'],
+            filters: [{ name: 'CSV Files', extensions: ['csv'] }],
+        })
+        .then((result) => {
+            if (!result.canceled && result.filePaths.length > 0) {
+                const filePath = result.filePaths[0];
+                const readStream = fs.createReadStream(filePath);
+                const csvParser = csv({ separator: ';' });
 
-            const readStream = fs.createReadStream(filePath);
-            const csvParser = csv({ separator: ';' });
+                let totalDataCount = 0;
+                let processedDataCount = 0;
 
-            let totalDataCount = 0;
-            let processedDataCount = 0;
-            const logMessages = []; // Tableau pour collecter les messages
+                const progressBarWindow = new BrowserWindow({
+                    parent: window,
+                    modal: true,
+                    show: false,
+                    width: 400,
+                    height: 150,
+                    frame: true,
+                    webPreferences: {
+                        nodeIntegration: true,
+                    },
+                });
 
-            // Créer une promesse manuelle pour attendre les données du fichier CSV
-            const processDataPromise = new Promise((resolve, reject) => {
-                csvParser.on('data', (data) => {
-                    const sessionID = null;
-                    const timeRecordMilliseconds = data[Object.keys(data)[0]];
-                    const timeRecord = moment(parseInt(timeRecordMilliseconds)).toISOString();
+                progressBarWindow.loadURL(
+                    `file://${path.join(__dirname, 'progressBar.html')}`
+                ).then(() => {
+                    progressBarWindow.show();
+                });
 
-                    const columnNames = Object.keys(data);
-                    const values = Object.values(data);
+                const progressBarWebContents = progressBarWindow.webContents;
 
-                    const addDataValuePromises = [];
+                const processDataPromise = new Promise((resolve, reject) => {
+                    csvParser.on('data', (data) => {
+                        const sessionID = null;
+                        const timeRecordMilliseconds = data[Object.keys(data)[0]];
+                        const timeRecord = moment(parseInt(timeRecordMilliseconds)).toISOString();
 
-                    for (let i = 1; i < columnNames.length; i++) {
-                        const columnName = columnNames[i];
-                        const value = values[i];
+                        const columnNames = Object.keys(data);
+                        const values = Object.values(data);
 
-                        if (value !== null && value !== '') {
-                            totalDataCount++;
+                        for (let i = 1; i < columnNames.length; i++) {
+                            const columnName = columnNames[i];
+                            const value = values[i];
 
-                            addDataValuePromises.push(addDataValueFromCSV(sessionID, columnName, value, timeRecord)
-                                .then((lastID) => {
-                                    processedDataCount++;
-                                    const progress = Math.round((processedDataCount / totalDataCount) * 100);
-                                    event.reply('csvProcessingProgress', progress);
-                                    const message = `DataValue added with the id: ${lastID}`;
-                                    logMessages.push(message); // Ajouter le message au tableau
-                                    console.log(message);
-                                })
-                                .catch((err) => {
-                                    console.log('Error when adding the dataValue: ' + err);
-                                    reject(err); // Rejeter la promesse en cas d'erreur
-                                }));
-                        }
-                    }
+                            if (value !== null && value !== '') {
+                                totalDataCount++;
 
-                    // Attendre toutes les promesses d'ajout des valeurs de données
-                    Promise.all(addDataValuePromises)
-                        .then(() => {
-                            if (processedDataCount === totalDataCount) {
-                                resolve(); // Toutes les données ont été traitées, résoudre la promesse
+                                addDataValueFromCSV(sessionID, columnName, value, timeRecord)
+                                    .then((lastID) => {
+                                        processedDataCount++;
+                                        const progress = Math.round((processedDataCount / totalDataCount) * 100);
+
+                                        progressBarWebContents.send('update-progress', progress);
+
+                                        progressBarWindow.webContents.on('did-finish-load', () => {
+                                            progressBarWebContents.send('total-data-count', totalDataCount);
+                                        });
+
+                                        const message = `DataValue added with the id: ${lastID}`;
+                                        console.log(message);
+
+                                        if (processedDataCount === totalDataCount) {
+                                            resolve();
+                                        }
+                                    })
+                                    .catch((err) => {
+                                        console.log('Error when adding the dataValue: ' + err);
+                                        reject(err);
+                                    });
                             }
-                        })
-                        .catch((err) => {
-                            console.log('Error when adding the dataValue: ' + err);
-                            reject(err); // Rejeter la promesse en cas d'erreur
-                        });
+                        }
+                    });
+
+                    csvParser.on('end', () => {
+                        console.log('CSV file processing complete.');
+                    });
+
+                    csvParser.on('error', (err) => {
+                        console.log('Error during CSV file processing: ' + err);
+                        reject(err);
+                    });
                 });
 
-                csvParser.on('end', () => {
-                    console.log('CSV file processing complete.');
-                    resolve(); // Toutes les données ont été traitées, résoudre la promesse
-                });
+                processDataPromise
+                    .then(() => {
+                        progressBarWindow.close();
 
-                csvParser.on('error', (err) => {
-                    console.log('Error during CSV file processing: ' + err);
-                    reject(err); // Rejeter la promesse en cas d'erreur
-                });
-            });
-
-            // Lire les données du fichier CSV
-            readStream.pipe(csvParser);
-
-            // Attendre la fin du traitement des données
-            processDataPromise
-                .then(() => {
-                    // Afficher les messages dans un seul dialog.MessageBox en les faisant défiler
-                    const intervalTime = 1000; // Durée d'affichage de chaque message (en millisecondes)
-                    let currentIndex = 0;
-
-                    const showMessage = () => {
                         dialog.showMessageBox(window, {
                             type: 'info',
                             message: 'CSV file load successfully, please reload the data to see them!',
-                            detail: logMessages[currentIndex],
-                            buttons: ['OK']
-                        }).then(() => {
-                            currentIndex++;
-
-                            if (currentIndex < logMessages.length) {
-                                setTimeout(showMessage, intervalTime);
-                            }
+                            buttons: ['OK'],
                         });
-                    };
+                    })
+                    .catch((err) => {
+                        console.log('Error during CSV file processing: ' + err);
+                    });
 
-                    if (logMessages.length > 0) {
-                        showMessage();
-                    }
-                })
-                .catch((err) => {
-                    // Gérer les erreurs lors du traitement du fichier CSV
-                    console.log('Error during CSV file processing: ' + err);
-                });
-        }
-    });
+                readStream.pipe(csvParser);
+            }
+        });
 });
