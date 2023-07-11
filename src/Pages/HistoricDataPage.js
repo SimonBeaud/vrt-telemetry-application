@@ -13,7 +13,7 @@ function HistoricDataPage(){
     const {session, updateSession} = useContext(SessionContext);
     const sessionId = session.id;
 
-
+/*
     const dataTypesNames = {
         TensionBatteryHV: 1,
         AmperageBatteryHV: 2,
@@ -29,7 +29,7 @@ function HistoricDataPage(){
         InverterTemperature: 12,
         TemperatureBatteryLV: 13,
     };
-
+*/
 
     const [tensionBatteryHV, setTensionBatteryHV] = useState([]);
     const [amperageBatteryHV, setAmperageBatteryHV] = useState([]);
@@ -56,14 +56,13 @@ function HistoricDataPage(){
 
     const fetchData = async () => {
         try {
-            // const response = await ipcRenderer.invoke('get-values-bySession-byType', { dataTypeName, sessionId });
             const response = await ipcRenderer.invoke('get-values-bySession', {sessionId});
 
             if (response.success) {
-                // Créer un objet pour stocker les sous-matrices
+
                 const subMatrices = {};
 
-                // Regrouper les valeurs par DataType_id dans les sous-matrices correspondantes
+
                 response.dataValues.forEach(item => {
                     const dataTypeId = item.DataType_id;
                     if (!subMatrices[dataTypeId]) {
@@ -73,26 +72,21 @@ function HistoricDataPage(){
                     }
                 });
 
-                // Convertir l'objet en tableau de sous-matrices
-                const newDataValues = Object.values(subMatrices);
 
 
-
-
-
-                setTensionBatteryHV(subMatrices[dataTypesNames.TensionBatteryHV] || []);
-                setAmperageBatteryHV(subMatrices[dataTypesNames.AmperageBatteryHV] || []);
-                setTemperatureBatteryHV(subMatrices[dataTypesNames.TemperatureBatteryHV] || []);
-                setEnginePower(subMatrices[dataTypesNames.EnginePower] || []);
-                setEngineTemperature(subMatrices[dataTypesNames.EngineTemperature] || []);
-                setEngineAngularSpeed(subMatrices[dataTypesNames.EngineAngularSpeed] || []);
-                setCarSpeed(subMatrices[dataTypesNames.CarSpeed] || []);
-                setPressureTireFL(subMatrices[dataTypesNames.PressureTireFL] || []);
-                setPressureTireFR(subMatrices[dataTypesNames.PressureTireFR] || []);
-                setPressureTireBL(subMatrices[dataTypesNames.PressureTireBL] || []);
-                setPressureTireBR(subMatrices[dataTypesNames.PressureTireBR] || []);
-                setInverterTemperature(subMatrices[dataTypesNames.InverterTemperature] || []);
-                setTemperatureBatteryLV(subMatrices[dataTypesNames.TemperatureBatteryLV] || []);
+                setTensionBatteryHV(subMatrices[await getDataTypeID("TensionBatteryHV")] || []);
+                setAmperageBatteryHV(subMatrices[await getDataTypeID("AmperageBatteryHV")] || []);
+                setTemperatureBatteryHV(subMatrices[await getDataTypeID("TemperatureBatteryHV")] || []);
+                setEnginePower(subMatrices[await getDataTypeID("EnginePower")] || []);
+                setEngineTemperature(subMatrices[await getDataTypeID("EngineTemperature")] || []);
+                setEngineAngularSpeed(subMatrices[await getDataTypeID("EngineAngularSpeed")] || []);
+                setCarSpeed(subMatrices[await getDataTypeID("CarSpeed")] || []);
+                setPressureTireFL(subMatrices[await getDataTypeID("PressureTireFL")] || []);
+                setPressureTireFR(subMatrices[await getDataTypeID("PressureTireFR")] || []);
+                setPressureTireBL(subMatrices[await getDataTypeID("PressureTireBL")] || []);
+                setPressureTireBR(subMatrices[await getDataTypeID("PressureTireBR")] || []);
+                setInverterTemperature(subMatrices[await getDataTypeID("InverterTemperature")] || []);
+                setTemperatureBatteryLV(subMatrices[await getDataTypeID("TemperatureBatteryLV")] || []);
             } else {
                 console.error(response.error);
             }
@@ -119,64 +113,29 @@ function HistoricDataPage(){
                         <button className="ReloadButton" onClick={deleteAllDataValue}>Delete Data</button>
                     </div>
 
-
-                    <div className="HistoricContainer">
-                        <div className="LeftContainerHistoric">
-                            <div className="ChartHistoricContainer">
-                                <p className="ChartLabel"  id="left">Car speed</p>
-                                <ChartLine data={carSpeed}/>
-                            </div>
-                            <div className="ChartHistoricContainer">
-                                <p className="ChartLabel"  id="left">Pressure tire front left</p>
-                                <ChartLine data={pressureTireFL}/>
-                            </div>
-                            <div className="ChartHistoricContainer">
-                                <p className="ChartLabel"  id="left">Pressure tire front right</p>
-                                <ChartLine data={pressureTireFR}/>
-                            </div>
-                            <div className="ChartHistoricContainer">
-                                <p className="ChartLabel"  id="left">Pressure tire back left</p>
-                                <ChartLine data={pressureTireBL}/>
-                            </div>
-                            <div className="ChartHistoricContainer">
-                                <p className="ChartLabel"  id="left">Pressure tire back right</p>
-                                <ChartLine data={pressureTireBR}/>
-                            </div>
-                            <div className="ChartHistoricContainer">
-                                <p className="ChartLabel"  id="left">Engine speed</p>
-                                <ChartLine data={engineAngularSpeed}/>
-                            </div>
-                            <div className="ChartHistoricContainer">
-                                <p className="ChartLabel"  id="left">Engine power</p>
-                                <ChartLine data={enginePower}/>
-                            </div>
-                        </div>
-                        <div className="RightContainerHistoric">
-                            <div className="ChartHistoricContainer">
-                                <p className="ChartLabel"  id="left">Temperature Engine</p>
-                                <ChartLine data={engineTemperature}/>
-                            </div>
-                            <div className="ChartHistoricContainer">
-                                <p className="ChartLabel"  id="left">Temperature Inverter</p>
-                                <ChartLine data={inverterTemperature}/>
-                            </div>
-                            <div className="ChartHistoricContainer">
-                                <p className="ChartLabel"  id="left">Temperature high voltage battery</p>
-                                <ChartLine data={temperatureBatteryHV}/>
-                            </div>
-                            <div className="ChartHistoricContainer">
-                                <p className="ChartLabel"  id="left">Temperature low voltage battery</p>
-                                <ChartLine data={temperatureBatteryLV}/>
-                            </div>
-                            <div className="ChartHistoricContainer">
-                                <p className="ChartLabel"  id="left">Tension high voltage battery</p>
-                                <ChartLine data={tensionBatteryHV}/>
-                            </div>
-                            <div className="ChartHistoricContainer">
-                                <p className="ChartLabel"  id="left">Amperage high voltage battery</p>
-                                <ChartLine data={amperageBatteryHV}/>
-                            </div>
-                        </div>
+                    <div className="ChartExternalContainer">
+                        <p className="ChartLabel"  id="left">Car speed</p>
+                        <LineChartStatic datasets={[carSpeed]}  datasetNames={["Car speed"]} width={900} height={450} />
+                    </div>
+                    <div className="ChartExternalContainer">
+                        <p className="ChartLabel"  id="left">Tyres pressure</p>
+                        <LineChartStatic datasets={[pressureTireFL, pressureTireFR, pressureTireBL ,pressureTireBR ]}  datasetNames={["Front left", "Front right", "Back left", "Back right"]} width={900} height={450} />
+                    </div>
+                    <div className="ChartExternalContainer">
+                        <p className="ChartLabel"  id="left">Temperatures</p>
+                        <LineChartStatic datasets={[engineTemperature, inverterTemperature, temperatureBatteryHV ,temperatureBatteryLV ]}  datasetNames={["Engine", "Inverter", "Battery HV", "Battery LV"]} width={900} height={450} />
+                    </div>
+                    <div className="ChartExternalContainer">
+                        <p className="ChartLabel"  id="left">Power</p>
+                        <LineChartStatic datasets={[enginePower]}  datasetNames={["Engine"]} width={900} height={450} />
+                    </div>
+                    <div className="ChartExternalContainer">
+                        <p className="ChartLabel"  id="left">Engine speed</p>
+                        <LineChartStatic datasets={[engineAngularSpeed]}  datasetNames={["Angular speed"]} width={900} height={450} />
+                    </div>
+                    <div className="ChartExternalContainer">
+                        <p className="ChartLabel"  id="left">Battery HV</p>
+                        <LineChartStatic datasets={[tensionBatteryHV, amperageBatteryHV ]}  datasetNames={["Tension", "Amperage"]} width={900} height={450} />
                     </div>
                 </div>
             </div>
@@ -185,3 +144,14 @@ function HistoricDataPage(){
 }
 
 export default HistoricDataPage;
+
+
+async function getDataTypeID(dataTypeName) {
+    const response = await ipcRenderer.invoke("get-datatype-id", { dataTypeName });
+    if (response.success) {
+        return response.dataTypeID;
+    } else {
+        console.error(response.error);
+        return null;
+    }
+}
