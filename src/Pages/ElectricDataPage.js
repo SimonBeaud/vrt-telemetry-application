@@ -10,17 +10,17 @@ function ElectricDataPage(){
     const sessionId = session.id;
 
     const dataTypesNames = {
-        EnginePower_NL: 17,
-        CoupleEngine: 39,
-        EngineAngularSpeed_NL: 19,
-        CarSpeed_NL: 20,
-        TensionBatteryHV_NL: 14,
-        AmperageBatteryHV_NL: 15,
-        TemperatureCoolingSystem: 42,
-        EngineTemperature_NL: 18,
-        InverterTemperature_NL: 25,
-        TemperatureBatteryHV_NL: 16,
-        TemperatureBatteryLV_NL: 26,
+        EnginePower_NL: 20,
+        CoupleEngine: 34,
+        EngineAngularSpeed_NL: 14,
+        CarSpeed_NL: 15,
+        TensionBatteryHV_NL: 9,
+        AmperageBatteryHV_NL: 10,
+        TemperatureCoolingSystem: 37,
+        EngineTemperature_NL: 13,
+        InverterTemperature_NL: 42,
+        TemperatureBatteryHV_NL: 11,
+        TemperatureBatteryLV_NL: 21,
     }
 
 

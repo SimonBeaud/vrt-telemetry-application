@@ -8,7 +8,7 @@ export default function TabBar({navigateTo}){
     const [activeTab, setActiveTab] = useState('');
 
     const handleFileSelection = () => {
-        ipcRenderer.send('openFileSelection');
+        ipcRenderer.send('add-datavalues-csv');
     };
 
     return(

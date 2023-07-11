@@ -12,7 +12,7 @@ export default function Navbar({navigateTo}){
     const [isConnected, setIsConnected] = useState(false);
 
     useEffect(() => {
-        ipcRenderer.on('ConnectedStatus', (event, isConnected) => {
+        ipcRenderer.on('connected-status', (event, isConnected) => {
             setIsConnected(isConnected);
             console.log("isconnected value: "+isConnected);
         });

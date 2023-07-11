@@ -47,7 +47,7 @@ function HistoricDataPage(){
 
 
     const deleteAllDataValue = () => {
-        ipcRenderer.invoke('deleteDataValues').then();
+        ipcRenderer.invoke('delete-data-value', {sessionId}).then();
     };
 
 
