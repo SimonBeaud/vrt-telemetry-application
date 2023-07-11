@@ -1,132 +1,335 @@
-import React, {useContext, useEffect, useState} from 'react'
-import LineChartStatic from "../Components/LineChartStatic";
-import {SessionContext} from "../SessionContext";
-import {ipcRenderer} from "electron";
 
 
-function ElectricDataPage(){
-
-    //Variables declaration
-    const {session, setSession} = useContext(SessionContext);
-    const sessionID = session.id;
-
-    const dataTypesNames = {
-        TensionBatteryHV: 1,
-        EnginePower_NL: 17,
-        CoupleEngine: 39,
-        EngineAngularSpeed_NL: 19,
-        CarSpeed_NL: 20,
-        TensionBatteryHV_NL: 14,
-        AmperageBatteryHV_NL: 15,
-        TemperatureCoolingSystem: 42,
-        EngineTemperature_NL: 18,
-        InverterTemperature_NL: 25,
-        TemperatureBatteryHV_NL: 16,
-        TemperatureBatteryLV_NL: 26,
-    }
-
-    const [tensionBatteryHV, setTensionBatteryHV] = useState([]);
-    const [enginePower_NL, setEnginePower_NL] = useState([]);
-    const [coupleEngine, setCoupleEngine] = useState([]);
-    const [engineAngularSpeed_NL, setEngineAngularSpeed_NL] = useState([]);
-    const [carSpeed_NL, setCarSpeed_NL] = useState([]);
-    const [tensionBatteryHV_NL, setTensionBatteryHV_NL] = useState([]);
-    const [amperageBatteryHV_NL, setAmperageBatteryHV_NL] = useState([]);
-    const [temperatureCoolingSystem, setTemperatureCoolingSystem] = useState([]);
-    const [engineTemperature_NL, setEngineTemperature_NL] = useState([]);
-    const [inverterTemperature_NL, setInverterTemperature_NL] = useState([]);
-    const [temperatureBatteryHV_NL, setTemperatureBatteryHV_NL] = useState([]);
-    const [temperatureBatteryLV_NL, setTemperatureBatteryLV_NL] = useState([]);
+const sqlite3 = require('sqlite3').verbose();
+const path = require('path');
+const electron = require('electron');
 
 
-    //Get the data values from the electron.js processes
+let databasePath=null;
+let database;
+let currentSessionID;
 
-    const fetchData = async () => {
 
-        try{
-            const response = await ipcRenderer.invoke('get-values-bySession', {sessionID});
+//######################################################################################################################
+//Database Creation
 
-            if (response.success) {
-                const subMatrices = {};
 
-                response.dataValues.forEach(item => {
-                    const dataTypeId = item.DataType_id;
-                    if (!subMatrices[dataTypeId]) {
-                        subMatrices[dataTypeId] = [item];
-                    } else {
-                        subMatrices[dataTypeId].push(item);
-                    }
-                });
+const getDatabase = ()=>{
 
-                const newDataValues = Object.values(subMatrices);
+    if(!database){
 
-                setTensionBatteryHV(subMatrices[dataTypesNames.TensionBatteryHV] || []);
-                setEnginePower_NL(subMatrices[dataTypesNames.EnginePower_NL] || []);
-                setCoupleEngine(subMatrices[dataTypesNames.CoupleEngine] || []);
-                setEngineAngularSpeed_NL(subMatrices[dataTypesNames.EngineAngularSpeed_NL] || []);
-                setCarSpeed_NL(subMatrices[dataTypesNames.CarSpeed_NL] || []);
-                setTensionBatteryHV_NL(subMatrices[dataTypesNames.TensionBatteryHV_NL] || []);
-                setAmperageBatteryHV_NL(subMatrices[dataTypesNames.AmperageBatteryHV_NL] || []);
-                setTemperatureCoolingSystem(subMatrices[dataTypesNames.TemperatureCoolingSystem] || []);
-                setEngineTemperature_NL(subMatrices[dataTypesNames.EngineTemperature_NL] || []);
-                setInverterTemperature_NL(subMatrices[dataTypesNames.InverterTemperature_NL] || []);
-                setTemperatureBatteryHV_NL(subMatrices[dataTypesNames.TemperatureBatteryHV_NL] || []);
-                setTemperatureBatteryLV_NL(subMatrices[dataTypesNames.TemperatureBatteryLV_NL] || []);
-
-                console.log("Tension batteryHV" +dataTypesNames.TensionBatteryHV_NL);
-
-            } else {
-                console.error(response.error);
-            }
-        } catch (error) {
-            console.error(error);
+        if(!databasePath){
+            databasePath = path.resolve(electron.app.getPath('userData'), 'VRT-database.db');
         }
-    };
 
-    useEffect(() => {
-        fetchData();
-    }, []);
+        database = new sqlite3.Database(databasePath);
 
+        //Create database tables
+        database.serialize(()=>{
+            database.run('CREATE TABLE IF NOT EXISTS session (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, pilot TEXT, date TEXT)');
+            database.run('CREATE TABLE IF NOT EXISTS DataType (id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT, live BOOLEAN, unity TEXT)');
+            database.run('CREATE TABLE IF NOT EXISTS DataValue (id INTEGER PRIMARY KEY AUTOINCREMENT, session_id INTEGER, DataType_id INTEGER, DataRecord REAL, timeRecord DATETIME)');
 
-    return(
-        <header className="App-header">
-            <div className="TabContainer">
-                <button className="ReloadButton" onClick={fetchData}>Reload Data</button>
-                <div className="ChartExternalContainer">
-                    <p className="ChartLabel"  id="left">Car speed</p>
-                    <LineChartStatic datasets={[tensionBatteryHV]} />
-                </div>
-                <div className="ChartExternalContainer">
-                    <p className="ChartLabel"  id="left">Car speed</p>
-                    <LineChartStatic datasets={[carSpeed_NL]} />
-                </div>
-                <div className="ChartExternalContainer">
-                    <p className="ChartLabel"  id="left">Temperatures</p>
-                    <LineChartStatic datasets={[engineTemperature_NL, inverterTemperature_NL, temperatureBatteryHV_NL, temperatureBatteryLV_NL, temperatureCoolingSystem]} />
-                </div>
-                <div className="ChartExternalContainer">
-                    <p className="ChartLabel"  id="left">Engine Power</p>
-                    <LineChartStatic datasets={[enginePower_NL]} />
-                </div>
-                <div className="ChartExternalContainer">
-                    <p className="ChartLabel"  id="left">Engine Couple</p>
-                    <LineChartStatic datasets={[coupleEngine]} />
-                </div>
-                <div className="ChartExternalContainer">
-                    <p className="ChartLabel"  id="left">Engine Speed</p>
-                    <LineChartStatic datasets={[engineAngularSpeed_NL]} />
-                </div>
-                <div className="ChartExternalContainer">
-                    <p className="ChartLabel"  id="left">Tension Battery HV</p>
-                    <LineChartStatic datasets={[tensionBatteryHV_NL]} />
-                </div>
-                <div className="ChartExternalContainer">
-                    <p className="ChartLabel"  id="left">Courant Battery HV</p>
-                    <LineChartStatic datasets={[amperageBatteryHV_NL]} />
-                </div>
-            </div>
-        </header>
-    )
+        });
+    }
+    return database;
 }
 
-export default ElectricDataPage;
+
+
+
+//######################################################################################################################
+//Data Type operation
+
+
+//Add the DataTYpe in the Database from the DataTypesTables.json:
+const addDataType = (DataTypesTable)=>{
+    return new Promise((resolve, reject)=>{
+
+        const RequestStatement = database.prepare("INSERT INTO DataType (type, live, unity) SELECT ?, ?, ? WHERE NOT EXISTS (SELECT 1 FROM DataType WHERE type = ?)");
+        DataTypesTable.forEach((item)=>{
+            RequestStatement.run(item.type, item.live, item.unity);
+        });
+
+        RequestStatement.finalize((err)=>{
+            if(err){
+                reject(err);
+            }else{
+                resolve();
+            }
+        })
+    });
+};
+
+
+const getDataTypeID = dataTypeName => {
+    return new Promise((resolve, reject) => {
+        database.get("SELECT id FROM DataType WHERE type = ?", dataTypeName, (err, row) => {
+            if (err) {
+                reject(err);
+            } else if (!row) {
+                reject(new Error("DataType not found"));
+            } else {
+                resolve(row.id);
+            }
+        });
+    });
+};
+
+
+//######################################################################################################################
+//DataValue Operation
+
+//Add DataValue in the Database:
+
+//GC
+const addDataValue = (sessionID, dataTypeName, dataRecord, timeRecord) => {
+
+    sessionID=currentSessionID;
+
+    return getDataTypeID(dataTypeName)
+        .then(dataTypeID => {
+            //   console.log("DATATYPE IN THE DB: " + dataTypeID);
+
+            if (dataTypeID === null) {
+                throw new Error("DataType not found");
+            }
+
+            return new Promise((resolve, reject) => {
+                database.run(
+                    "INSERT INTO DataValue(session_id, DataType_id, DataRecord, timeRecord) VALUES(?,?,?,?)",
+                    [sessionID, dataTypeID, dataRecord, timeRecord],
+                    function(err) {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(this.lastID);
+                        }
+                    }
+                );
+            });
+        })
+        .then(result => {
+            //      console.log("datavalue added with success !");
+            return result;
+        })
+        .catch(err => {
+            //console.log("Error when adding the datavalue");
+            throw err;
+        });
+};
+
+
+//add data value from CSV
+//GC
+
+const addDataValueFromCSV = (sessionID, dataTypeName, dataRecord, timeRecord) => {
+    sessionID = currentSessionID;
+
+    return getDataTypeID(dataTypeName)
+        .then((dataTypeID) => {
+            if (dataTypeID === null) {
+                throw new Error('DataType not found');
+            }
+
+            return new Promise((resolve, reject) => {
+                database.serialize(() => {
+
+                    database.run('BEGIN TRANSACTION');
+
+                    const insertStatement = database.prepare(
+                        'INSERT INTO DataValue(session_id, DataType_id, DataRecord, timeRecord) VALUES (?, ?, ?, ?)'
+                    );
+
+                    insertStatement.run(sessionID, dataTypeID, dataRecord, timeRecord, function (err) {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(this.lastID);
+                        }
+                    });
+
+                    insertStatement.finalize((err) => {
+                        if (err) {
+                            reject(err);
+                        }
+                    });
+
+                    database.run('COMMIT');
+
+                });
+            });
+        })
+        .then((result) => {
+            console.log('datavalue added with success !');
+            return result;
+        })
+        .catch((err) => {
+            console.log('Error when adding the datavalue');
+            throw err;
+        });
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//Get DataValue By Data Type
+const getDataValuesBySessionAndDataType = (dataTypeName, sessionId) => {
+    return new Promise((resolve, reject) =>{
+        getDataTypeID(dataTypeName).then((dataTypeID) =>{
+            database.all("SELECT DataValue.DataRecord, DataValue.timeRecord, DataValue.DataType_id FROM DataValue INNER JOIN DataType ON DataValue.DataType_id = DataType.id WHERE DataType.type = ? AND DataValue.session_id = ?",
+                [dataTypeName, sessionId],
+                (err, rows) => {
+                    if(err) {
+                        reject(err);
+                    }else {
+                        resolve(rows);
+                    }
+                }
+            );
+        })
+            .catch((err) => {
+                reject(err);
+            });
+    });
+}
+
+//GC
+const getDataValuesBySession = (sessionId) => {
+    return new Promise((resolve, reject) => {
+        database.all(
+            "SELECT DataValue.DataRecord, DataValue.timeRecord, DataValue.DataType_id FROM DataValue WHERE DataValue.session_id = ?",
+            [sessionId],
+            (err, rows) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(rows);
+                }
+            }
+        );
+    });
+};
+
+
+
+
+
+
+
+const deleteAllDataValue = () => {
+    return new Promise((resolve, reject) => {
+        console.log("everything deleted")
+        database.run("DELETE FROM DataValue", function(err) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(this.changes);
+            }
+        });
+    });
+};
+
+
+
+
+
+
+
+
+//######################################################################################################################
+//Session operations
+
+
+const setCurrentSession = (SessionID)=>{
+    currentSessionID = SessionID;
+    // console.log("session in the db: "+currentSessionID);
+
+    return currentSessionID;
+}
+
+
+
+//GC
+const getSessions = () => {
+    return new Promise((resolve, reject) => {
+        database.all("SELECT * FROM session", [], (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+};
+
+
+//add a session in the DB
+const addSession = (name, pilot, date)=>{
+    return new Promise((resolve, reject)=>{
+        database.run("INSERT INTO session (name, pilot, date) VALUES (?,?,?)", [name, pilot, date], function (err){
+            if(err){
+                reject(err);
+            }else{
+                resolve(this.lastID);
+            }
+        });
+    });
+};
+
+const deleteAllSessions = () => {
+    return new Promise((resolve, reject) => {
+        console.log("everything deleted")
+        database.run("DELETE FROM session", function(err) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(this.changes);
+            }
+        });
+    });
+};
+
+
+//######################################################################################################################
+
+module.exports = {
+    getDatabase: getDatabase,
+    getSessions: getSessions,
+    addSession: addSession,
+    deleteAllSessions: deleteAllSessions,
+    addDataType: addDataType,
+    addDataValue: addDataValue,
+    getDataValuesBySessionAndDataType: getDataValuesBySessionAndDataType,
+    getDataTypeID: getDataTypeID,
+    setCurrentSession: setCurrentSession,
+    deleteAllDataValue: deleteAllDataValue,
+    getDataValuesBySession: getDataValuesBySession,
+    addDataValueFromCSV: addDataValueFromCSV
+};

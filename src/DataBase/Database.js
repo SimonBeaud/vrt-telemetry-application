@@ -1,192 +1,141 @@
-
-
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const electron = require('electron');
 
 
-let databasePath=null;
+//Variable declaration
+
+let databasePath = null;
 let database;
 let currentSessionID;
 
 
 //######################################################################################################################
-//Database Creation
+//Creation of the SQLite Database
 
-
-const getDatabase = ()=>{
-
+const getDatabase = () => {
     if(!database){
 
+        //database path creation
         if(!databasePath){
             databasePath = path.resolve(electron.app.getPath('userData'), 'VRT-database.db');
         }
 
         database = new sqlite3.Database(databasePath);
 
-        //Create database tables
-        database.serialize(()=>{
-            database.run('CREATE TABLE IF NOT EXISTS session (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, pilot TEXT, date TEXT)');
-            database.run('CREATE TABLE IF NOT EXISTS DataType (id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT, live BOOLEAN, unity TEXT)');
-            database.run('CREATE TABLE IF NOT EXISTS DataValue (id INTEGER PRIMARY KEY AUTOINCREMENT, session_id INTEGER, DataType_id INTEGER, DataRecord REAL, timeRecord DATETIME)');
-
+        //Database tables creation
+        database.serialize(() =>{
+            database.run('CREATE TABLE IF NOT EXISTS session(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, pilot TEXT, date TEXT)');
+            database.run('CREATE TABLE IF NOT EXISTS DataType(id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT, live BOOLEAN, unity TEXT)');
+            database.run('CREATE TABLE IF NOT EXISTS DataValue(id INTEGER PRIMARY KEY AUTOINCREMENT, session_id INTEGER, DataType_id INTEGER, DataRecord REAL, timeRecord DATETIME)');
         });
     }
     return database;
 }
 
 
+//#########################################################################################
+//CRUD Operations
 
 
-//######################################################################################################################
-//Data Type operation
+//__________________________________________
+//Session operations
+//__________________________________________
 
 
-//Add the DataTYpe in the Database from the DataTypesTables.json:
-const addDataType = (DataTypesTable)=>{
-    return new Promise((resolve, reject)=>{
-
-        const RequestStatement = database.prepare("INSERT INTO DataType (type, live, unity) SELECT ?, ?, ? WHERE NOT EXISTS (SELECT 1 FROM DataType WHERE type = ?)");
-        DataTypesTable.forEach((item)=>{
-            RequestStatement.run(item.type, item.live, item.unity);
-        });
-
-        RequestStatement.finalize((err)=>{
+//Insert a new session
+const addSession = (name, pilot, date) =>{
+    return new Promise((resolve, reject) =>{
+        database.run("INSERT INTO session (name, pilot, date) VALUES (?,?,?)", [name, pilot, date], function (err){
             if(err){
                 reject(err);
-            }else{
-                resolve();
+            }else {
+                resolve(this.lastID);
             }
-        })
+        });
+    });
+}
+
+
+
+//Get all sessions
+const getAllSessions = () => {
+    return new Promise((resolve, reject) =>{
+        database.all("SELECT * FROM session", [], (err, rows) =>{
+            if(err){
+                reject(err);
+            }else {
+                resolve(rows);
+            }
+        });
     });
 };
 
 
 
-
-
-//######################################################################################################################
-//DataValue Operation
-
-//Add DataValue in the Database:
-
-//GC
-const addDataValue = (sessionID, dataTypeName, dataRecord, timeRecord) => {
-
-    sessionID=currentSessionID;
-
-    return getDataTypeID(dataTypeName)
-        .then(dataTypeID => {
-         //   console.log("DATATYPE IN THE DB: " + dataTypeID);
-
-            if (dataTypeID === null) {
-                throw new Error("DataType not found");
+//Delete one session by ID
+const deleteSession = (sessionID) =>{
+    return new Promise((resolve, reject) =>{
+        database.run("DELETE FROM session WHERE id = ?", [sessionID], function (err){
+            if(err){
+                reject(err);
+            }else {
+                resolve(this.changes);
             }
+        });
+    });
+};
 
-            return new Promise((resolve, reject) => {
-                database.run(
-                    "INSERT INTO DataValue(session_id, DataType_id, DataRecord, timeRecord) VALUES(?,?,?,?)",
-                    [sessionID, dataTypeID, dataRecord, timeRecord],
-                    function(err) {
-                        if (err) {
-                            reject(err);
-                        } else {
-                            resolve(this.lastID);
-                        }
+
+//Set Session to the context
+const setCurrentSession = (SessionID) =>{
+    currentSessionID = SessionID;
+    return currentSessionID;
+}
+
+
+//__________________________________________
+//DataType operations
+//__________________________________________
+
+//Add dataType from the configuration file and check if it doesn't already exist
+const addDataType = (DataTypesTable) =>{
+    return new Promise((resolve, reject) =>{
+        database.serialize(() =>{
+            database.run("BEGIN TRANSACTION");
+            DataTypesTable.forEach((item) =>{
+                const RequestSelect = database.prepare("SELECT type FROM DataType WHERE type = ?");
+                RequestSelect.get(item.type, (err, row) =>{
+                    if(err){
+                        reject(err);
+                        return;
                     }
-                );
-            });
-        })
-        .then(result => {
-      //      console.log("datavalue added with success !");
-            return result;
-        })
-        .catch(err => {
-            //console.log("Error when adding the datavalue");
-            throw err;
-        });
-};
-
-
-//add data value from CSV
-//GC
-
-const addDataValueFromCSV = (sessionID, dataTypeName, dataRecord, timeRecord) => {
-    sessionID = currentSessionID;
-
-    return getDataTypeID(dataTypeName)
-        .then((dataTypeID) => {
-            if (dataTypeID === null) {
-                throw new Error('DataType not found');
-            }
-
-            return new Promise((resolve, reject) => {
-                database.serialize(() => {
-
-                    database.run('BEGIN TRANSACTION');
-
-                    const insertStatement = database.prepare(
-                        'INSERT INTO DataValue(session_id, DataType_id, DataRecord, timeRecord) VALUES (?, ?, ?, ?)'
-                    );
-
-                    insertStatement.run(sessionID, dataTypeID, dataRecord, timeRecord, function (err) {
-                        if (err) {
-                            reject(err);
-                        } else {
-                            resolve(this.lastID);
-                        }
-                    });
-
-                    insertStatement.finalize((err) => {
-                        if (err) {
-                            reject(err);
-                        }
-                    });
-
-                    database.run('COMMIT');
-
+                    if(!row){
+                        const RequestInsert = database.prepare("INSERT INTO DataType (type, live, unity) VALUES (?, ?, ?)");
+                        RequestInsert.run(item.type, item.live, item.unity);
+                        RequestInsert.finalize();
+                    }
                 });
+                RequestSelect.finalize();
             });
-        })
-        .then((result) => {
-            console.log('datavalue added with success !');
-            return result;
-        })
-        .catch((err) => {
-            console.log('Error when adding the datavalue');
-            throw err;
+            database.run("COMMIT", (err) =>{
+                if(err){
+                    reject(err);
+                }
+                else {
+                    resolve();
+                }
+            });
         });
-};
+    });
+}
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//Get DataTypeID by Name
 const getDataTypeID = dataTypeName => {
     return new Promise((resolve, reject) => {
-        database.get("SELECT id FROM DataType WHERE type = ?", dataTypeName, (err, row) => {
+        database.get("SELECT id FROM DataType WHERE type = ?", dataTypeName, (err, row) =>{
             if (err) {
                 reject(err);
             } else if (!row) {
@@ -199,116 +148,97 @@ const getDataTypeID = dataTypeName => {
 };
 
 
-//Get DataValue By Data Type
-const getDataValuesBySessionAndDataType = (dataTypeName, sessionId) => {
+
+
+
+//__________________________________________
+//DataValue operations
+//__________________________________________
+
+//add a new DataValue
+const addDataValue = (sessionID, dataTypeName, dataRecord, timeRecord) =>{
+    sessionID = currentSessionID;
+
+    return getDataTypeID(dataTypeName).then((dataTypeID) =>{
+        if(dataTypeID === null){
+            throw new Error('DataType do not exists !');
+        }
+
+        return new Promise((resolve, reject) =>{
+            database.serialize(() =>{
+
+                //using transaction to add data faster
+                database.run('BEGIN TRANSACTION');
+                const Request = database.prepare('INSERT INTO DataValue(session_id, DataType_id, DataRecord, timeRecord) VALUES (?, ?, ?, ?)')
+                Request.run(sessionID, dataTypeID, dataRecord, timeRecord, function (err){
+                    if(err){
+                        reject(err);
+                    }else {
+                        resolve(this.lastID);
+                    }
+                });
+                Request.finalize((err) =>{
+                    if(err){
+                        reject(err);
+                    }
+                });
+
+                database.run('COMMIT');
+            });
+        });
+    }).then((result) =>{
+        return result;
+    }).catch((err) =>{
+        throw err;
+    });
+};
+
+
+
+//get Data Values by session and DataType
+const getDataValues = (dataTypeName, sessionId) =>{
     return new Promise((resolve, reject) =>{
         getDataTypeID(dataTypeName).then((dataTypeID) =>{
             database.all("SELECT DataValue.DataRecord, DataValue.timeRecord, DataValue.DataType_id FROM DataValue INNER JOIN DataType ON DataValue.DataType_id = DataType.id WHERE DataType.type = ? AND DataValue.session_id = ?",
-               [dataTypeName, sessionId],
-                (err, rows) => {
-                    if(err) {
+                [dataTypeName, sessionId], function(err, rows){
+                    if(err){
                         reject(err);
-                    }else {
-                        resolve(rows);
+                    }else{
+                        reject(rows);
                     }
-                }
-                );
-        })
-            .catch((err) => {
-                reject(err);
-            });
-    });
-}
-
-//GC
-const getDataValuesBySession = (sessionId) => {
-    return new Promise((resolve, reject) => {
-        database.all(
-            "SELECT DataValue.DataRecord, DataValue.timeRecord, DataValue.DataType_id FROM DataValue WHERE DataValue.session_id = ?",
-            [sessionId],
-            (err, rows) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(rows);
-                }
-            }
-        );
-    });
-};
-
-
-
-
-
-
-
-const deleteAllDataValue = () => {
-    return new Promise((resolve, reject) => {
-        console.log("everything deleted")
-        database.run("DELETE FROM DataValue", function(err) {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(this.changes);
-            }
+                });
+        }).catch((err) =>{
+            reject(err);
         });
     });
 };
 
 
 
-
-
-
-
-
-//######################################################################################################################
-//Session operations
-
-const setCurrentSession = (SessionID)=>{
-    currentSessionID = SessionID;
-   // console.log("session in the db: "+currentSessionID);
-
-    return currentSessionID;
-}
-
-
-
-//GC
-const getSessions = () => {
-    return new Promise((resolve, reject) => {
-        database.all("SELECT * FROM session", [], (err, rows) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(rows);
-            }
-        });
+//get Data Values by session
+const getDataValueBySession = (sessionId) =>{
+    return new Promise((resolve, reject) =>{
+       database.all(
+           "SELECT DataValue.DataRecord, DataValue.timeRecord, DataValue.DataType_id FROM DataValue WHERE DataValue.session_id = ?",
+           [sessionId], function(err, rows){
+               if(err){
+                   reject(err);
+               }else {
+                   resolve(rows);
+               }
+           }
+       );
     });
 };
 
 
-//add a session in the DB
-const addSession = (name, pilot, date)=>{
-    return new Promise((resolve, reject)=>{
-        database.run("INSERT INTO session (name, pilot, date) VALUES (?,?,?)", [name, pilot, date], function (err){
+//Delete Data Values by session
+const deleteDataValues = (sessionID) =>{
+    return new Promise((resolve, reject) =>{
+        database.run("DELETE FROM DataValue WHERE session_id = ?", [sessionID], function(err){
             if(err){
                 reject(err);
-            }else{
-                resolve(this.lastID);
-            }
-        });
-    });
-};
-
-const deleteAllSessions = () => {
-    return new Promise((resolve, reject) => {
-        console.log("everything deleted")
-        database.run("DELETE FROM session", function(err) {
-            if (err) {
-                reject(err);
-            } else {
+            }else {
                 resolve(this.changes);
             }
         });
@@ -316,19 +246,22 @@ const deleteAllSessions = () => {
 };
 
 
-//######################################################################################################################
+//#########################################################################################
+//Export functions
 
 module.exports = {
-    getDatabase: getDatabase,
-    getSessions: getSessions,
-    addSession: addSession,
-    deleteAllSessions: deleteAllSessions,
-    addDataType: addDataType,
-    addDataValue: addDataValue,
-    getDataValuesBySessionAndDataType: getDataValuesBySessionAndDataType,
-    getDataTypeID: getDataTypeID,
-    setCurrentSession: setCurrentSession,
-    deleteAllDataValue: deleteAllDataValue,
-    getDataValuesBySession: getDataValuesBySession,
-    addDataValueFromCSV: addDataValueFromCSV
-};
+    getDatabase,
+
+    addSession,
+    getAllSessions,
+    deleteSession,
+    setCurrentSession,
+
+    addDataType,
+    getDataTypeID,
+
+    addDataValue,
+    getDataValues,
+    getDataValueBySession,
+    deleteDataValues
+}

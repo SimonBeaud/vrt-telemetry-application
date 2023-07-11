@@ -31,19 +31,24 @@
 <progress id="progressBar" value="0" max="100"></progress>
 
 <script>
-    const progressBar = document.getElementById('progressBar');
+    const { ipcRenderer } = window.require('electron');
 
-    // Recevoir les mises à jour de progression depuis le processus principal
-    const ipcRenderer = window.ipcRenderer;
     ipcRenderer.on('total-data-count', (event, count) => {
         const totalDataCount = count;
+        const progressBar = document.getElementById('progressBar');
         progressBar.max = totalDataCount;
     });
 
     // Recevoir les mises à jour de progression depuis le processus principal
     ipcRenderer.on('update-progress', (event, progress) => {
+        const progressBar = document.getElementById('progressBar');
         progressBar.value = progress;
     });
 </script>
 </body>
 </html>
+
+
+
+
+

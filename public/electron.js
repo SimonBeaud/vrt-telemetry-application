@@ -5,8 +5,8 @@ const path = require("path");
 const screen = electron.screen;
 const app = electron.app;
 const server = require("../src/Server/UDPServer");
-const {getDatabase, addSession, deleteAllSessions, addDataType, setCurrentSession, getDataValuesBySessionAndDataType,
-    deleteAllDataValue, getDataValuesBySession, addDataValue, getDataTypeID, addDataValueFromCSV
+const {getDatabase, addSession, deleteSession, addDataType, setCurrentSession, getDataValues,
+    deleteDataValues, getDataValueBySession, addDataValue, getDataTypeID, getAllSessions
 } = require('../src/DataBase/Database');
 const { getSessions } = require('../src/DataBase/Database');
 const { ipcMain, dialog, BrowserWindow } = require('electron');
@@ -36,7 +36,7 @@ function createWindow() {
 
     //init database
     database = getDatabase();
-    addDataType(DataTypeJson);
+    addDataType(DataTypeJson).then();
     console.log("isConnected: "+isConnected);
 
     ipcMain.on('start-server', () => {
@@ -109,7 +109,7 @@ const SendCurrentSessionToDB = async(sessionId)=>{
 
 //generate code
 ipcMain.handle('get-sessions', async () => {
-    return getSessions();
+    return getAllSessions();
 });
 
 
@@ -127,18 +127,20 @@ ipcMain.handle('add-session', async(event, args)=>{
 
 
 ipcMain.handle('delete-sessions', async ()=>{
-    return deleteAllSessions();
+    return deleteSession();
 })
 
-ipcMain.handle('deleteDataValues', async ()=> {
-    return deleteAllDataValue();
+ipcMain.handle('deleteDataValues', async (event, args)=> {
+    const{sessionId}=args;
+
+    return deleteDataValues(sessionId);
 })
 
 
 ipcMain.handle("get-values-bySession", async(event, args)=>{
     const{sessionId}=args;
     try{
-        const dataValues=await getDataValuesBySession(sessionId);
+        const dataValues=await getDataValueBySession(sessionId);
         return{success: true, dataValues};
 
     }catch (err){
@@ -151,7 +153,7 @@ ipcMain.handle("get-values-bySession", async(event, args)=>{
 ipcMain.handle("get-values-bySession-byType", async (event, args)=>{
     const{dataTypeName, sessionId}=args;
     try{
-        const dataValues = await getDataValuesBySessionAndDataType(dataTypeName, sessionId);
+        const dataValues = await getDataValues(dataTypeName, sessionId);
         return{success: true, dataValues};
 
     }catch (err){
@@ -508,7 +510,7 @@ ipcMain.on('openFileSelection', (event, arg) => {
                             if (value !== null && value !== '') {
                                 totalDataCount++;
 
-                                addDataValueFromCSV(sessionID, columnName, value, timeRecord)
+                                addDataValue(sessionID, columnName, value, timeRecord)
                                     .then((lastID) => {
                                         processedDataCount++;
                                         const progress = Math.round((processedDataCount / totalDataCount) * 100);
@@ -562,3 +564,11 @@ ipcMain.on('openFileSelection', (event, arg) => {
             }
         });
 });
+
+
+
+
+
+
+
+
