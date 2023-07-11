@@ -9,16 +9,6 @@ function GeneralExternalDataPage(){
     const {session, updateSession} = useContext(SessionContext);
     const sessionId = session.id;
 
-    const dataTypesNames = {
-
-        AxisInertialSensor: 28,
-        CarSpeed_NL: 20,
-        TemperatureBatteryHV_NL: 16,
-        AmperageBatteryHV_NL: 15,
-        SteeringWheelAngle: 27,
-
-    }
-
     const [axisInertialSensor, setAxisInertialSensor] = useState([]);
     const [carSpeed_NL, setCarSpeed_NL] = useState([]);
     const [temperatureBatteryHV_NL, setTemperatureBatteryHV_NL] = useState([]);
@@ -44,11 +34,11 @@ function GeneralExternalDataPage(){
                     }
                 });
 
-                setAxisInertialSensor(subMatrices[dataTypesNames.AxisInertialSensor] || []);
-                setCarSpeed_NL(subMatrices[dataTypesNames.CarSpeed_NL] || []);
-                setAmperageBatteryHV_NL(subMatrices[dataTypesNames.AmperageBatteryHV_NL] || []);
-                setTemperatureBatteryHV_NL(subMatrices[dataTypesNames.TemperatureBatteryHV_NL] || []);
-                setSteeringWheelAngle(subMatrices[dataTypesNames.SteeringWheelAngle] || []);
+                setAxisInertialSensor(subMatrices[await getDataTypeID("AxisInertialSensor")] || []);
+                setCarSpeed_NL(subMatrices[await getDataTypeID("CarSpeed_NL")] || []);
+                setAmperageBatteryHV_NL(subMatrices[await getDataTypeID("AmperageBatteryHV_NL")] || []);
+                setTemperatureBatteryHV_NL(subMatrices[await getDataTypeID("TemperatureBatteryHV_NL")] || []);
+                setSteeringWheelAngle(subMatrices[await getDataTypeID("SteeringWheelAngle")] || []);
 
 
             } else {
@@ -94,3 +84,13 @@ function GeneralExternalDataPage(){
 }
 
 export default GeneralExternalDataPage;
+
+async function getDataTypeID(dataTypeName) {
+    const response = await ipcRenderer.invoke("get-datatype-id", { dataTypeName });
+    if (response.success) {
+        return response.dataTypeID;
+    } else {
+        console.error(response.error);
+        return null;
+    }
+}

@@ -9,22 +9,6 @@ function MechanicDataPage(){
     const {session, updateSession} = useContext(SessionContext);
     const sessionId = session.id;
 
-    const dataTypesNames = {
-        CoupleEngine: 39,
-        SteeringWheelAngle: 27,
-        AxisInertialSensor: 28,
-        CarSpeed_NL: 20,
-        CoupleWheelBL: 40,
-        CoupleWheelBR: 41,
-        SuspensionFL: 31,
-        SuspensionFR: 32,
-        SuspensionBL: 33,
-        SuspensionBR: 34,
-        PressureTireFL_NL: 21,
-        PressureTireFR_NL: 22,
-        PressureTireBL_NL: 23,
-        PressureTireBR_NL: 24,
-    }
 
     const [coupleEngine, setCoupleEngine] = useState([]);
     const [steeringWheelAngle, setSteeringWheelAngle] = useState([]);
@@ -59,20 +43,20 @@ function MechanicDataPage(){
                     }
                 });
 
-                setCoupleEngine(subMatrices[dataTypesNames.CoupleEngine] || []);
-                setSteeringWheelAngle(subMatrices[dataTypesNames.SteeringWheelAngle] || []);
-                setAxisInertialSensor(subMatrices[dataTypesNames.AxisInertialSensor] || []);
-                setCarSpeed_NL(subMatrices[dataTypesNames.CarSpeed_NL] || []);
-                setCoupleWheelBL(subMatrices[dataTypesNames.CoupleWheelBL] || []);
-                setCoupleWheelBR(subMatrices[dataTypesNames.CoupleWheelBR] || []);
-                setSuspensionFL(subMatrices[dataTypesNames.SuspensionFL] || []);
-                setSuspensionFR(subMatrices[dataTypesNames.SuspensionFR] || []);
-                setSuspensionBL(subMatrices[dataTypesNames.SuspensionBL] || []);
-                setSuspensionBR(subMatrices[dataTypesNames.SuspensionBR] || []);
-                setPressureTireFL_NL(subMatrices[dataTypesNames.PressureTireFL_NL] || []);
-                setPressureTireFR_NL(subMatrices[dataTypesNames.PressureTireFR_NL] || []);
-                setPressureTireBL_NL(subMatrices[dataTypesNames.PressureTireBL_NL] || []);
-                setPressureTireBR_NL(subMatrices[dataTypesNames.PressureTireBR_NL] || []);
+                setCoupleEngine(subMatrices[await getDataTypeID("CoupleEngine")] || []);
+                setSteeringWheelAngle(subMatrices[await getDataTypeID("SteeringWheelAngle")] || []);
+                setAxisInertialSensor(subMatrices[await getDataTypeID("AxisInertialSensor")] || []);
+                setCarSpeed_NL(subMatrices[await getDataTypeID("CarSpeed_NL")] || []);
+                setCoupleWheelBL(subMatrices[await getDataTypeID("CoupleWheelBL")] || []);
+                setCoupleWheelBR(subMatrices[await getDataTypeID("CoupleWheelBR")] || []);
+                setSuspensionFL(subMatrices[await getDataTypeID("SuspensionFL")] || []);
+                setSuspensionFR(subMatrices[await getDataTypeID("SuspensionFR")] || []);
+                setSuspensionBL(subMatrices[await getDataTypeID("SuspensionBL")] || []);
+                setSuspensionBR(subMatrices[await getDataTypeID("SuspensionBR")] || []);
+                setPressureTireFL_NL(subMatrices[await getDataTypeID("PressureTireFL_NL")] || []);
+                setPressureTireFR_NL(subMatrices[await getDataTypeID("PressureTireFR_NL")] || []);
+                setPressureTireBL_NL(subMatrices[await getDataTypeID("PressureTireBL_NL")] || []);
+                setPressureTireBR_NL(subMatrices[await getDataTypeID("PressureTireBR_NL")] || []);
 
 
             } else {
@@ -130,3 +114,13 @@ function MechanicDataPage(){
 }
 
 export default MechanicDataPage;
+
+async function getDataTypeID(dataTypeName) {
+    const response = await ipcRenderer.invoke("get-datatype-id", { dataTypeName });
+    if (response.success) {
+        return response.dataTypeID;
+    } else {
+        console.error(response.error);
+        return null;
+    }
+}

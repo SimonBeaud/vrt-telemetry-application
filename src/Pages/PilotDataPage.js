@@ -9,24 +9,12 @@ function PilotDataPage(){
         const {session, updateSession} = useContext(SessionContext);
         const sessionId = session.id;
 
-        const dataTypesNames = {
-            EngineAngularSpeed_NL: 19,
-            CarSpeed_NL: 20,
-            AcceleratorPedalPosition: 30 ,
-            BreakPedalPosition: 29,
-            AxisInertialSensor: 28,
-            SteeringWheelAngle: 27,
-
-        }
-
         const [engineAngularSpeed_NL, setEngineAngularSpeed_NL] = useState([]);
         const [carSpeed_NL, setCarSpeed_NL] = useState([]);
         const [acceleratorPedalPosition, setAcceleratorPedalPosition] = useState([]);
         const [breakPedalPosition, setBreakPedalPosition] = useState([]);
         const [axisInertialSensor, setAxisInertialSensor] = useState([]);
         const [steeringWheelAngle, setSteeringWheelAngle] = useState([]);
-
-
 
         const fetchData = async () => {
 
@@ -45,12 +33,12 @@ function PilotDataPage(){
                         }
                     });
 
-                    setEngineAngularSpeed_NL(subMatrices[dataTypesNames.EngineAngularSpeed_NL] || [])
-                    setCarSpeed_NL(subMatrices[dataTypesNames.CarSpeed_NL] || []);
-                    setAcceleratorPedalPosition(subMatrices[dataTypesNames.AcceleratorPedalPosition] || []);
-                    setBreakPedalPosition(subMatrices[dataTypesNames.BreakPedalPosition] || []);
-                    setSteeringWheelAngle(subMatrices[dataTypesNames.SteeringWheelAngle] || []);
-                    setAxisInertialSensor(subMatrices[dataTypesNames.AxisInertialSensor] || []);
+                    setEngineAngularSpeed_NL(subMatrices[await getDataTypeID("EngineAngularSpeed_NL")] || [])
+                    setCarSpeed_NL(subMatrices[await getDataTypeID("CarSpeed_NL")] || []);
+                    setAcceleratorPedalPosition(subMatrices[await getDataTypeID("AcceleratorPedalPosition")] || []);
+                    setBreakPedalPosition(subMatrices[await getDataTypeID("BreakPedalPosition")] || []);
+                    setSteeringWheelAngle(subMatrices[await getDataTypeID("SteeringWheelAngle")] || []);
+                    setAxisInertialSensor(subMatrices[await getDataTypeID("AxisInertialSensor")] || []);
 
 
                 } else {
@@ -97,3 +85,13 @@ function PilotDataPage(){
 
 
 export default PilotDataPage;
+
+async function getDataTypeID(dataTypeName) {
+    const response = await ipcRenderer.invoke("get-datatype-id", { dataTypeName });
+    if (response.success) {
+        return response.dataTypeID;
+    } else {
+        console.error(response.error);
+        return null;
+    }
+}

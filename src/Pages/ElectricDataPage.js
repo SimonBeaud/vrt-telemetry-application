@@ -9,20 +9,6 @@ function ElectricDataPage(){
     const {session, updateSession} = useContext(SessionContext);
     const sessionId = session.id;
 
-    const dataTypesNames = {
-        EnginePower_NL: 20,
-        CoupleEngine: 34,
-        EngineAngularSpeed_NL: 14,
-        CarSpeed_NL: 15,
-        TensionBatteryHV_NL: 9,
-        AmperageBatteryHV_NL: 10,
-        TemperatureCoolingSystem: 37,
-        EngineTemperature_NL: 13,
-        InverterTemperature_NL: 42,
-        TemperatureBatteryHV_NL: 11,
-        TemperatureBatteryLV_NL: 21,
-    }
-
 
     const [enginePower_NL, setEnginePower_NL] = useState([]);
     const [coupleEngine, setCoupleEngine] = useState([]);
@@ -55,19 +41,18 @@ function ElectricDataPage(){
                 });
 
 
-                setEnginePower_NL(subMatrices[dataTypesNames.EnginePower_NL] || []);
-                setCoupleEngine(subMatrices[dataTypesNames.CoupleEngine] || []);
-                setEngineAngularSpeed_NL(subMatrices[dataTypesNames.EngineAngularSpeed_NL] || []);
-                setCarSpeed_NL(subMatrices[dataTypesNames.CarSpeed_NL] || []);
-                setTensionBatteryHV_NL(subMatrices[dataTypesNames.TensionBatteryHV_NL] || []);
-                setAmperageBatteryHV_NL(subMatrices[dataTypesNames.AmperageBatteryHV_NL] || []);
-                setTemperatureCoolingSystem(subMatrices[dataTypesNames.TemperatureCoolingSystem] || []);
-                setEngineTemperature_NL(subMatrices[dataTypesNames.EngineTemperature_NL] || []);
-                setInverterTemperature_NL(subMatrices[dataTypesNames.InverterTemperature_NL] || []);
-                setTemperatureBatteryHV_NL(subMatrices[dataTypesNames.TemperatureBatteryHV_NL] || []);
-                setTemperatureBatteryLV_NL(subMatrices[dataTypesNames.TemperatureBatteryLV_NL] || []);
+                setEnginePower_NL(subMatrices[await getDataTypeID("EnginePower_NL")] || []);
+                setCoupleEngine(subMatrices[await getDataTypeID("CoupleEngine")] || []);
+                setEngineAngularSpeed_NL(subMatrices[await getDataTypeID("EngineAngularSpeed_NL")] || []);
+                setCarSpeed_NL(subMatrices[await getDataTypeID("CarSpeed_NL")] || []);
+                setTensionBatteryHV_NL(subMatrices[await getDataTypeID("TensionBatteryHV_NL")] || []);
+                setAmperageBatteryHV_NL(subMatrices[await getDataTypeID("AmperageBatteryHV_NL")] || []);
+                setTemperatureCoolingSystem(subMatrices[await getDataTypeID("TemperatureCoolingSystem")] || []);
+                setEngineTemperature_NL(subMatrices[await getDataTypeID("EngineTemperature_NL")] || []);
+                setInverterTemperature_NL(subMatrices[await getDataTypeID("InverterTemperature_NL")] || []);
+                setTemperatureBatteryHV_NL(subMatrices[await getDataTypeID("TemperatureBatteryHV_NL")] || []);
+                setTemperatureBatteryLV_NL(subMatrices[await getDataTypeID("TemperatureBatteryLV_NL")] || []);
 
-                console.log("Tension batteryHV" +dataTypesNames.TensionBatteryHV_NL);
 
             } else {
                 console.error(response.error);
@@ -119,5 +104,18 @@ function ElectricDataPage(){
         </header>
     )
 }
+
+async function getDataTypeID(dataTypeName) {
+    const response = await ipcRenderer.invoke("get-datatype-id", { dataTypeName });
+    if (response.success) {
+        return response.dataTypeID;
+    } else {
+        console.error(response.error);
+        return null;
+    }
+}
+
+
+
 
 export default ElectricDataPage;
