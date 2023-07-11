@@ -1,165 +1,136 @@
-
 const express = require('express');
-const app = express();
 const { ipcMain, dialog, ipcRenderer} = require('electron');
 const dgram = require('dgram');
-const { Buffer } = require('buffer');
-const fs = require('fs');
-const {addDataValue, addDataValueFromCSV} = require("../DataBase/Database");
-//const conversionFile = require('/src/DataBase/Data/ConversionFile.json');
+const {addDataValue} = require("../DataBase/Database");
 const { BrowserWindow } = require('electron');
-const prompt = require('electron-prompt');
+
+//Variable declaration
+
 let isConnected = false;
-
-
-
-//Live Data Variables
-let TensionBatteryHV;
-let AmperageBatteryHV;
-let TemperatureBatteryHV;
-let EnginePower;
-let EngineTemperature;
-let EngineAngularSpeed;
-let CarSpeed;
-let PressureTireFL;
-let PressureTireFR;
-let PressureTireBL;
-let PressureTireBR;
-let InverterTemperature;
-let TemperatureBatteryLV;
-
 let LiveData;
+let IPAddressInput = "192.168.1.106";
+let PortNumber = 7070;
 
 
-
+//######################################################################################################################
+//UDP server
 
 class UDPServer {
 
-
-
-    constructor(port1) {
-
-
-        //const IPAddress = "192.168.1.106";
-        //const IPAddress = "192.168.1.127";
-       // const IPAddress = "172.20.10.3";
-        //const IPAddress = "192.168.43.232";
-        const IPAddress = "192.168.50.65"
-
-        this.listeningPoint = {address: IPAddress, port: port1};
+    //constructor
+    constructor(port) {
+        const IPAddress = IPAddressInput;
+        this.listeningPoint = {address: IPAddress, port: port};
         this.udpServer = dgram.createSocket("udp4", this.listeningPoint);
-        this.isRunning= false;
-        this.promptWindow = null;
-
-
+        this.isRunning = false;
+        this.prompteWindow = null;
         this.lastKeepAliveCounter = 0;
         this.keepAliveTimeout = null;
-
-        console.log(`IP: ${IPAddress} Port: ${port1}`);
-
         this.udpServer.on('message', this.receiveData.bind(this));
-
-
     }
 
 
-    //Start method:
+//__________________________________________
+//Server start
+//__________________________________________
+
     start() {
         if (!this.isRunning) {
             this.isRunning = true;
             this.udpServer.bind(this.listeningPoint.port);
-            console.log('The server is now listening');
 
+            //Connexion Windows waiting to client message
             const options = {
-                title: 'Car connexion',
+                title: 'Waiting car connexion',
                 resizable: false,
                 frame: true,
-                customStylesheet: `
-        body {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          margin: 0;
-          padding: 16px;
-        }
-      `,
                 height: 120,
                 alwaysOnTop: true,
                 closable: true,
                 skipTaskbar: true,
                 show: false,
-            };
+                customStylesheet: `
+                     body {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        margin: 0;
+                        padding: 16px;
+                        }
+                `,
+            }
 
-            this.promptWindow = new BrowserWindow(options);
-            this.promptWindow.loadURL(`data:text/html;charset=UTF-8,
-      <html>
-        <body>
-          <!-- Insérez ici le code HTML de la roue de chargement -->
-          <div style="margin-right: 8px;"></div>
-          <div>Waiting for the connexion with the car...</div>
-        </body>
-      </html>
-    `);
+            this.prompteWindow = new BrowserWindow(options);
+            this.prompteWindow.loadURL(`data:text/html;charset=UTF-8,
+                <html>
+                    <body>
+                        <div style="margin-right: 8px;"></div>
+                        <div>Waiting for the connexion with the car...</div>
+                    </body>
+                 </html>
+            `);
 
-            this.promptWindow.once('ready-to-show', () => {
-                this.promptWindow.show();
+            this.prompteWindow.once('ready-to-show', () => {
+                this.prompteWindow.show();
             });
 
-            this.promptWindow.once('closed', () => {
-                // Gérer les actions à effectuer après la fermeture de la fenêtre de dialogue
+            this.prompteWindow.once('closed', () => {
+
             });
         }
-
-
     }
 
 
+//__________________________________________
+//Server stop
+//__________________________________________
 
-    //Stop method:
-    stop(callback){
-        if(this.isRunning){
+    stop(callback) {
+        if (this.isRunning) {
             this.isRunning = false;
             this.udpServer.close();
-            console.log("server is stopped")
             isConnected = false;
-
         }
     }
 
 
-    //Reception Data methode:
+//__________________________________________
+//Data reception
+//__________________________________________
+
 
     receiveData(data) {
         const jsonString = data.toString();
         const jsonData = JSON.parse(jsonString);
 
-
-
+        //Start the connexion check when receiving the first data
         if (jsonData.KeepAliveCounter !== undefined) {
             const receivedCounter = jsonData.KeepAliveCounter;
-            console.log("ReceivedCounter: " + receivedCounter);
-
             isConnected = true;
-
             this.resetKeepAliveTimeout();
             this.lastKeepAliveCounter = receivedCounter;
             this.lastKeepAliveTime = new Date().getTime();
         }
 
-
-
-
+        //send the data received to handleData
         this.handleData(jsonData);
 
+        //close the prompte window and start keep alive check
         if (jsonData !== null) {
-            if (this.promptWindow !== null) {
-                this.promptWindow.close();
-                this.promptWindow = null;
+            if (this.prompteWindow !== null) {
+                this.prompteWindow.close();
+                this.prompteWindow = null;
                 this.startKeepAliveCheck();
+                isConnected = true;
+
             }
         }
     }
 
+
+//__________________________________________
+//Keep Alive Check
+//__________________________________________
 
     startKeepAliveCheck() {
         const interval = setInterval(() => {
@@ -167,24 +138,21 @@ class UDPServer {
                 const currentTime = new Date().getTime();
                 const elapsedTime = currentTime - this.lastKeepAliveTime;
 
+                //Action if the connexion is lost
                 if (elapsedTime > 2000) {
-                    console.log("La fenetre doit ouvrir !!");
                     dialog.showMessageBoxSync({
                         type: 'info',
-                        title: 'Car connexion',
-                        message: 'We lost the connexion with the car! Please try to connect again',
+                        title: 'Connexion lost',
+                        message: 'Connexion with the car lost, please try to connect again !',
                         buttons: ['OK'],
                         noLink: true
                     });
 
                     clearInterval(interval);
-                    if(this.isRunning){
+                    if (this.isRunning) {
                         this.isRunning = false;
                         this.udpServer.close();
-
                         isConnected = false;
-
-                        console.log("server is stopped")
                         this.udpServer = dgram.createSocket("udp4", this.listeningPoint);
                         this.udpServer.on('message', this.receiveData.bind(this));
                     }
@@ -193,105 +161,38 @@ class UDPServer {
         }, 1000);
     }
 
-
     resetKeepAliveTimeout() {
         clearTimeout(this.keepAliveTimeout);
     }
 
-    //Handle data methode:
+
+//__________________________________________
+//Handle the data received
+//__________________________________________
+
     handleData(data){
-
-        //Assign values to each sensor variables
-        TensionBatteryHV = data.TensionBatteryHV;
-        AmperageBatteryHV = data.AmperageBatteryHV;
-        TemperatureBatteryHV = data.TemperatureBatteryHV;
-        EnginePower = data.EnginePower;
-        EngineTemperature = data.EngineTemperature;
-        EngineAngularSpeed = data.EngineAngularSpeed;
-        CarSpeed = data.CarSpeed;
-        PressureTireFL = data.PressureTireFL;
-        PressureTireFR = data.PressureTireFR;
-        PressureTireBL = data.PressureTireBL;
-        PressureTireBR = data.PressureTireBR;
-        InverterTemperature = data.InverterTemperature;
-        TemperatureBatteryLV = data.TemperatureBatteryLV;
-
-
-        LiveData = {
-            TensionBatteryHV,
-            AmperageBatteryHV,
-            TemperatureBatteryHV,
-            EnginePower,
-            EngineTemperature,
-            EngineAngularSpeed,
-            CarSpeed,
-            PressureTireFL,
-            PressureTireFR,
-            PressureTireBL,
-            PressureTireBR,
-            InverterTemperature,
-            TemperatureBatteryLV
-        }
-
-
-        //add the data recorded in the database with the methode AddDataValue
-        //DateTime adding
-        const currentTime = new Date();
-        const day = currentTime.getDate().toString().padStart(2, '0');
-        const month = (currentTime.getMonth() + 1).toString().padStart(2, '0');
-        const year = currentTime.getFullYear();
-        const hours = currentTime.getHours().toString().padStart(2, '0');
-        const minutes = currentTime.getMinutes().toString().padStart(2, '0');
-        const secondes = currentTime.getSeconds().toString().padStart(2, '0');
-
-        //const timeRecord = `${day}.${month}.${year} ${hours}:${minutes}:${secondes}`;
-        const timeRecord = currentTime;
-
-
-        //Add the values in the Database
-        for(const dataTypeName in data){
-            const dataRecord = data[dataTypeName];
-            //console.log("dataType: "+dataTypeName)
-            const sessionID=null;
-
-
-            const convertDataRecord = dataRecordConversion(dataTypeName, dataRecord);
-
-            addDataValue(sessionID, dataTypeName, convertDataRecord, timeRecord)
+        LiveData = {...data};
+        const timeRecord = new Date();
+        for(const datatypeName in data){
+            const dataRecord = data[datatypeName];
+            const sessionID = null;
+            addDataValue(sessionID, datatypeName, dataRecord, timeRecord)
                 .then((lastID)=>{
-                    console.log('DataValue added with the id: ${lastID}');
+                    console.log('DataValue added');
                 })
                 .catch((err)=>{
                     console.log("Error when adding the dataValue: "+err);
                 });
         }
     }
-}
-
-//######################################################################################################################
-//Data Conversion Function
-
-function dataRecordConversion(dataTypeName, dataRecord){
-
-    /*
-    if(conversionFile.hasOwnProperty(dataTypeName)){
-        const { ConversionFactor, Offset} = conversionFile[dataTypeName];
-        const result = dataRecord * ConversionFactor + Offset;
-
-        return result;
-    }*/
-
-    return dataRecord
-}
+};
 
 
 
+//__________________________________________
+//Export elements
+//__________________________________________
 
-
-
-
-//######################################################################################################################
-//Get sensor values variables
 
 function getLiveData(){
     return LiveData;
@@ -301,13 +202,16 @@ function getConnectedStatus(){
     return isConnected;
 }
 
-
-const server = new UDPServer(7070);
+const server = new UDPServer(PortNumber);
 
 module.exports={
     start: server.start.bind(server),
     getLiveData: getLiveData,
     getConnectedStatus: getConnectedStatus,
 
-
 };
+
+
+
+
+

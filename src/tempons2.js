@@ -1,129 +1,295 @@
-import React, {useContext, useEffect, useState} from 'react'
-import LineChartStatic from "../Components/LineChartStatic";
-import {SessionContext} from "../SessionContext";
-import {ipcRenderer} from "electron";
+
+const express = require('express');
+const app = express();
+const { ipcMain, dialog, ipcRenderer} = require('electron');
+const dgram = require('dgram');
+const { Buffer } = require('buffer');
+const fs = require('fs');
+const {addDataValue, addDataValueFromCSV} = require("../DataBase/Database");
+//const conversionFile = require('/src/DataBase/Data/ConversionFile.json');
+const { BrowserWindow } = require('electron');
+const prompt = require('electron-prompt');
+let isConnected = false;
 
 
-function ElectricDataPage(){
 
-    const {session, updateSession} = useContext(SessionContext);
-    const sessionId = session.id;
+//Live Data Variables
+let TensionBatteryHV;
+let AmperageBatteryHV;
+let TemperatureBatteryHV;
+let EnginePower;
+let EngineTemperature;
+let EngineAngularSpeed;
+let CarSpeed;
+let PressureTireFL;
+let PressureTireFR;
+let PressureTireBL;
+let PressureTireBR;
+let InverterTemperature;
+let TemperatureBatteryLV;
 
-    const dataTypesNames = {
-        TensionBatteryHV: 1,
-        EnginePower_NL: 17,
-        CoupleEngine: 39,
-        EngineAngularSpeed_NL: 19,
-        CarSpeed_NL: 20,
-        TensionBatteryHV_NL: 14,
-        AmperageBatteryHV_NL: 15,
-        TemperatureCoolingSystem: 42,
-        EngineTemperature_NL: 18,
-        InverterTemperature_NL: 25,
-        TemperatureBatteryHV_NL: 16,
-        TemperatureBatteryLV_NL: 26,
+let LiveData;
+
+
+
+
+class UDPServer {
+
+
+
+    constructor(port1) {
+
+
+        //const IPAddress = "192.168.1.106";
+        //const IPAddress = "192.168.1.127";
+        // const IPAddress = "172.20.10.3";
+        //const IPAddress = "192.168.43.232";
+        const IPAddress = "192.168.50.65"
+
+        this.listeningPoint = {address: IPAddress, port: port1};
+        this.udpServer = dgram.createSocket("udp4", this.listeningPoint);
+        this.isRunning= false;
+        this.promptWindow = null;
+
+
+        this.lastKeepAliveCounter = 0;
+        this.keepAliveTimeout = null;
+
+        console.log(`IP: ${IPAddress} Port: ${port1}`);
+
+        this.udpServer.on('message', this.receiveData.bind(this));
+
+
     }
 
-    const [tensionBatteryHV, setTensionBatteryHV] = useState([]);
-    const [enginePower_NL, setEnginePower_NL] = useState([]);
-    const [coupleEngine, setCoupleEngine] = useState([]);
-    const [engineAngularSpeed_NL, setEngineAngularSpeed_NL] = useState([]);
-    const [carSpeed_NL, setCarSpeed_NL] = useState([]);
-    const [tensionBatteryHV_NL, setTensionBatteryHV_NL] = useState([]);
-    const [amperageBatteryHV_NL, setAmperageBatteryHV_NL] = useState([]);
-    const [temperatureCoolingSystem, setTemperatureCoolingSystem] = useState([]);
-    const [engineTemperature_NL, setEngineTemperature_NL] = useState([]);
-    const [inverterTemperature_NL, setInverterTemperature_NL] = useState([]);
-    const [temperatureBatteryHV_NL, setTemperatureBatteryHV_NL] = useState([]);
-    const [temperatureBatteryLV_NL, setTemperatureBatteryLV_NL] = useState([]);
 
+    //Start method:
+    start() {
+        if (!this.isRunning) {
+            this.isRunning = true;
+            this.udpServer.bind(this.listeningPoint.port);
+            console.log('The server is now listening');
 
-    const fetchData = async () => {
-
-        try{
-            const response = await ipcRenderer.invoke('get-values-bySession', {sessionId});
-
-            if (response.success) {
-                const subMatrices = {};
-
-                response.dataValues.forEach(item => {
-                    const dataTypeId = item.DataType_id;
-                    if (!subMatrices[dataTypeId]) {
-                        subMatrices[dataTypeId] = [item];
-                    } else {
-                        subMatrices[dataTypeId].push(item);
-                    }
-                });
-
-                setTensionBatteryHV(subMatrices[dataTypesNames.TensionBatteryHV] || []);
-                setEnginePower_NL(subMatrices[dataTypesNames.EnginePower_NL] || []);
-                setCoupleEngine(subMatrices[dataTypesNames.CoupleEngine] || []);
-                setEngineAngularSpeed_NL(subMatrices[dataTypesNames.EngineAngularSpeed_NL] || []);
-                setCarSpeed_NL(subMatrices[dataTypesNames.CarSpeed_NL] || []);
-                setTensionBatteryHV_NL(subMatrices[dataTypesNames.TensionBatteryHV_NL] || []);
-                setAmperageBatteryHV_NL(subMatrices[dataTypesNames.AmperageBatteryHV_NL] || []);
-                setTemperatureCoolingSystem(subMatrices[dataTypesNames.TemperatureCoolingSystem] || []);
-                setEngineTemperature_NL(subMatrices[dataTypesNames.EngineTemperature_NL] || []);
-                setInverterTemperature_NL(subMatrices[dataTypesNames.InverterTemperature_NL] || []);
-                setTemperatureBatteryHV_NL(subMatrices[dataTypesNames.TemperatureBatteryHV_NL] || []);
-                setTemperatureBatteryLV_NL(subMatrices[dataTypesNames.TemperatureBatteryLV_NL] || []);
-
-                console.log("Tension batteryHV" +dataTypesNames.TensionBatteryHV_NL);
-
-            } else {
-                console.error(response.error);
-            }
-        } catch (error) {
-            console.error(error);
+            const options = {
+                title: 'Car connexion',
+                resizable: false,
+                frame: true,
+                customStylesheet: `
+        body {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin: 0;
+          padding: 16px;
         }
-    };
+      `,
+                height: 120,
+                alwaysOnTop: true,
+                closable: true,
+                skipTaskbar: true,
+                show: false,
+            };
 
-    useEffect(() => {
-        fetchData();
-    }, []);
+            this.promptWindow = new BrowserWindow(options);
+            this.promptWindow.loadURL(`data:text/html;charset=UTF-8,
+      <html>
+        <body>
+          <!-- Insérez ici le code HTML de la roue de chargement -->
+          <div style="margin-right: 8px;"></div>
+          <div>Waiting for the connexion with the car...</div>
+        </body>
+      </html>
+    `);
+
+            this.promptWindow.once('ready-to-show', () => {
+                this.promptWindow.show();
+            });
+
+            this.promptWindow.once('closed', () => {
+                // Gérer les actions à effectuer après la fermeture de la fenêtre de dialogue
+            });
+        }
+
+
+    }
 
 
 
-    return(
-        <header className="App-header">
-            <div className="TabContainer">
-                <div className="ChartExternalContainer">
-                    <p className="ChartLabel"  id="left">Car speed</p>
-                    <LineChartStatic datasets={[tensionBatteryHV]} />
-                </div>
+    //Stop method:
+    stop(callback){
+        if(this.isRunning){
+            this.isRunning = false;
+            this.udpServer.close();
+            console.log("server is stopped")
+            isConnected = false;
+
+        }
+    }
 
 
-                <div className="ChartExternalContainer">
-                    <p className="ChartLabel"  id="left">Car speed</p>
-                    <LineChartStatic datasets={[carSpeed_NL]} />
-                </div>
-                <div className="ChartExternalContainer">
-                    <p className="ChartLabel"  id="left">Temperatures</p>
-                    <LineChartStatic datasets={[engineTemperature_NL, inverterTemperature_NL, temperatureBatteryHV_NL, temperatureBatteryLV_NL, temperatureCoolingSystem]} />
-                </div>
-                <div className="ChartExternalContainer">
-                    <p className="ChartLabel"  id="left">Engine Power</p>
-                    <LineChartStatic datasets={[enginePower_NL]} />
-                </div>
-                <div className="ChartExternalContainer">
-                    <p className="ChartLabel"  id="left">Engine Couple</p>
-                    <LineChartStatic datasets={[coupleEngine]} />
-                </div>
-                <div className="ChartExternalContainer">
-                    <p className="ChartLabel"  id="left">Engine Speed</p>
-                    <LineChartStatic datasets={[engineAngularSpeed_NL]} />
-                </div>
-                <div className="ChartExternalContainer">
-                    <p className="ChartLabel"  id="left">Tension Battery HV</p>
-                    <LineChartStatic datasets={[tensionBatteryHV_NL]} />
-                </div>
-                <div className="ChartExternalContainer">
-                    <p className="ChartLabel"  id="left">Courant Battery HV</p>
-                    <LineChartStatic datasets={[amperageBatteryHV_NL]} />
-                </div>
-            </div>
-        </header>
-    )
+    //Reception Data methode:
+
+    receiveData(data) {
+        const jsonString = data.toString();
+        const jsonData = JSON.parse(jsonString);
+
+
+
+        if (jsonData.KeepAliveCounter !== undefined) {
+            const receivedCounter = jsonData.KeepAliveCounter;
+            console.log("ReceivedCounter: " + receivedCounter);
+
+            isConnected = true;
+
+            this.resetKeepAliveTimeout();
+            this.lastKeepAliveCounter = receivedCounter;
+            this.lastKeepAliveTime = new Date().getTime();
+        }
+
+
+
+
+        this.handleData(jsonData);
+
+        if (jsonData !== null) {
+            if (this.promptWindow !== null) {
+                this.promptWindow.close();
+                this.promptWindow = null;
+                this.startKeepAliveCheck();
+            }
+        }
+    }
+
+
+    startKeepAliveCheck() {
+        const interval = setInterval(() => {
+            if (this.lastKeepAliveCounter !== null) {
+                const currentTime = new Date().getTime();
+                const elapsedTime = currentTime - this.lastKeepAliveTime;
+
+                if (elapsedTime > 2000) {
+                    console.log("La fenetre doit ouvrir !!");
+                    dialog.showMessageBoxSync({
+                        type: 'info',
+                        title: 'Car connexion',
+                        message: 'We lost the connexion with the car! Please try to connect again',
+                        buttons: ['OK'],
+                        noLink: true
+                    });
+
+                    clearInterval(interval);
+                    if(this.isRunning){
+                        this.isRunning = false;
+                        this.udpServer.close();
+
+                        isConnected = false;
+
+                        console.log("server is stopped")
+                        this.udpServer = dgram.createSocket("udp4", this.listeningPoint);
+                        this.udpServer.on('message', this.receiveData.bind(this));
+                    }
+                }
+            }
+        }, 1000);
+    }
+
+
+    resetKeepAliveTimeout() {
+        clearTimeout(this.keepAliveTimeout);
+    }
+
+    //Handle data methode:
+    handleData(data){
+
+        //Assign values to each sensor variables
+        TensionBatteryHV = data.TensionBatteryHV;
+        AmperageBatteryHV = data.AmperageBatteryHV;
+        TemperatureBatteryHV = data.TemperatureBatteryHV;
+        EnginePower = data.EnginePower;
+        EngineTemperature = data.EngineTemperature;
+        EngineAngularSpeed = data.EngineAngularSpeed;
+        CarSpeed = data.CarSpeed;
+        PressureTireFL = data.PressureTireFL;
+        PressureTireFR = data.PressureTireFR;
+        PressureTireBL = data.PressureTireBL;
+        PressureTireBR = data.PressureTireBR;
+        InverterTemperature = data.InverterTemperature;
+        TemperatureBatteryLV = data.TemperatureBatteryLV;
+
+
+        LiveData = {
+            TensionBatteryHV,
+            AmperageBatteryHV,
+            TemperatureBatteryHV,
+            EnginePower,
+            EngineTemperature,
+            EngineAngularSpeed,
+            CarSpeed,
+            PressureTireFL,
+            PressureTireFR,
+            PressureTireBL,
+            PressureTireBR,
+            InverterTemperature,
+            TemperatureBatteryLV
+        }
+
+
+        //add the data recorded in the database with the methode AddDataValue
+        //DateTime adding
+        const currentTime = new Date();
+
+
+        //const timeRecord = `${day}.${month}.${year} ${hours}:${minutes}:${secondes}`;
+        const timeRecord = currentTime;
+
+
+        //Add the values in the Database
+        for(const dataTypeName in data){
+            const dataRecord = data[dataTypeName];
+
+            const sessionID=null;
+
+            addDataValue(sessionID, dataTypeName, dataRecord, timeRecord)
+                .then((lastID)=>{
+                    console.log('DataValue added with the id: ${lastID}');
+                })
+                .catch((err)=>{
+                    console.log("Error when adding the dataValue: "+err);
+                });
+        }
+    }
 }
 
-export default ElectricDataPage;
+
+
+
+
+
+//######################################################################################################################
+//Get sensor values variables
+
+function getLiveData(){
+    return LiveData;
+}
+
+function getConnectedStatus(){
+    return isConnected;
+}
+
+
+const server = new UDPServer(7070);
+
+module.exports={
+    start: server.start.bind(server),
+    getLiveData: getLiveData,
+    getConnectedStatus: getConnectedStatus,
+
+
+};
+
+
+
+
+
+
+
