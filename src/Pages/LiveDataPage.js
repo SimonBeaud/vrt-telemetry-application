@@ -59,30 +59,6 @@ function LiveDataPage(){
 
 
 
-/*
-    //send the data to the graphs
-    const ChartInstance = (variable, index) =>{
-        useEffect(()=>{
-            const chartInstance = Chart.instances[index];
-            if(chartInstance && chartInstance && chartInstance.data){
-                const timePoint = Date.now();
-                const dataPoint = {x: timePoint, y: variable};
-                chartInstance.data.datasets[0].data.push(dataPoint);
-                chartInstance.update({
-                    preservation: true
-                })
-            }
-        }, [variable, index])
-    }
-
-    ChartInstance(engineTemperature, 0);
-    ChartInstance(inverterTemperature, 1);
-    ChartInstance(temperatureBatteryHV, 2);
-    ChartInstance(temperatureBatteryLV, 3);
-    ChartInstance(tensionBatteryHV, 4);
-    ChartInstance(amperageBatteryHV, 5);
-*/
-
 
 
 
@@ -262,7 +238,7 @@ function LiveDataPage(){
 
                     </div>
 
-
+S
 
                     <div className="BatteryContainer">
                         <div className="TitleDataContainer">

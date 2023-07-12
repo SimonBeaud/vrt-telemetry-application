@@ -20,7 +20,7 @@ const {getDatabase, addSession, deleteSession, addDataType, setCurrentSession, g
 let isConnected = false;
 let mainWindow;
 let progressBarWindow;
-let database = null;
+
 
 
 //######################################################################################################################
@@ -29,7 +29,6 @@ let database = null;
 
 
 function createWindow(){
-
     //basic configuration
     mainWindow = new BrowserWindow({
         width: 1920,
@@ -41,7 +40,7 @@ function createWindow(){
     mainWindow.loadFile(path.join(__dirname, "../build/index.html"));
 
     //init the database when creating the window
-    database = getDatabase();
+    const database = getDatabase();
     addDataType(DataTypeJson).then();
     mainWindow.webContents.send('database', database);
 

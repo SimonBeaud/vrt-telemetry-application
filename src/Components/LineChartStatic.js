@@ -3,6 +3,8 @@ import 'chart.js/auto';
 import moment from "moment";
 import Chart from "chart.js/auto";
 import randomColor from "randomcolor";
+import 'chartjs-plugin-zoom';
+
 
 const LineChartStatic = ({ datasets, datasetNames, yMin, yMax, width, height }) => {
     const chartRef3 = useRef(null);
@@ -15,6 +17,7 @@ const LineChartStatic = ({ datasets, datasetNames, yMin, yMax, width, height }) 
             const labels = datasets[0].map((dataValue) =>
                 moment(dataValue.timeRecord).format('HH:mm:ss')
             );
+
 
             const chartDatasets = datasets.map((dataset, index) => ({
                 label: datasetNames[index],
@@ -94,5 +97,4 @@ const LineChartStatic = ({ datasets, datasetNames, yMin, yMax, width, height }) 
         </div>
     );
 };
-
 export default LineChartStatic;

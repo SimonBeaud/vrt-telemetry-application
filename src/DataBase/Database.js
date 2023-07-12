@@ -196,7 +196,7 @@ const addDataValue = (sessionID, dataTypeName, dataRecord, timeRecord) =>{
 
 
 //get Data Values by session and DataType
-const getDataValues = (dataTypeName, sessionId) =>{
+const getDataValues = (dataTypeName, sessionId) => {
     return new Promise((resolve, reject) =>{
         getDataTypeID(dataTypeName).then((dataTypeID) =>{
             database.all("SELECT DataValue.DataRecord, DataValue.timeRecord, DataValue.DataType_id FROM DataValue INNER JOIN DataType ON DataValue.DataType_id = DataType.id WHERE DataType.type = ? AND DataValue.session_id = ?",
@@ -250,6 +250,9 @@ const deleteDataValues = (sessionID) =>{
 //Export functions
 
 module.exports = {
+    database,
+    databasePath,
+
     getDatabase,
 
     addSession,

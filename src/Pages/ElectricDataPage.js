@@ -77,8 +77,7 @@ function ElectricDataPage(){
                 </div>
                 <div className="ChartExternalContainer">
                     <p className="ChartLabel"  id="left">Temperatures</p>
-                    <LineChartStatic datasets={[engineTemperature_NL, inverterTemperature_NL, temperatureBatteryHV_NL, temperatureBatteryLV_NL, temperatureCoolingSystem]}
-                                     datasetNames={["Engine", "Inverter", "Battery HV", "Battery LV", "Cooling systems"]} width={900} height={450} />
+                    <LineChartStatic datasets={[engineTemperature_NL, inverterTemperature_NL, temperatureBatteryHV_NL, temperatureBatteryLV_NL, temperatureCoolingSystem]} datasetNames={["Engine", "Inverter", "Battery HV", "Battery LV", "Cooling systems"]} width={900} height={450} />
                 </div>
                 <div className="ChartExternalContainer">
                     <p className="ChartLabel"  id="left">Engine Power</p>

@@ -3,7 +3,6 @@ import {useNavigate} from "react-router-dom";
 import {getDataValuesBySessionAndDataType} from "../DataBase/Database";
 import {ipcRenderer} from "electron";
 import LineChartStatic from "../Components/LineChartStatic";
-import ChartLine from "../Components/ChartLine";
 import '../Style/HistoricLiveDataStyle.css';
 import { SessionContext } from '../SessionContext';
 
@@ -13,23 +12,6 @@ function HistoricDataPage(){
     const {session, updateSession} = useContext(SessionContext);
     const sessionId = session.id;
 
-/*
-    const dataTypesNames = {
-        TensionBatteryHV: 1,
-        AmperageBatteryHV: 2,
-        TemperatureBatteryHV: 3,
-        EnginePower: 4,
-        EngineTemperature: 5,
-        EngineAngularSpeed: 6,
-        CarSpeed: 7,
-        PressureTireFL: 8,
-        PressureTireFR: 9,
-        PressureTireBL: 10,
-        PressureTireBR: 11,
-        InverterTemperature: 12,
-        TemperatureBatteryLV: 13,
-    };
-*/
 
     const [tensionBatteryHV, setTensionBatteryHV] = useState([]);
     const [amperageBatteryHV, setAmperageBatteryHV] = useState([]);

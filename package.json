@@ -58,6 +58,7 @@
   "devDependencies": {
     "electron": "^25.2.0",
     "electron-packager": "^17.1.1",
+    "jest": "^27.5.1",
     "webpack-node-externals": "^3.0.0"
   }
 }
