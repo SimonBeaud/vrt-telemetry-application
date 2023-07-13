@@ -3,30 +3,57 @@ const { ipcMain, dialog, ipcRenderer} = require('electron');
 const dgram = require('dgram');
 const {addDataValue} = require("../DataBase/Database");
 const { BrowserWindow } = require('electron');
+const os = require('os');
 
 //Variable declaration
 
 let isConnected = false;
 let LiveData;
-let IPAddressInput = "192.168.1.106";
 let PortNumber = 7070;
+let IPAddressFound;
 
 
 //######################################################################################################################
 //UDP server
 
+
+
+function getIPAddress(callback){
+    const interfaceName = 'Wi-Fi';
+    const interfaces = os.networkInterfaces();
+    const wifiInterface = interfaces[interfaceName];
+    if(wifiInterface){
+        const IPAddress = wifiInterface.find(iface => iface.family === 'IPv4' && !iface.internal);
+        IPAddressFound = IPAddress;
+        if(IPAddress){
+            callback(null, IPAddress.address);
+            return;
+        }
+    }
+    callback(new Error("No wlan found"));
+
+}
+
+
+
 class UDPServer {
+
 
     //constructor
     constructor(port) {
-        const IPAddress = IPAddressInput;
-        this.listeningPoint = {address: IPAddress, port: port};
-        this.udpServer = dgram.createSocket("udp4", this.listeningPoint);
-        this.isRunning = false;
-        this.prompteWindow = null;
-        this.lastKeepAliveCounter = 0;
-        this.keepAliveTimeout = null;
-        this.udpServer.on('message', this.receiveData.bind(this));
+        getIPAddress((err, ipAddress) =>{
+            if(!err){
+                this.listeningPoint = {address: ipAddress, port: port};
+                this.udpServer = dgram.createSocket("udp4", this.listeningPoint);
+                this.isRunning = false;
+                this.prompteWindow = null;
+                this.lastKeepAliveCounter = 0;
+                this.keepAliveTimeout = null;
+                this.udpServer.on('message', this.receiveData.bind(this));
+            }else{
+                console.error("Error when searching wlan network")
+            }
+        });
     }
 
 
@@ -66,6 +93,9 @@ class UDPServer {
                     <body>
                         <div style="margin-right: 8px;"></div>
                         <div>Waiting for the connexion with the car...</div>
+                        <br/>
+                        <div>IP Address: ${IPAddressFound.address}</div>
+                        <div>Connection port: ${PortNumber}</div>
                     </body>
                  </html>
             `);

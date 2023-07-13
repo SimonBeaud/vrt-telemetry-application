@@ -64,6 +64,7 @@ function ElectricDataPage(){
 
     useEffect(() => {
         fetchData();
+        console.log("Call fetch methode")
     }, []);
 
 
