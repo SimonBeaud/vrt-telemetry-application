@@ -72,8 +72,6 @@ function LiveDataPage(){
         <header className="App-header">
             <div className="PageContainer">
                 <div className="leftLiveContainer">
-
-
                     <div className="SpeedContainer">
                         <div className="TitleDataContainer">
                             <p className="TitleData">Speed</p>
@@ -88,8 +86,6 @@ function LiveDataPage(){
                             </div>
                         </div>
                     </div>
-
-
 
                     <div className="TyresContainer">
                         <div className="TitleDataContainer">
@@ -136,12 +132,6 @@ function LiveDataPage(){
                             </div>
                         </div>
                     </div>
-
-
-
-
-
-
                     <div className="EngineContainer">
                         <div className="TitleDataContainer">
                             <p className="TitleData">Engine</p>
@@ -153,7 +143,6 @@ function LiveDataPage(){
                                 <p className="DataUnit">rad/s</p>
                             </div>
                         </div>
-
                         <div>
                             <p className="EnginDataTitle">Electric power</p>
                             <div className="EnginDataContainer">
@@ -163,12 +152,6 @@ function LiveDataPage(){
                         </div>
                     </div>
                 </div>
-
-
-
-
-
-
 
                 <div className="rightLiveContainer">
                     <div className="TemperatureContainer">
@@ -188,7 +171,6 @@ function LiveDataPage(){
                                     <div className="chartContainer">
                                         <LineChartLive data={engineTemperature} width={200} height={100} marginTop={-20}/>
                                     </div>
-
                                 </div>
                                 <div className="GraphContainer2">
                                     <div className="titleGraphContainer">
@@ -201,7 +183,6 @@ function LiveDataPage(){
                                     <div className="chartContainer">
                                         <LineChartLive data={inverterTemperature} width={200} height={100} marginTop={-20} fixedSize={true}/>
                                     </div>
-
                                 </div>
 
                             </div>
@@ -217,8 +198,6 @@ function LiveDataPage(){
                                     <div className="chartContainer">
                                         <LineChartLive data={temperatureBatteryHV} width={200} height={100} marginTop={-20} fixedSize={true}/>
                                     </div>
-
-
                                 </div>
                                 <div className="GraphContainer2">
                                     <div className="titleGraphContainer">
@@ -234,17 +213,12 @@ function LiveDataPage(){
                                 </div>
                             </div>
                         </div>
-
-
                     </div>
-
-S
 
                     <div className="BatteryContainer">
                         <div className="TitleDataContainer">
                             <p className="TitleData">High Voltage Battery</p>
                         </div>
-
                         <div className="GraphContainer">
                             <div className="TopGraphContainer">
                                 <div className="GraphContainer2">

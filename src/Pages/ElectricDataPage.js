@@ -25,9 +25,10 @@ function ElectricDataPage(){
 
     const fetchData = async () => {
 
+
         try{
             const response = await ipcRenderer.invoke('get-values-bySession', {sessionId});
-
+            console.log("Call fetch methode")
             if (response.success) {
                 const subMatrices = {};
 
@@ -64,7 +65,7 @@ function ElectricDataPage(){
 
     useEffect(() => {
         fetchData();
-        console.log("Call fetch methode")
+
     }, []);
 
 

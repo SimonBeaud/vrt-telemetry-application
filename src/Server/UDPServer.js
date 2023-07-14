@@ -6,7 +6,6 @@ const { BrowserWindow } = require('electron');
 const os = require('os');
 
 //Variable declaration
-
 let isConnected = false;
 let LiveData;
 let PortNumber = 7070;
@@ -17,27 +16,7 @@ let IPAddressFound;
 //UDP server
 
 
-
-function getIPAddress(callback){
-    const interfaceName = 'Wi-Fi';
-    const interfaces = os.networkInterfaces();
-    const wifiInterface = interfaces[interfaceName];
-    if(wifiInterface){
-        const IPAddress = wifiInterface.find(iface => iface.family === 'IPv4' && !iface.internal);
-        IPAddressFound = IPAddress;
-        if(IPAddress){
-            callback(null, IPAddress.address);
-            return;
-        }
-    }
-    callback(new Error("No wlan found"));
-
-}
-
-
-
 class UDPServer {
-
 
     //constructor
     constructor(port) {
@@ -218,6 +197,27 @@ class UDPServer {
 };
 
 
+
+//__________________________________________
+//IPv4 get
+//__________________________________________
+
+
+function getIPAddress(callback){
+    const interfaceName = 'Wi-Fi';
+    const interfaces = os.networkInterfaces();
+    const wifiInterface = interfaces[interfaceName];
+    if(wifiInterface){
+        const IPAddress = wifiInterface.find(iface => iface.family === 'IPv4' && !iface.internal);
+        IPAddressFound = IPAddress;
+        if(IPAddress){
+            callback(null, IPAddress.address);
+            return;
+        }
+    }
+    callback(new Error("No wlan found"));
+
+}
 
 //__________________________________________
 //Export elements

@@ -20,6 +20,9 @@ const {getDatabase, addSession, deleteSession, addDataType, setCurrentSession, g
 let isConnected = false;
 let mainWindow;
 let progressBarWindow;
+let progress;
+let processedDataCount = 0;
+let totalDataCount = 0;
 
 
 
@@ -177,30 +180,48 @@ ipcMain.on('add-datavalues-csv', (event, parameters) =>{
             const filePath = result.filePaths[0];
             const readStream = fs.createReadStream(filePath);
             const csvParser = csv({separator: ';'});
-            let totalDataCount = 0;
-            let processedDataCount = 0;
 
-            //Create a progress window
-            const progressBarWindow = new BrowserWindow({
-                parent: window,
-                modal: true,
+
+            const options2 = {
+                title: 'CSV file loading',
+                resizable: false,
+                frame: false,
+                height: 120,
+                alwaysOnTop: true,
+                closable: true,
+                skipTaskbar: true,
                 show: false,
-                width: 400,
-                height: 150,
-                frame: true,
-                webPreferences: {
-                    nodeIntegration: true,
-                },
-            })
+                customStylesheet: `
+                     body {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        margin: 0;
+                        padding: 16px;
+                        }
+                `,
+            }
 
-            //Loading the progress page
-            progressBarWindow.loadURL(
-                `file://${path.join(__dirname, 'progressBar.html')}`
-            ).then(() => {
-                progressBarWindow.show();
+            this.prompteWindow = new BrowserWindow(options2);
+            this.prompteWindow.loadURL(`data:text/html;charset=UTF-8,
+                <html>
+                     <body>
+                        <div style="margin-right: 8px;"></div>
+                            <div>Loading csv file...</div>
+                             <br/>
+                            <div>Processed Data Count: <span id="processed-data-count">${processedDataCount} / ${totalDataCount}</span></div>
+                     </body>
+                </html>
+            `);
+
+            this.prompteWindow.once('ready-to-show', () => {
+                this.prompteWindow.show();
             });
 
-            const progressBarWebContents = progressBarWindow.webContents;
+            this.prompteWindow.once('closed', () => {
+
+            });
+
 
             const processDataPromise = new Promise((resolve, reject) =>{
                 csvParser.on('data', (data) =>{
@@ -221,19 +242,17 @@ ipcMain.on('add-datavalues-csv', (event, parameters) =>{
                             addDataValue(sessionID, columnName, value, timeRecord)
                                 .then((lastID) => {
                                     processedDataCount++;
-                                    const progress = Math.round((processedDataCount / totalDataCount) * 100);
+                                    progress = Math.round((processedDataCount / totalDataCount) * 100);
 
-                                    progressBarWebContents.send('update-progress', progress);
+                                    this.prompteWindow.show();
 
-                                    progressBarWindow.webContents.on('did-finish-load', () => {
-                                        progressBarWebContents.send('total-data-count', totalDataCount);
-                                    });
-
-                                    const message = `DataValue added with the id: ${lastID}`;
-                                    console.log(message);
+                                    this.prompteWindow.webContents.executeJavaScript(`
+                                            document.getElementById("processed-data-count").innerText = 'Data load: ${processedDataCount} / ${totalDataCount}';
+                                    `);
 
                                     if (processedDataCount === totalDataCount) {
                                         resolve();
+                                        this.prompteWindow.close();
                                     }
                                 })
                                 .catch((err) => {
@@ -247,7 +266,7 @@ ipcMain.on('add-datavalues-csv', (event, parameters) =>{
             });
             processDataPromise
                 .then(() => {
-                    progressBarWindow.close();
+                    this.prompteWindow.close();
 
                     dialog.showMessageBox(window, {
                         type: 'info',
