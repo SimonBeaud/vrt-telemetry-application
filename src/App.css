@@ -98,9 +98,29 @@ body {
   color: #F1B054;
 }
 
+.connectButton {
+  background-color: initial;
+  color: #fff;
+  cursor: pointer;
+  font-family: Raleway;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  border-radius: 20px;
+  padding: 15px;
+  border-color: white;
+  border-style: double;
+  margin-top: 60%;
+}
+
+
+
 
 .menuItem {
   text-align: center;
+  display: flex;
+  margin-top: 15px;
+  margin-left: 10px;
 }
 
 .logoIcon{
@@ -112,13 +132,31 @@ body {
   width: 179px;
 }
 
-.SessionInfo{
+.IconNavbar{
+  height: 25px;
+  margin-right: 10px;
+  width: 25px;
+;
+}
+
+.SessionName{
   margin-bottom: 10px;
   font-family: 'Raleway';
+  font-weight: bold;
   border: none;
   color: #030826;
   font-size: 20px;
   margin-bottom: 20px;
+}
+
+.SessionID{
+  margin-bottom: 10px;
+  margin-top: -15px;
+  font-family: 'Raleway';
+  border: none;
+  color: #030826;
+  font-size: 20px;
+  margin-bottom: 15px;
 }
 
 /*CONTENT*/

@@ -50,7 +50,7 @@ class UDPServer {
                 title: 'Waiting car connexion',
                 resizable: false,
                 frame: true,
-                height: 120,
+                height: 200,
                 alwaysOnTop: true,
                 closable: true,
                 skipTaskbar: true,

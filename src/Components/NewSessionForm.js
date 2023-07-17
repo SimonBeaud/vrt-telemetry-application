@@ -48,6 +48,7 @@ export default function NewSessionForm({handleSubmit, handleSessionAdd}){
                         onChange={handleNameChange}
                         value={name}
                         required
+                        maxLength={10}
                     />
                 </div>
                 <br/>
@@ -73,7 +74,6 @@ export default function NewSessionForm({handleSubmit, handleSessionAdd}){
                     />
                 </div>
                 <br/>
-
                 <button className="buttonForm" type="submit">Create</button>
             </div>
         </form>
