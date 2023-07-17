@@ -147,7 +147,20 @@ const getDataTypeID = dataTypeName => {
     });
 };
 
-
+//Get DataType Name by ID
+const getDataTypeName = dataTypeID =>{
+    return new Promise((resolve, reject)=>{
+        database.get("SELECT type FROM DataType WHERE id = ?", dataTypeID,  (err, row) =>{
+            if (err) {
+                reject(err);
+            } else if (!row) {
+                reject(new Error("DataType name not found"));
+            } else {
+                resolve(row.type);
+            }
+        });
+    })
+}
 
 
 
@@ -262,6 +275,7 @@ module.exports = {
 
     addDataType,
     getDataTypeID,
+    getDataTypeName,
 
     addDataValue,
     getDataValues,

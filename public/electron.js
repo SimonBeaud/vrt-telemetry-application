@@ -3,7 +3,7 @@ const path = require("path");
 const screen = electron.screen;
 const app = electron.app;
 const server = require("../src/Server/UDPServer");
-const { getSessions } = require('../src/DataBase/Database');
+const { getSessions, getDataTypeName} = require('../src/DataBase/Database');
 const { ipcMain, dialog, BrowserWindow } = require('electron');
 const DataTypeJson = require('../src/DataBase/Data/DataTypesTables.json');
 const async = require("async");
@@ -132,6 +132,17 @@ ipcMain.handle("get-datatype-id", async(event, parameter) =>{
     try{
         const dataTypeID = await getDataTypeID(dataTypeName);
         return{success: true, dataTypeID};
+    }catch (err){
+        return{success: false, error: err};
+    }
+})
+
+//handle get datatype name
+ipcMain.handle("get-datatype-name", async(event, parameter) =>{
+    const {dataTypeID} = parameter;
+    try{
+        const dataTypeName = await getDataTypeName(dataTypeID);
+        return{success: true, dataTypeName};
     }catch (err){
         return{success: false, error: err};
     }
