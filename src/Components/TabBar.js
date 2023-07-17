@@ -5,7 +5,7 @@ import {ipcRenderer} from "electron";
 
 export default function TabBar({navigateTo}){
 
-    const [activeTab, setActiveTab] = useState('');
+    const [activeTab, setActiveTab] = useState('ElectricDataPage');
 
     const handleFileSelection = () => {
         ipcRenderer.send('add-datavalues-csv');

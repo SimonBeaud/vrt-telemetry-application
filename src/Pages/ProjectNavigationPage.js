@@ -29,7 +29,7 @@ function ProjectNavigationPage(){
     //Session click handle
     const handleSessionClick = (id, name) =>{
         console.log('Session clicked:', id, name);
-        navigateTo("/GeneralData");
+        navigateTo("GeneralData");
         updateSession(id, name);
         ipcRenderer.invoke('add-current-session', id);
 
@@ -108,7 +108,7 @@ function ProjectNavigationPage(){
                         <div className="creationForm">
                             <div className="modalContent">
                                 <h3 className="titleForm">Create a new session</h3>
-                                <NewSessionForm handleSubmit={() => navigateTo('/GeneralData')} handleSessionAdd={handleSessionAdd} />
+                                <NewSessionForm handleSubmit={() => navigateTo('GeneralData')} handleSessionAdd={handleSessionAdd} />
                                 <button className="buttonFormClose" onClick={closeModal}>Close</button>
                             </div>
                         </div>

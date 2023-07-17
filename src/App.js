@@ -23,6 +23,7 @@ function App() {
     console.log("current page: "+currentPage);
 
 
+    /*
     //database reception
     useEffect(() => {
         // Écoutez l'événement pour recevoir l'objet de base de données
@@ -36,7 +37,7 @@ function App() {
             ipcRenderer.removeAllListeners('database');
         };
     }, []);
-
+*/
 
     const navigateTo = (path) => {
         setCurrentPage(path);

@@ -19,7 +19,6 @@ const {getDatabase, addSession, deleteSession, addDataType, setCurrentSession, g
 
 let isConnected = false;
 let mainWindow;
-let progressBarWindow;
 let progress;
 let processedDataCount = 0;
 let totalDataCount = 0;

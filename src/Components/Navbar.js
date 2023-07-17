@@ -3,12 +3,10 @@ import { Link } from 'react-router-dom';
 import { SessionContext } from '../SessionContext';
 import {ipcRenderer} from "electron";
 
-
-
 export default function Navbar({navigateTo}){
 
     const {session, updateSession} = useContext(SessionContext);
-    const [activePage, setActivePage] = useState('');
+    const [activePage, setActivePage] = useState('GeneralData');
     const [isConnected, setIsConnected] = useState(false);
 
     useEffect(() => {
@@ -20,11 +18,9 @@ export default function Navbar({navigateTo}){
     }, []);
 
 
-
     const StartServer = async () => {
         ipcRenderer.send('start-server');
     }
-
 
     return(
         <header className="header">
