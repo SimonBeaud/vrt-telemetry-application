@@ -169,7 +169,7 @@ function LiveDataPage(){
                                         </div>
                                     </div>
                                     <div className="chartContainer">
-                                        <LineChartLive data={engineTemperature} width={200} height={100} marginTop={-20}/>
+                                        <LineChartLive data={engineTemperature} yMin={0} yMax={100} width={200} height={100} marginTop={-20}/>
                                     </div>
                                 </div>
                                 <div className="GraphContainer2">
@@ -181,7 +181,7 @@ function LiveDataPage(){
                                         </div>
                                     </div>
                                     <div className="chartContainer">
-                                        <LineChartLive data={inverterTemperature} width={200} height={100} marginTop={-20} fixedSize={true}/>
+                                        <LineChartLive data={inverterTemperature} yMin={0} yMax={100} width={200} height={100} marginTop={-20} fixedSize={true}/>
                                     </div>
                                 </div>
 
@@ -196,7 +196,7 @@ function LiveDataPage(){
                                         </div>
                                     </div>
                                     <div className="chartContainer">
-                                        <LineChartLive data={temperatureBatteryHV} width={200} height={100} marginTop={-20} fixedSize={true}/>
+                                        <LineChartLive data={temperatureBatteryHV} yMin={0} yMax={100} width={200} height={100} marginTop={-20} fixedSize={true}/>
                                     </div>
                                 </div>
                                 <div className="GraphContainer2">
@@ -208,7 +208,7 @@ function LiveDataPage(){
                                         </div>
                                     </div>
                                     <div className="chartContainer">
-                                        <LineChartLive data={temperatureBatteryLV} width={200} height={100} marginTop={-20} fixedSize={true}/>
+                                        <LineChartLive data={temperatureBatteryLV} yMin={0} yMax={100} width={200} height={100} marginTop={-20} fixedSize={true}/>
                                     </div>
                                 </div>
                             </div>
@@ -230,7 +230,7 @@ function LiveDataPage(){
                                         </div>
                                     </div>
                                     <div className="chartContainer">
-                                        <LineChartLive data={tensionBatteryHV} width={200} height={100} marginTop={-20} fixedSize={true}/>
+                                        <LineChartLive data={tensionBatteryHV} yMin={0} yMax={600} width={200} height={100} marginTop={-20} fixedSize={true}/>
                                     </div>
                                 </div>
                                 <div className="GraphContainer2">
@@ -242,7 +242,7 @@ function LiveDataPage(){
                                         </div>
                                     </div>
                                     <div className="chartContainer">
-                                        <LineChartLive data={amperageBatteryHV} width={200} height={100} marginTop={-20} fixedSize={true}/>
+                                        <LineChartLive data={amperageBatteryHV} yMin={0} yMax={200} width={200} height={100} marginTop={-20} fixedSize={true}/>
                                     </div>
                                 </div>
                             </div>

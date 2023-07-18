@@ -4,7 +4,7 @@ import 'chartjs-plugin-streaming';
 import 'moment';
 import 'chartjs-adapter-moment';
 
-function LineChartLive({ data, width, height, marginTop, marginBottom, marginLeft, marginRight , fixedSize }) {
+function LineChartLive({ data, width, height, yMin, yMax, marginTop, marginBottom, marginLeft, marginRight , fixedSize }) {
 
     let state;
 
@@ -72,8 +72,8 @@ function LineChartLive({ data, width, height, marginTop, marginBottom, marginLef
                             },
                         },
                         y: {
-                            min: 0,
-                            max: 50,
+                            min: yMin,
+                            max: yMax,
                             ticks: {
                                 stepSize: 10,
                                 fontColor: 'white',
