@@ -8,8 +8,6 @@ function MechanicDataPage(){
 
     const {session, updateSession} = useContext(SessionContext);
     const sessionId = session.id;
-
-
     const [coupleEngine, setCoupleEngine] = useState([]);
     const [steeringWheelAngle, setSteeringWheelAngle] = useState([]);
     const [axisInertialSensor, setAxisInertialSensor] = useState([]);
@@ -27,13 +25,10 @@ function MechanicDataPage(){
 
 
     const fetchData = async () => {
-
         try{
             const response = await ipcRenderer.invoke('get-values-bySession', {sessionId});
-
             if (response.success) {
                 const subMatrices = {};
-
                 response.dataValues.forEach(item => {
                     const dataTypeId = item.DataType_id;
                     if (!subMatrices[dataTypeId]) {
@@ -57,8 +52,6 @@ function MechanicDataPage(){
                 setPressureTireFR_NL(subMatrices[await getDataTypeID("PressureTireFR_NL")] || []);
                 setPressureTireBL_NL(subMatrices[await getDataTypeID("PressureTireBL_NL")] || []);
                 setPressureTireBR_NL(subMatrices[await getDataTypeID("PressureTireBR_NL")] || []);
-
-
             } else {
                 console.error(response.error);
             }
@@ -79,7 +72,6 @@ function MechanicDataPage(){
                     <p className="ChartLabel"  id="left">Car speed</p>
                     <LineChartStatic datasets={[carSpeed_NL]}  datasetNames={["Car speed"]} width={1100} height={450}/>
                 </div>
-
                 <div className="ChartExternalContainer">
                     <p className="ChartLabel"  id="left">Suspensions</p>
                     <LineChartStatic datasets={[suspensionFL, suspensionFR, suspensionBL, suspensionBR]}
@@ -107,12 +99,10 @@ function MechanicDataPage(){
                     <p className="ChartLabel"  id="left">inertial 2 axe</p>
                     <LineChartStatic datasets={[axisInertialSensor]} datasetNames={["inertial"]}  width={1100} height={450}/>
                 </div>
-
             </div>
         </header>
     )
 }
-
 export default MechanicDataPage;
 
 async function getDataTypeID(dataTypeName) {

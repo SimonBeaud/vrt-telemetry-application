@@ -2,14 +2,12 @@ import React, {useContext, useEffect, useState} from 'react'
 import LineChartStatic from "../Components/LineChartStatic";
 import {SessionContext} from "../SessionContext";
 import {ipcRenderer} from "electron";
-
+import '../Style/ExternalDataStyle.css';
 
 function ElectricDataPage(){
 
     const {session, updateSession} = useContext(SessionContext);
     const sessionId = session.id;
-
-
     const [enginePower_NL, setEnginePower_NL] = useState([]);
     const [coupleEngine, setCoupleEngine] = useState([]);
     const [engineAngularSpeed_NL, setEngineAngularSpeed_NL] = useState([]);
@@ -22,10 +20,7 @@ function ElectricDataPage(){
     const [temperatureBatteryHV_NL, setTemperatureBatteryHV_NL] = useState([]);
     const [temperatureBatteryLV_NL, setTemperatureBatteryLV_NL] = useState([]);
 
-
     const fetchData = async () => {
-
-
         try{
             const response = await ipcRenderer.invoke('get-values-bySession', {sessionId});
             console.log("Call fetch methode")
@@ -41,7 +36,6 @@ function ElectricDataPage(){
                     }
                 });
 
-
                 setEnginePower_NL(subMatrices[await getDataTypeID("EnginePower_NL")] || []);
                 setCoupleEngine(subMatrices[await getDataTypeID("CoupleEngine")] || []);
                 setEngineAngularSpeed_NL(subMatrices[await getDataTypeID("EngineAngularSpeed_NL")] || []);
@@ -53,8 +47,6 @@ function ElectricDataPage(){
                 setInverterTemperature_NL(subMatrices[await getDataTypeID("InverterTemperature_NL")] || []);
                 setTemperatureBatteryHV_NL(subMatrices[await getDataTypeID("TemperatureBatteryHV_NL")] || []);
                 setTemperatureBatteryLV_NL(subMatrices[await getDataTypeID("TemperatureBatteryLV_NL")] || []);
-
-
             } else {
                 console.error(response.error);
             }
@@ -68,11 +60,10 @@ function ElectricDataPage(){
 
     }, []);
 
-
     return(
         <header className="App-header">
             <div className="TabContainer">
-                <button className="ReloadButton" onClick={fetchData}>Reload Data</button>
+                <button className="ReloadButtonExternal" onClick={fetchData}>Reload Data</button>
                 <div className="ChartExternalContainer">
                     <p className="ChartLabel"  id="left">Car speed</p>
                     <LineChartStatic datasets={[carSpeed_NL]}  datasetNames={["Car speed"]} width={900} height={450} />
@@ -115,8 +106,5 @@ async function getDataTypeID(dataTypeName) {
         return null;
     }
 }
-
-
-
 
 export default ElectricDataPage;

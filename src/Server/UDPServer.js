@@ -28,7 +28,8 @@ class UDPServer {
                 this.prompteWindow = null;
                 this.lastKeepAliveCounter = 0;
                 this.keepAliveTimeout = null;
-                this.udpServer.on('message', this.receiveData.bind(this));
+               // this.udpServer.on('message', this.receiveData.bind(this));
+                this.udpServer.on('message', (data) => this.receiveData(data));
             }else{
                 console.error("Error when searching wlan network")
             }

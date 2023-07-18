@@ -8,7 +8,6 @@ function PilotDataPage(){
 
         const {session, updateSession} = useContext(SessionContext);
         const sessionId = session.id;
-
         const [engineAngularSpeed_NL, setEngineAngularSpeed_NL] = useState([]);
         const [carSpeed_NL, setCarSpeed_NL] = useState([]);
         const [acceleratorPedalPosition, setAcceleratorPedalPosition] = useState([]);
@@ -17,13 +16,10 @@ function PilotDataPage(){
         const [steeringWheelAngle, setSteeringWheelAngle] = useState([]);
 
         const fetchData = async () => {
-
             try{
                 const response = await ipcRenderer.invoke('get-values-bySession', {sessionId});
-
                 if (response.success) {
                     const subMatrices = {};
-
                     response.dataValues.forEach(item => {
                         const dataTypeId = item.DataType_id;
                         if (!subMatrices[dataTypeId]) {
@@ -32,15 +28,12 @@ function PilotDataPage(){
                             subMatrices[dataTypeId].push(item);
                         }
                     });
-
                     setEngineAngularSpeed_NL(subMatrices[await getDataTypeID("EngineAngularSpeed_NL")] || [])
                     setCarSpeed_NL(subMatrices[await getDataTypeID("CarSpeed_NL")] || []);
                     setAcceleratorPedalPosition(subMatrices[await getDataTypeID("AcceleratorPedalPosition")] || []);
                     setBreakPedalPosition(subMatrices[await getDataTypeID("BreakPedalPosition")] || []);
                     setSteeringWheelAngle(subMatrices[await getDataTypeID("SteeringWheelAngle")] || []);
                     setAxisInertialSensor(subMatrices[await getDataTypeID("AxisInertialSensor")] || []);
-
-
                 } else {
                     console.error(response.error);
                 }
@@ -61,7 +54,6 @@ function PilotDataPage(){
                         <p className="ChartLabel"  id="left">Car speed</p>
                         <LineChartStatic datasets={[carSpeed_NL]} datasetNames={["Car speed"]} width={1100} height={450}/>
                     </div>
-
                     <div className="ChartExternalContainer">
                         <p className="ChartLabel"  id="left">Engine angular speed</p>
                         <LineChartStatic datasets={[engineAngularSpeed_NL]}  datasetNames={["Angular speed"]} width={1100} height={450}/>

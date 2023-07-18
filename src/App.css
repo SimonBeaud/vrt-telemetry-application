@@ -1,3 +1,85 @@
+@font-face {
+  font-family: 'Raleway';
+  font-style: normal;
+  font-weight: 100;
+  src: url('Style/Raleway/static/Raleway-Thin.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Raleway';
+  font-style: normal;
+  font-weight: 300;
+  src: url('Style/Raleway/static/Raleway-Light.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Raleway';
+  font-style: normal;
+  font-weight: 400;
+  src: url('Style/Raleway/static/Raleway-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Raleway';
+  font-style: normal;
+  font-weight: 500;
+  src: url('Style/Raleway/static/Raleway-Medium.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Raleway';
+  font-style: normal;
+  font-weight: 600;
+  src: url('Style/Raleway/static/Raleway-SemiBold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Raleway';
+  font-style: normal;
+  font-weight: 700;
+  src: url('Style/Raleway/static/Raleway-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Raleway';
+  font-style: normal;
+  font-weight: 800;
+  src: url('Style/Raleway/static/Raleway-ExtraBold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Raleway';
+  font-style: normal;
+  font-weight: 900;
+  src: url('../src/Style/Raleway/static/Raleway-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Raleway';
+  font-style: italic;
+  font-weight: 400;
+  src: url('Style/Raleway/static/Raleway-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Raleway';
+  font-style: italic;
+  font-weight: 700;
+  src: url('Style/Raleway/static/Raleway-BoldItalic.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Raleway';
+  font-style: italic;
+  font-weight: 900;
+  src: url('Style/Raleway/static/Raleway-BlackItalic.ttf') format('truetype');
+}
+
+body {
+  font-family: 'Raleway', sans-serif;
+}
+
+
 .App {
   text-align: center;
 }
@@ -26,8 +108,6 @@ body {
   background-size: cover;
   font-family: Barlow;
 }
-
-
 
 .App-header {
   align-items: center;
@@ -113,9 +193,6 @@ body {
   margin-top: 60%;
 }
 
-
-
-
 .menuItem {
   text-align: center;
   display: flex;
@@ -165,6 +242,6 @@ body {
   display: flex;
   margin-left: 240px;
   padding: 20px;
-  width: calc(100% - 60px);
+  width: calc(100vw - 300px);
   height: 95vh;
 }

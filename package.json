@@ -36,7 +36,7 @@
     "start": "electron .",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "build-exe": "electron-packager . MyApp --platform=win32 --arch=x64 --out=dist/"
+    "build-exe": "electron-packager . VRT_Telemetry --platform=win32 --arch=x64 --out=dist/"
   },
   "eslintConfig": {
     "extends": [
@@ -58,6 +58,7 @@
   },
   "devDependencies": {
     "electron": "^25.2.0",
+    "electron-builder": "^24.4.0",
     "electron-packager": "^17.1.1",
     "jest": "^27.5.1",
     "webpack-node-externals": "^3.0.0"

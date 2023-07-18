@@ -1,37 +1,18 @@
 import React, {useState} from 'react'
 import TabBar from "../Components/TabBar";
 import '../Style/ExternalDataStyle.css';
-import {ChartProvider} from "../ChartContext";
-import LiveDataPage from "./LiveDataPage";
-import HistoricDataPage from "./HistoricDataPage";
-import ExportDataPage from "./ExportDataPage";
-import ProjectNavigationPage from "./ProjectNavigationPage";
 import ElectricDataPage from "./ElectricDataPage";
 import MechanicDataPage from "./MechanicDataPage";
 import PilotDataPage from "./PilotDataPage";
 import GeneralExternalDataPage from "./GeneralExternalDataPage";
 
 
-const { ipcRenderer, remote } = window.require('electron');
-
-
-
-
-//GC
 function ExternalDataPage() {
 
-
-
-
     const [currentTabPage, setCurrentTabPage] = useState('ElectricDataPage')
-
     const navigateTabTo = (path) => {
         setCurrentTabPage(path);
     };
-
-
-
-
 
     const renderTabPage = () => {
         switch (currentTabPage) {
@@ -46,7 +27,6 @@ function ExternalDataPage() {
         }
     };
 
-
     return (
         <header className="App-header">
             <div className="ExternalPageContainer">
@@ -56,6 +36,4 @@ function ExternalDataPage() {
         </header>
     );
 }
-
-
 export default ExternalDataPage;

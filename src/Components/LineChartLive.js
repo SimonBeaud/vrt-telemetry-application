@@ -14,8 +14,6 @@ function LineChartLive({ data, width, height, marginTop, marginBottom, marginLef
     }
 
 
-
-
     const chartContainerRef = useRef(null);
     const chartInstanceRef = useRef(null);
 

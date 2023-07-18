@@ -22,6 +22,7 @@ let mainWindow;
 let progress;
 let processedDataCount = 0;
 let totalDataCount = 0;
+let intervalId;
 
 
 
@@ -61,14 +62,17 @@ function createWindow(){
             mainWindow.webContents.send('connected-status', isConnected);
         }
         updateLiveData();
-        setInterval(updateLiveData, 100);
+        //setInterval(updateLiveData, 100);
+         intervalId = setInterval(updateLiveData, 100);
+
     })
 }
 app.on("ready", createWindow);
 
 app.on("window-all-closed", function (){
+    clearInterval(intervalId);
     if (process.platform !== 'darwin') app.quit();
-    //setInterval(null);
+   // setInterval(null);
 })
 
 
