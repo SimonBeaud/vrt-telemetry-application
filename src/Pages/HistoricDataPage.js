@@ -90,34 +90,31 @@ function HistoricDataPage(){
             <div className="PageContainer">
                 <div className="PageHistoricContainer">
                     <div className="TitleContainerHistoric">
-                        <h1>Live data history</h1>
-                        <button className="ReloadButton" onClick={fetchData}>Reload Data</button>
-                        <button className="ReloadButton" onClick={deleteAllDataValue}>Delete Data</button>
+                        <button className="buttonTransparent" onClick={fetchData}>Reload Data</button>
                     </div>
-
                     <div className="ChartExternalContainer">
                         <p className="ChartLabel"  id="left">Car speed</p>
-                        <LineChartStatic datasets={[carSpeed]}  datasetNames={["Car speed"]} width={900} height={450} />
+                        <LineChartStatic datasets={[carSpeed]}  datasetNames={["Car speed"]} width={1100} height={450} />
                     </div>
                     <div className="ChartExternalContainer">
                         <p className="ChartLabel"  id="left">Tyres pressure</p>
-                        <LineChartStatic datasets={[pressureTireFL, pressureTireFR, pressureTireBL ,pressureTireBR ]}  datasetNames={["Front left", "Front right", "Back left", "Back right"]} width={900} height={450} />
+                        <LineChartStatic datasets={[pressureTireFL, pressureTireFR, pressureTireBL ,pressureTireBR ]}  datasetNames={["Front left", "Front right", "Back left", "Back right"]} width={1100} height={450} />
                     </div>
                     <div className="ChartExternalContainer">
                         <p className="ChartLabel"  id="left">Temperatures</p>
-                        <LineChartStatic datasets={[engineTemperature, inverterTemperature, temperatureBatteryHV ,temperatureBatteryLV ]}  datasetNames={["Engine", "Inverter", "Battery HV", "Battery LV"]} width={900} height={450} />
+                        <LineChartStatic datasets={[engineTemperature, inverterTemperature, temperatureBatteryHV ,temperatureBatteryLV ]}  datasetNames={["Engine", "Inverter", "Battery HV", "Battery LV"]} width={1100} height={450} />
                     </div>
                     <div className="ChartExternalContainer">
                         <p className="ChartLabel"  id="left">Power</p>
-                        <LineChartStatic datasets={[enginePower]}  datasetNames={["Engine"]} width={900} height={450} />
+                        <LineChartStatic datasets={[enginePower]}  datasetNames={["Engine"]} width={1100} height={450} />
                     </div>
                     <div className="ChartExternalContainer">
                         <p className="ChartLabel"  id="left">Engine speed</p>
-                        <LineChartStatic datasets={[engineAngularSpeed]}  datasetNames={["Angular speed"]} width={900} height={450} />
+                        <LineChartStatic datasets={[engineAngularSpeed]}  datasetNames={["Angular speed"]} width={1100} height={450} />
                     </div>
                     <div className="ChartExternalContainer">
                         <p className="ChartLabel"  id="left">Battery HV</p>
-                        <LineChartStatic datasets={[tensionBatteryHV, amperageBatteryHV ]}  datasetNames={["Tension", "Amperage"]} width={900} height={450} />
+                        <LineChartStatic datasets={[tensionBatteryHV, amperageBatteryHV ]}  datasetNames={["Tension", "Amperage"]} width={1100} height={450} />
                     </div>
                 </div>
             </div>

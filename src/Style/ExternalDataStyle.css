@@ -21,7 +21,6 @@
     padding: 10px;
     position: relative;
     top: 0;
-    width: calc(100% - 60px);
     z-index: 999;
     height: auto;
     border-radius: 35px;
@@ -36,7 +35,7 @@
     cursor: pointer;
     font-family: Raleway;
     font-size: 18px;
-    font-weight: 200;
+    font-weight: 400;
 
 }
 .tabButton:focus{
@@ -58,7 +57,7 @@
     display: block;
     margin-left: 240px;
     padding: 20px;
-    width: calc(100% - 60px);
+    width: calc(100vw - 300px);
     height: 95vh;
 }
 
