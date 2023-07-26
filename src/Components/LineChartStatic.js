@@ -11,14 +11,11 @@ const LineChartStatic = ({ datasets, datasetNames, yMin, yMax, width, height }) 
 
     useEffect(() => {
         let chart3;
-
         const createChart = () => {
             const ctx = chartRef3.current.getContext('2d');
             const labels = datasets[0].map((dataValue) =>
                 moment(dataValue.timeRecord).format('HH:mm:ss')
             );
-
-
             const chartDatasets = datasets.map((dataset, index) => ({
                 label: datasetNames[index],
                 data: dataset.map((dataValue) => dataValue.DataRecord),
@@ -90,7 +87,6 @@ const LineChartStatic = ({ datasets, datasetNames, yMin, yMax, width, height }) 
             }
         };
     }, [datasets,datasetNames, yMin, yMax]);
-
     return (
         <div>
             <canvas ref={chartRef3} width={width} height={height} />

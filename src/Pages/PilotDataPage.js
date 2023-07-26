@@ -46,7 +46,6 @@ function PilotDataPage(){
             fetchData();
         }, []);
 
-
         return(
             <header className="App-header">
                 <div className="TabContainer">

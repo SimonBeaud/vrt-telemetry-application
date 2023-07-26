@@ -11,8 +11,6 @@ function HistoricDataPage(){
     /*Session id management*/
     const {session, updateSession} = useContext(SessionContext);
     const sessionId = session.id;
-
-
     const [tensionBatteryHV, setTensionBatteryHV] = useState([]);
     const [amperageBatteryHV, setAmperageBatteryHV] = useState([]);
     const [temperatureBatteryHV, setTemperatureBatteryHV] = useState([]);
@@ -26,15 +24,6 @@ function HistoricDataPage(){
     const [pressureTireBR, setPressureTireBR] = useState([]);
     const [inverterTemperature, setInverterTemperature] = useState([]);
     const [temperatureBatteryLV, setTemperatureBatteryLV] = useState([]);
-
-
-    const deleteAllDataValue = () => {
-        ipcRenderer.invoke('delete-data-value', {sessionId}).then();
-    };
-
-
-
-
 
     const fetchData = async () => {
         try {
@@ -53,8 +42,6 @@ function HistoricDataPage(){
                         subMatrices[dataTypeId].push(item);
                     }
                 });
-
-
 
                 setTensionBatteryHV(subMatrices[await getDataTypeID("TensionBatteryHV")] || []);
                 setAmperageBatteryHV(subMatrices[await getDataTypeID("AmperageBatteryHV")] || []);
@@ -121,7 +108,6 @@ function HistoricDataPage(){
         </header>
     )
 }
-
 export default HistoricDataPage;
 
 

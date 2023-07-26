@@ -25,7 +25,6 @@ function ProjectNavigationPage(){
     }, [session]);
 
 
-
     //Session click handle
     const handleSessionClick = (id, name) =>{
         console.log('Session clicked:', id, name);
@@ -35,8 +34,6 @@ function ProjectNavigationPage(){
 
     }
 
-
-
     //Modal Logic
     const openModal = ()=>{
         setIsModalOpen(true);
@@ -44,11 +41,6 @@ function ProjectNavigationPage(){
     const closeModal = ()=>{
         setIsModalOpen(false);
     };
-
-    const navigationClick = () =>{
-        openModal();
-    };
-
 
 
     useEffect(()=>{
@@ -60,11 +52,6 @@ function ProjectNavigationPage(){
     }, []);
 
 
-    const deleteAllSession=()=>{
-        ipcRenderer.invoke('delete-sessions').then();
-    }
-
-
     //Update session list
     const handleSessionAdd=()=>{
         ipcRenderer.invoke('get-sessions').then(sessionAll=>{
@@ -73,10 +60,6 @@ function ProjectNavigationPage(){
             console.error(err);
         })
     }
-
-
-
-
 
     return(
             <div className="ProjectNavigationContainer">
@@ -90,10 +73,7 @@ function ProjectNavigationPage(){
                         </ul>
                     </div>
                 </div>
-
-
                 <div className="rightContainer">
-
                     {!isModalOpen && (
                         <div>
                             <img className="logoHomeVRT" src={require('../Ressources/LogoVRT.png')} alt="VRT Logo" />
@@ -103,7 +83,6 @@ function ProjectNavigationPage(){
                             </button>
                         </div>
                     )}
-
                     {isModalOpen && (
                         <div className="creationForm">
                             <div className="modalContent">

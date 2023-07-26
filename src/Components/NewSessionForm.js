@@ -28,14 +28,10 @@ export default function NewSessionForm({handleSubmit, handleSessionAdd}){
             });
     }
 
-
     //call the add session methode
     const addSession = (name, pilot, date)=>{
         return ipcRenderer.invoke('add-session', {name, pilot, date});
     };
-
-
-
 
     return(
         <form onSubmit={handleFormSubmit}>

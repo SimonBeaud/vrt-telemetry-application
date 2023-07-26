@@ -17,11 +17,9 @@ export default function Navbar({navigateTo}){
 
     }, []);
 
-
     const StartServer = async () => {
         ipcRenderer.send('start-server');
     }
-
     return(
         <header className="header">
             <div className="logoNavBar">

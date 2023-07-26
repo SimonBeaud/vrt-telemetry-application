@@ -47,6 +47,5 @@ export default function TabBar({navigateTo}){
                 </nav>
             </div>
         </header>
-
     )
 }

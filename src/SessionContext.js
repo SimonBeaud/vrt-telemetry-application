@@ -5,8 +5,6 @@ export const SessionContext = createContext();
 export const SessionProvider =({children})=>{
     const [session, setSession] = useState({ id: 0, name: 'Default Session' });
 
-
-
     const updateSession = (id, name) =>{
         setSession({id, name});
 
@@ -23,8 +21,6 @@ export const SessionProvider =({children})=>{
     );
 
 };
-
-
 
 export const sessionContextInstance = {
     session: {id: 0, name: 'Default Session'},

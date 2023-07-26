@@ -1,4 +1,3 @@
-// ChartContext.js
 import React, { createContext, useContext, useRef } from 'react';
 
 const ChartContext = createContext(null);
@@ -13,4 +12,4 @@ export const ChartProvider = ({ children }) => {
     );
 };
 
-export const useChartInstances = () => useContext(ChartContext);
+

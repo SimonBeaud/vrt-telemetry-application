@@ -67,6 +67,7 @@ function createWindow(){
 
     })
 }
+
 app.on("ready", createWindow);
 
 app.on("window-all-closed", function (){
@@ -236,16 +237,15 @@ ipcMain.on('add-datavalues-csv', (event, parameters) =>{
 
             });
 
-
             const processDataPromise = new Promise((resolve, reject) =>{
                 csvParser.on('data', (data) =>{
                     const sessionID = null;
                     const timeRecordMilliseconds = data[Object.keys(data)[0]];
-                    const timeRecord = moment(parseInt(timeRecordMilliseconds)).toISOString();
+                    const adjustedTimeRecordMilliseconds = timeRecordMilliseconds - 3600000;
+                    const timeRecord = moment(parseInt(adjustedTimeRecordMilliseconds)).toISOString();
                     const columnNames = Object.keys(data);
                     const values = Object.values(data);
 
-                    //Reading the csv content and adding to database
                     for (let i = 1; i < columnNames.length; i++) {
                         const columnName = columnNames[i];
                         const value = values[i];
@@ -274,7 +274,6 @@ ipcMain.on('add-datavalues-csv', (event, parameters) =>{
                                     reject(err);
                                 });
                         }
-
                     }
                 });
             });

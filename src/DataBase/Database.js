@@ -163,7 +163,6 @@ const getDataTypeName = dataTypeID =>{
 }
 
 
-
 //__________________________________________
 //DataValue operations
 //__________________________________________
@@ -265,18 +264,14 @@ const deleteDataValues = (sessionID) =>{
 module.exports = {
     database,
     databasePath,
-
     getDatabase,
-
     addSession,
     getAllSessions,
     deleteSession,
     setCurrentSession,
-
     addDataType,
     getDataTypeID,
     getDataTypeName,
-
     addDataValue,
     getDataValues,
     getDataValueBySession,

@@ -13,7 +13,6 @@ function LineChartLive({ data, width, height, yMin, yMax, marginTop, marginBotto
         canvasHeight: 150
     }
 
-
     const chartContainerRef = useRef(null);
     const chartInstanceRef = useRef(null);
 
@@ -22,13 +21,11 @@ function LineChartLive({ data, width, height, yMin, yMax, marginTop, marginBotto
     useEffect(() => {
         if (chartContainerRef.current) {
             if (chartInstanceRef.current) {
-                // Chart instance already exists, update the data
                 const timePoint = Date.now();
                 const dataPoint = { x: timePoint, y: data };
                 chartInstanceRef.current.data.datasets[0].data.push(dataPoint);
                 chartInstanceRef.current.update();
             } else {
-                // Chart instance doesn't exist, create a new one
                 const ctx = chartContainerRef.current.getContext('2d');
                 const newChartInstance = new Chart(ctx, {
                 type: 'line',
@@ -111,8 +108,6 @@ function LineChartLive({ data, width, height, yMin, yMax, marginTop, marginBotto
             }
         }
     }, [data]);
-
-    //return <canvas ref={chartRef} width="200px" ></canvas>;
     return <canvas ref={chartContainerRef} width={state.canvasWidth} height={state.canvasHeight}/>
 }
 

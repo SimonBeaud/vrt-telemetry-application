@@ -59,7 +59,6 @@ function MechanicDataPage(){
             console.error(error);
         }
     };
-
     useEffect(() => {
         fetchData();
     }, []);

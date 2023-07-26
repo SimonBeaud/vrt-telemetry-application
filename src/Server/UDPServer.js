@@ -66,7 +66,6 @@ class UDPServer {
                         }
                 `,
             }
-
             this.prompteWindow = new BrowserWindow(options);
             this.prompteWindow.loadURL(`data:text/html;charset=UTF-8,
                 <html>

@@ -1,10 +1,7 @@
-
 import React, {useEffect, useState} from 'react'
 import {ipcRenderer} from 'electron'
 import '../Style/LiveDataStyle.css';
-import Chart from 'chart.js/auto';
 import LineChartLive from "../Components/LineChartLive";
-
 
 function LiveDataPage(){
 
@@ -56,14 +53,6 @@ function LiveDataPage(){
 
         }
     }, [liveData]);
-
-
-
-
-
-
-
-
 
 
     //##############################################################################

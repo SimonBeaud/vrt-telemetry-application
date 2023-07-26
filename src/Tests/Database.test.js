@@ -1,3 +1,4 @@
+
 const { addSession } = require('../DataBase/Database');
 
 // Mockez le module 'electron'
@@ -21,9 +22,7 @@ jest.mock('sqlite3', () => ({
 
 // Cas de test
 test('addSession should add a new session', async () => {
-    // Appelez la fonction à tester
     const session = await addSession('Test Session', 'Test Pilot', '2023-07-11');
-
-    // Assertions
     expect(session).toBeTruthy();
 });
+
